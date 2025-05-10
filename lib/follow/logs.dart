@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
+import 'package:palette/follow/post_details.dart';
 
 import '../commonWidgets.dart';
 
@@ -15,7 +16,7 @@ class LogsScreen extends StatelessWidget {
             backgroundColor: AppColors.primary,
             elevation: 0,
             leading: commonBackButton(),
-            title: commonText("My Palette",
+            title: commonText("Logs",
                 size: 20, color: AppColors.white, isBold: true),
             centerTitle: true,
           ),
@@ -24,7 +25,11 @@ class LogsScreen extends StatelessWidget {
             child: ListView.builder(
               itemCount: 5,
               itemBuilder: (context, index) {
-                return buildLogsCardDesign();
+                return InkWell(
+                    onTap: () {
+                      navigateToPage(PostDetailsScreen());
+                    },
+                    child: buildLogsCardDesign());
               },
             ),
           )),

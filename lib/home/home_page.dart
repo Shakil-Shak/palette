@@ -4,6 +4,7 @@ import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
 import 'package:palette/commonWidgets.dart';
 import 'package:palette/home/food_details.dart';
+import 'package:palette/home/notifications_page.dart';
 
 class HomePage extends StatelessWidget {
   final controller = TextEditingController(); // If needed for search
@@ -32,9 +33,15 @@ class HomePage extends StatelessWidget {
           ),
         ),
         actions: [
-          CircleAvatar(
-            backgroundColor: AppColors.white,
-            child: Image.asset(AppAssetsPath.notifications),
+          InkWell(
+            onTap: () {
+              // Navigate to notifications page
+              navigateToPage(NotificationsPage());
+            },
+            child: CircleAvatar(
+              backgroundColor: AppColors.white,
+              child: Image.asset(AppAssetsPath.notifications),
+            ),
           ),
           SizedBox(
             width: 16,

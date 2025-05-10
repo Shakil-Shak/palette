@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
+import 'package:palette/follow/add_new_log_page.dart';
+import 'package:palette/follow/post_details.dart';
 
 import '../commonWidgets.dart';
 
@@ -27,32 +29,34 @@ class MyPaletteScreen extends StatelessWidget {
               child: TabBarView(
                 children: [
                   _buildLogsTab(context),
-                  buildReviews(reviews: [
-                    {
-                      "text":
-                          "Absolutely delicious! The meat was perfectly cooked and juicy, bursting with flavor in every bite.",
-                      "rating": 5,
-                      "time": "2 Days Ago"
-                    },
-                    {
-                      "text":
-                          "The pasta was good, but it lacked a bit of salt. Overall, a decent meal!",
-                      "rating": 3,
-                      "time": "1 Day Ago"
-                    },
-                    {
-                      "text":
-                          "A delightful experience! The dessert was a highlight, rich and decadent.",
-                      "rating": 4,
-                      "time": "3 Days Ago"
-                    },
-                    {
-                      "text":
-                          "An unforgettable dining experience! Every dish was meticulously crafted.",
-                      "rating": 5,
-                      "time": "5 Hours Ago"
-                    },
-                  ]),
+                  buildReviews(
+                    reviews: [
+                      {
+                        "text":
+                            "Absolutely delicious! The meat was perfectly cooked and juicy, bursting with flavor in every bite.",
+                        "rating": 5,
+                        "time": "2 Days Ago"
+                      },
+                      {
+                        "text":
+                            "The pasta was good, but it lacked a bit of salt. Overall, a decent meal!",
+                        "rating": 3,
+                        "time": "1 Day Ago"
+                      },
+                      {
+                        "text":
+                            "A delightful experience! The dessert was a highlight, rich and decadent.",
+                        "rating": 4,
+                        "time": "3 Days Ago"
+                      },
+                      {
+                        "text":
+                            "An unforgettable dining experience! Every dish was meticulously crafted.",
+                        "rating": 5,
+                        "time": "5 Hours Ago"
+                      },
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -109,7 +113,10 @@ class MyPaletteScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
               ),
-              onPressed: () {},
+              onPressed: () {
+                // Navigate to Add New Log Page
+                navigateToPage(AddNewLogScreen());
+              },
               icon: Icon(
                 Icons.add,
                 color: AppColors.white,
@@ -132,7 +139,12 @@ class MyPaletteScreen extends StatelessWidget {
       padding: EdgeInsets.all(16),
       itemCount: 3,
       itemBuilder: (context, index) {
-        return buildLogsCardDesign();
+        return InkWell(
+            onTap: () {
+              // Navigate to Log Details Page
+              navigateToPage(PostDetailsScreen());
+            },
+            child: buildLogsCardDesign());
       },
     );
   }

@@ -36,6 +36,7 @@ class AppAssetsPath {
   //home
   static const notifications = "assets/images/homeIcons/notifications.png";
   static const share = "assets/images/homeIcons/share.png";
+  static const delete = "assets/images/profile_icons/delete.png";
 
   //navigations
   static const home = "assets/images/navigations/home.png";

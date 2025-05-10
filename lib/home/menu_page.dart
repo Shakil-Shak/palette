@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
 import 'package:palette/commonWidgets.dart';
+import 'package:palette/home/food_details.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -25,7 +26,11 @@ class _MenuScreenState extends State<MenuScreen> {
         child: ListView.builder(
           itemCount: 10,
           itemBuilder: (context, index) {
-            return menuCard();
+            return InkWell(
+                onTap: () {
+                  navigateToPage(FoodDetailsPage());
+                },
+                child: menuCard());
           },
         ),
       ),

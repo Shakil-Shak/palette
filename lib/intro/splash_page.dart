@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:palette/assets_paths/image_path.dart';
-import 'package:palette/authuntication/sign_in_page.dart';
+
 import 'package:palette/commonWidgets.dart';
+import 'package:palette/onboarding/onboarding_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Navigate to onboarding after 2 seconds
     Future.delayed(const Duration(seconds: 2), () {
-      navigateToPage(SignInPage());
+      navigateToPage(OnboardingScreen());
     });
   }
 

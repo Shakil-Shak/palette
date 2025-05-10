@@ -36,7 +36,10 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                     ),
                   ),
                 ),
-                commonBackButton(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 24.0, top: 24),
+                  child: commonBackButton(),
+                ),
               ],
             ),
             Padding(
@@ -79,10 +82,12 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                     children: [
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            showAddToFavoriteDialog(context);
+                          },
                           icon: Icon(Icons.favorite_border,
                               color: AppColors.primary),
-                          label: commonText("Add To Favourite",
+                          label: commonText("Add To Favorite",
                               color: AppColors.primary, isBold: true),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(color: AppColors.primary),

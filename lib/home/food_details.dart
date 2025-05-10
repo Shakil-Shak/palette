@@ -18,17 +18,16 @@ class FoodDetailsPage extends StatelessWidget {
             // Food Image
             Stack(
               children: [
-                ClipRRect(
-                  borderRadius:
-                      BorderRadius.vertical(bottom: Radius.circular(24)),
-                  child: Image.network(
-                    "https://www.pennlive.com/resizer/v2/ZL54C3EDKFGWLJY7XRAZPDU4LQ.jpg?auth=2a7815790f3b62ed7b10ac63e852c4fc1f619bae52ea35d1a36ca5a3e8ab14c4&width=1280&quality=90",
-                    height: 240,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
+                Image.network(
+                  "https://static.vecteezy.com/system/resources/previews/023/809/530/non_2x/a-flying-burger-with-all-the-layers-ai-generative-free-photo.jpg",
+                  height: 240,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
-                commonBackButton(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, top: 32),
+                  child: commonBackButton(),
+                ),
               ],
             ),
 
@@ -81,10 +80,12 @@ class FoodDetailsPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            showAddToFavoriteDialog(context);
+                          },
                           icon: Icon(Icons.favorite_border,
                               color: AppColors.primary),
-                          label: commonText("Add To Favourite",
+                          label: commonText("Add To Favorite",
                               color: AppColors.primary, isBold: true),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(color: AppColors.primary),

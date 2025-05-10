@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:palette/assets_paths/image_path.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonWidgets.dart';
@@ -64,7 +65,7 @@ class AddNewLogScreen extends StatelessWidget {
             commonButton(
               "Post",
               onTap: () {
-                // Handle post action
+                Get.back();
               },
               textalign: TextAlign.center,
             ),

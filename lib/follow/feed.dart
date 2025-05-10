@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
 import 'package:palette/commonWidgets.dart';
+import 'package:palette/follow/person_details_page.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -42,11 +43,16 @@ class _FeedScreenState extends State<FeedScreen> {
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
                   itemBuilder: (context, index) {
-                    return profileFolllowdesign(
-                        imageUrl:
-                            "https://www.w3schools.com/w3images/avatar2.png",
-                        name: "Jessica",
-                        numberOfPost: "20");
+                    return InkWell(
+                      onTap: () {
+                        navigateToPage(PersonDetailsScreen());
+                      },
+                      child: profileFolllowdesign(
+                          imageUrl:
+                              "https://www.w3schools.com/w3images/avatar2.png",
+                          name: "Jessica",
+                          numberOfPost: "20"),
+                    );
                   },
                 ),
               ),

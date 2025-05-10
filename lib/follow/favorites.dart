@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
 import 'package:palette/commonWidgets.dart';
+import 'package:palette/follow/topic_wise_favorite_page.dart';
 
 class FavoritesPage extends StatelessWidget {
   @override
@@ -22,11 +23,25 @@ class FavoritesPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              sectionHeader('Foods'),
+              sectionHeader(
+                'Ramen',
+                ontap: () {
+                  navigateToPage(
+                    TopicWiseFavoritePage(),
+                  );
+                },
+              ),
               SizedBox(height: 8),
               gridSection(_buildFoodCard(), ration: 0.9),
               SizedBox(height: 24),
-              sectionHeader('Restaurants'),
+              sectionHeader(
+                'My Fav Restaurants',
+                ontap: () {
+                  navigateToPage(
+                    TopicWiseFavoritePage(),
+                  );
+                },
+              ),
               SizedBox(height: 8),
               gridSection(_buildRestaurantCard()),
             ],
@@ -36,12 +51,12 @@ class FavoritesPage extends StatelessWidget {
     );
   }
 
-  Widget sectionHeader(String title) {
+  Widget sectionHeader(String title, {required Function()? ontap}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         commonText(title, size: 16, isBold: true),
-        commonText('View All', isBold: true),
+        InkWell(onTap: ontap, child: commonText('View All', isBold: true)),
       ],
     );
   }
@@ -64,6 +79,7 @@ class FavoritesPage extends StatelessWidget {
         (index) => cardDesign(
               imageUrl:
                   "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1",
+              isdelete: true,
               buttonName: "American",
               ratting: "4.6",
               location: "123 Random Street",
@@ -77,6 +93,7 @@ class FavoritesPage extends StatelessWidget {
         (index) => cardDesign(
               imageUrl:
                   "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1",
+              isdelete: true,
               buttonName: "Signature",
               ratting: "4.6",
               location: "Umi Sushi",

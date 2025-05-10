@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:palette/assets_paths/image_path.dart';
+import 'package:palette/authuntication/sign_in_page.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonWidgets.dart';
 
@@ -73,7 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             right: 20,
                             child: GestureDetector(
                               onTap: () {
-                                // Handle Skip
+                                navigateToPage(SignInPage());
                               },
                               child: commonText(
                                 "Skip",
@@ -116,7 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     curve: Curves.easeInOut,
                                   );
                                 } else {
-                                  // Navigate to next screen
+                                  navigateToPage(SignInPage());
                                 }
                               },
                             ),

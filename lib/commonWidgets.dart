@@ -126,6 +126,7 @@ Widget commonBackButton() {
     },
     child: Container(
       margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(4.0),
       decoration: BoxDecoration(
           border: Border.all(width: 1),
           shape: BoxShape.circle,

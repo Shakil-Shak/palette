@@ -200,6 +200,7 @@ Widget cardDesign(
     required String buttonName,
     required String ratting,
     bool isleft = true,
+    bool isdelete = false,
     required String location}) {
   Widget badge(String label) {
     return Container(
@@ -250,7 +251,17 @@ Widget cardDesign(
                     ],
                   ),
                 ),
-              )
+              ),
+              if (isdelete)
+                Positioned(
+                  top: 8,
+                  left: (isleft) ? null : 8,
+                  right: (isleft) ? 8 : null,
+                  child: Image.asset(
+                    AppAssetsPath.delete,
+                    width: 24,
+                  ),
+                ),
             ],
           ),
         ),
@@ -409,14 +420,8 @@ void showAddToFavoriteDialog(BuildContext context) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Add to Favorite',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Color(0xFF52221B),
-                    ),
-                  ),
+                  commonText('Add to Favorite',
+                      size: 18, isBold: true, color: AppColors.black),
                   SizedBox(height: 20),
                   Row(
                     children: [

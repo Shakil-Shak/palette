@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
 import 'package:palette/commonWidgets.dart';
+import 'package:palette/follow/follower.dart';
+import 'package:palette/follow/following.dart';
+import 'package:palette/follow/logs.dart';
+import 'package:palette/follow/post_details.dart';
 
 class PersonDetailsScreen extends StatefulWidget {
   const PersonDetailsScreen({super.key});
@@ -36,7 +40,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   backgroundImage: NetworkImage(
                       "https://www.w3schools.com/w3images/avatar2.png"),
                 ),
-                Positioned(top: 16, left: 16, child: commonBackButton())
+                Positioned(top: 24, left: 16, child: commonBackButton())
               ],
             ),
             Padding(
@@ -72,19 +76,31 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      profileStat("450", "Followers"),
+                      InkWell(
+                          onTap: () {
+                            navigateToPage(FollowersPage());
+                          },
+                          child: profileStat("450", "Followers")),
                       Container(
                         color: AppColors.black.withOpacity(0.3),
                         height: 40,
                         width: 1,
                       ),
-                      profileStat("287", "Following"),
+                      InkWell(
+                          onTap: () {
+                            navigateToPage(FollowingPage());
+                          },
+                          child: profileStat("287", "Following")),
                       Container(
                         color: AppColors.black.withOpacity(0.3),
                         height: 40,
                         width: 1,
                       ),
-                      profileStat("30", "Logs"),
+                      InkWell(
+                          onTap: () {
+                            navigateToPage(LogsScreen());
+                          },
+                          child: profileStat("30", "Logs")),
                     ],
                   ),
                   SizedBox(
@@ -119,9 +135,14 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   ListView.builder(
                     shrinkWrap: true,
                     itemCount: 4,
+                    padding: EdgeInsets.only(top: 16),
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return buildPostCardDesign();
+                      return InkWell(
+                          onTap: () {
+                            navigateToPage(PostDetailsScreen());
+                          },
+                          child: buildPostCardDesign());
                     },
                   )
                 ],

@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
 import 'package:palette/commonWidgets.dart';
+import 'package:palette/follow/badges.dart';
+import 'package:palette/follow/challenges.dart';
+import 'package:palette/follow/favorite_folders_page.dart';
+import 'package:palette/follow/follower.dart';
+import 'package:palette/follow/following.dart';
+import 'package:palette/follow/my_palette.dart';
+import 'package:palette/follow/profile/profile_settings.dart';
+import 'package:palette/follow/top_rated_iteams.dart';
 import 'package:palette/model/challenge_data_model.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -82,6 +90,10 @@ class ProfileScreen extends StatelessWidget {
                   SizedBox(height: 8),
                   commonSmallButton(
                     text: "Profile Settings",
+                    ontap: () {
+                      // Navigate to Profile Settings Page
+                      navigateToPage(ProfileSettingsScreen());
+                    },
                     width: 110,
                   ),
                 ],
@@ -92,7 +104,12 @@ class ProfileScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  profileStat("450", "Followers"),
+                  InkWell(
+                      onTap: () {
+                        // Navigate to Followers Page
+                        navigateToPage(FollowersPage());
+                      },
+                      child: profileStat("450", "Followers")),
                   SizedBox(
                     width: 30,
                   ),
@@ -103,13 +120,22 @@ class ProfileScreen extends StatelessWidget {
                   SizedBox(
                     width: 30,
                   ),
-                  profileStat("287", "Following"),
+                  InkWell(
+                      onTap: () {
+                        navigateToPage(FollowingPage());
+                      },
+                      child: profileStat("287", "Following")),
                 ],
               ),
               SizedBox(height: 24),
 
               // Badges Section
-              sectionHeader("Badges"),
+              sectionHeader(
+                "Badges",
+                ontap: () {
+                  navigateToPage(BadgesScreen());
+                },
+              ),
               SizedBox(height: 12),
               SizedBox(
                 height: 100,
@@ -128,7 +154,11 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(height: 24),
 
               // Current Challenges
-              sectionHeader("Current Challenges"),
+              sectionHeader("Current Challenges", ontap: () {
+                // Navigate to Challenges Page
+                navigateToPage(ChallengesScreen());
+              }),
+
               SizedBox(height: 12),
               Column(
                 children: challenges
@@ -141,9 +171,27 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(height: 24),
 
               // Menu Items
-              menuItem("My Palette"),
-              menuItem("Top Rated Items"),
-              menuItem("Favorites"),
+              menuItem(
+                "My Palette",
+                ontap: () {
+                  // Navigate to My Palette Page
+                  navigateToPage(MyPaletteScreen());
+                },
+              ),
+              menuItem(
+                "Top Rated Items",
+                ontap: () {
+                  // Navigate to Top Rated Items Page
+                  navigateToPage(TopRatedItemsScreen());
+                },
+              ),
+              menuItem(
+                "Favorites",
+                ontap: () {
+                  // Navigate to Favorites Page
+                  navigateToPage(FavoriteFoldersPage());
+                },
+              ),
             ],
           ),
         ),
@@ -161,22 +209,25 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget sectionHeader(String title) {
+  Widget sectionHeader(String title, {required Function()? ontap}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         commonText(title, size: 16, isBold: true),
-        commonText("View All", isBold: true),
+        InkWell(onTap: ontap, child: commonText("View All", isBold: true)),
       ],
     );
   }
 
-  Widget menuItem(String label) {
+  Widget menuItem(
+    String label, {
+    required Function()? ontap,
+  }) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: commonText(label, size: 16, isBold: true),
       trailing: Icon(Icons.chevron_right),
-      onTap: () {},
+      onTap: ontap,
     );
   }
 }

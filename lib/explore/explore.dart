@@ -144,14 +144,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
         gridSection(
             List.generate(
                 2,
-                (index) => cardDesign(
-                    imageUrl:
-                        "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1",
-                    buttonName: "Signature",
-                    ratting: "4.6",
-                    location: "Umi Sushi",
-                    name: "Miso Ramen",
-                    isleft: false)),
+                (index) => InkWell(
+                      onTap: () {
+                        navigateToPage(FoodDetailsPage());
+                      },
+                      child: cardDesign(
+                          imageUrl:
+                              "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1",
+                          buttonName: "Signature",
+                          ratting: "4.6",
+                          location: "Umi Sushi",
+                          name: "Miso Ramen",
+                          isleft: false),
+                    )),
             ration: 0.9),
       ],
     );
