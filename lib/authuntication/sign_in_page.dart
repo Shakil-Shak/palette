@@ -129,7 +129,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
               RichText(
                 text: TextSpan(
-                  text: "Already have an account? ",
+                  text: "Don’t have an account? ",
                   style: GoogleFonts.sora(color: Colors.black, fontSize: 14),
                   children: [
                     TextSpan(

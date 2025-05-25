@@ -63,7 +63,8 @@ class ProfileSettingsScreen extends StatelessWidget {
                   children: [
                     Column(
                       children: [
-                        profileMenuItem(AppAssetsPath.phone, "Edit Profile",
+                        profileMenuItem(
+                            AppAssetsPath.edit_profile, "Edit Profile",
                             onTap: () {
                           // Navigate to Edit Profile Screen
                           navigateToPage(EditProfileScreen());

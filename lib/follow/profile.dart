@@ -52,6 +52,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: AppBar(
+        leading: SizedBox(),
         centerTitle: true,
         title: commonText("Profile",
             size: 21, isBold: true, color: AppColors.white),

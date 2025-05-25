@@ -3,6 +3,7 @@ import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
 import 'package:palette/commonWidgets.dart';
 import 'package:palette/follow/person_details_page.dart';
+import 'package:palette/follow/post_details.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -17,6 +18,7 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: AppBar(
+        leading: SizedBox(),
         title:
             commonText("Feed", size: 21, isBold: true, color: AppColors.white),
       ),
@@ -59,7 +61,7 @@ class _FeedScreenState extends State<FeedScreen> {
               SizedBox(
                 height: 16,
               ),
-              commonText("Foodies to Follow", size: 16, isBold: true),
+              commonText("Posts", size: 16, isBold: true),
               SizedBox(
                 height: 16,
               ),
@@ -68,7 +70,11 @@ class _FeedScreenState extends State<FeedScreen> {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return buildPostCardDesign();
+                  return InkWell(
+                      onTap: () {
+                        navigateToPage(PostDetailsScreen());
+                      },
+                      child: buildPostCardDesign());
                 },
               ),
             ],

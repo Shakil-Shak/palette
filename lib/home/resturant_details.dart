@@ -25,17 +25,33 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
           children: [
             Stack(
               children: [
-                Container(
-                  height: 250,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        "https://www.pennlive.com/resizer/v2/ZL54C3EDKFGWLJY7XRAZPDU4LQ.jpg?auth=2a7815790f3b62ed7b10ac63e852c4fc1f619bae52ea35d1a36ca5a3e8ab14c4&width=1280&quality=90",
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 45.0),
+                  child: Container(
+                    height: 250,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                          "https://www.pennlive.com/resizer/v2/ZL54C3EDKFGWLJY7XRAZPDU4LQ.jpg?auth=2a7815790f3b62ed7b10ac63e852c4fc1f619bae52ea35d1a36ca5a3e8ab14c4&width=1280&quality=90",
+                        ),
                       ),
                     ),
                   ),
                 ),
+                Positioned(
+                    bottom: 0,
+                    left: 16,
+                    child: Container(
+                      width: 90,
+                      height: 90,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  "https://tse1.mm.bing.net/th/id/OIP.Vbbf9wPK4tJYzKIMjrxYNAHaFN?rs=1&pid=ImgDetMain"),
+                              fit: BoxFit.cover)),
+                    )),
                 Padding(
                   padding: const EdgeInsets.only(left: 24.0, top: 24),
                   child: commonBackButton(),

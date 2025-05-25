@@ -23,15 +23,25 @@ class _MenuScreenState extends State<MenuScreen> {
       backgroundColor: AppColors.primary,
       bottomSheet: Padding(
         padding: EdgeInsets.all(16),
-        child: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return InkWell(
-                onTap: () {
-                  navigateToPage(FoodDetailsPage());
+        child: Column(
+          children: [
+            commonSearchBar(),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 20,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                      onTap: () {
+                        navigateToPage(FoodDetailsPage());
+                      },
+                      child: menuCard());
                 },
-                child: menuCard());
-          },
+              ),
+            ),
+          ],
         ),
       ),
     );
