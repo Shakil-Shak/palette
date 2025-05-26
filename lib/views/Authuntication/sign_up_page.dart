@@ -1,39 +1,39 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:palette/views/res/image_path.dart';
-import 'package:palette/views/Authuntication/sign_in_page.dart';
-import 'package:palette/views/res/colors.dart';
-import 'package:palette/views/res/commonWidgets.dart';
+import 'package:palette/controller/auth_controller.dart';
+import '../res/colors.dart';
+import '../res/commonWidgets.dart';
+import '../res/image_path.dart';
+import 'sign_in_page.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class SignUpPage extends StatelessWidget {
+  SignUpPage({super.key});
 
-  @override
-  State<SignUpPage> createState() => _SignUpPageState();
-}
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController userIdController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
-class _SignUpPageState extends State<SignUpPage> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController userIdController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  final ValueNotifier<bool> isPasswordVisible = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> isConfirmPasswordVisible =
+      ValueNotifier<bool>(true);
 
-  bool isPasswordVisible = true;
-  bool isConfirmPasswordVisible = true;
+  late final AuthController authController;
 
   @override
   Widget build(BuildContext context) {
+    authController = Get.put(AuthController());
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Image.asset(
-                AppAssetsPath.logo,
-                height: 150,
-              ),
+              Image.asset(AppAssetsPath.logo, height: 150),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -52,8 +52,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 32),
-
-              // Email
               commonTextfieldWithTitle(
                 "Email",
                 emailController,
@@ -61,9 +59,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 assetIconPath: AppAssetsPath.email,
               ),
               const SizedBox(height: 16),
-
-              // User Name
-
               commonTextfieldWithTitle(
                 "User Name",
                 userIdController,
@@ -71,56 +66,81 @@ class _SignUpPageState extends State<SignUpPage> {
                 assetIconPath: AppAssetsPath.person,
               ),
               const SizedBox(height: 16),
-
-              // Password
-              commonTextfieldWithTitle(
-                "Password",
-                passwordController,
-                hintText: "Password",
-                assetIconPath: AppAssetsPath.lock,
-                isPasswordVisible: isPasswordVisible,
-                issuffixIconVisible: true,
-                changePasswordVisibility: () {
-                  setState(() {
-                    isPasswordVisible = !isPasswordVisible;
-                  });
+              ValueListenableBuilder<bool>(
+                valueListenable: isPasswordVisible,
+                builder: (context, visible, _) {
+                  return commonTextfieldWithTitle(
+                    "Password",
+                    passwordController,
+                    hintText: "Password",
+                    assetIconPath: AppAssetsPath.lock,
+                    isPasswordVisible: visible,
+                    issuffixIconVisible: true,
+                    changePasswordVisibility: () {
+                      isPasswordVisible.value = !visible;
+                    },
+                  );
                 },
               ),
               const SizedBox(height: 16),
-
-              // Confirm Password
-              commonTextfieldWithTitle(
-                "Confirm Password",
-                confirmPasswordController,
-                hintText: "Confirm password",
-                assetIconPath: AppAssetsPath.lock,
-                isPasswordVisible: isConfirmPasswordVisible,
-                issuffixIconVisible: true,
-                changePasswordVisibility: () {
-                  setState(() {
-                    isConfirmPasswordVisible = !isConfirmPasswordVisible;
-                  });
+              ValueListenableBuilder<bool>(
+                valueListenable: isConfirmPasswordVisible,
+                builder: (context, visible, _) {
+                  return commonTextfieldWithTitle(
+                    "Confirm Password",
+                    confirmPasswordController,
+                    hintText: "Confirm password",
+                    assetIconPath: AppAssetsPath.lock,
+                    isPasswordVisible: visible,
+                    issuffixIconVisible: true,
+                    changePasswordVisibility: () {
+                      isConfirmPasswordVisible.value = !visible;
+                    },
+                  );
                 },
               ),
               const SizedBox(height: 16),
-
               const SizedBox(height: 20),
+              Obx(() {
+                if (authController.isLoading.value) {
+                  return const CircularProgressIndicator();
+                }
+                return commonButton(
+                  "Sign Up",
+                  onTap: () {
+                    final fullName = userIdController.text.trim();
+                    final email = emailController.text.trim();
+                    final password = passwordController.text.trim();
+                    final confirmPassword =
+                        confirmPasswordController.text.trim();
 
-              // Sign Up Button
-              commonButton(
-                "Sign Up",
-                onTap: () {
-                  navigateToPage(SignInPage());
-                },
-              ),
+                    if (password != confirmPassword) {
+                      commonSnackbar(context, "Passwords do not match");
+                      return;
+                    }
+                    if (email.isEmpty || fullName.isEmpty || password.isEmpty) {
+                      commonSnackbar(context, "Please fill all fields");
+                      return;
+                    }
+
+                    authController.signUp(fullName, email, password);
+                  },
+                );
+              }),
+              Obx(() {
+                if (authController.errorMessage.isNotEmpty) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    commonSnackbar(context, authController.errorMessage.value,
+                        backgroundColor: Colors.red);
+                    authController.errorMessage.value = '';
+                  });
+                }
+                return const SizedBox.shrink();
+              }),
               const SizedBox(height: 20),
-
-              // Divider Text
               commonText("or continue with",
                   size: 14, color: AppColors.black, isBold: true),
               const SizedBox(height: 20),
-
-              // Google Sign In
               GestureDetector(
                 onTap: () {
                   // TODO: Google Sign Up
@@ -140,8 +160,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 30),
-
-              // Already have an account
               RichText(
                 text: TextSpan(
                   text: "Already have an account? ",

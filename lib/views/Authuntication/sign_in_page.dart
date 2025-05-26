@@ -1,80 +1,91 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:palette/views/res/image_path.dart';
-import 'package:palette/views/Authuntication/forget_password_page.dart';
-import 'package:palette/views/Authuntication/sign_up_page.dart';
-import 'package:palette/views/res/colors.dart';
-import 'package:palette/views/res/commonWidgets.dart';
-import 'package:palette/views/root_page.dart';
+import 'package:palette/controller/auth_controller.dart';
+import '../res/colors.dart';
+import '../res/commonWidgets.dart';
+import '../res/image_path.dart';
+import 'forget_password_page.dart';
+import 'sign_up_page.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({super.key});
+class SignInPage extends StatelessWidget {
+  SignInPage({super.key});
 
-  @override
-  State<SignInPage> createState() => _SignInPageState();
-}
+  final TextEditingController emailController =
+      TextEditingController(text: "admin@gmail.com");
+  final TextEditingController passwordController =
+      TextEditingController(text: "hello123");
 
-class _SignInPageState extends State<SignInPage> {
-  bool isRememberMeChecked = false;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  bool ispasswordVisible = false;
+  final ValueNotifier<bool> isPasswordVisible = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isRememberMeChecked = ValueNotifier<bool>(false);
+
+  late final AuthController authController;
+
   @override
   Widget build(BuildContext context) {
+    authController = Get.put(AuthController());
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Image.asset(
-                AppAssetsPath.logo,
-                height: 150,
-              ),
+              Image.asset(AppAssetsPath.logo, height: 150),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
                     Expanded(
-                        child: FittedBox(
-                            child: commonText("Sign in Your Account",
-                                isBold: true))),
+                      child: FittedBox(
+                          child:
+                              commonText("Sign in Your Account", isBold: true)),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 32,
-              ),
+              const SizedBox(height: 32),
               commonTextfieldWithTitle(
-                  "Email",
-                  hintText: "Email",
-                  emailController,
-                  assetIconPath: AppAssetsPath.email),
-              SizedBox(
-                height: 16,
+                "Email",
+                hintText: "Email",
+                emailController,
+                assetIconPath: AppAssetsPath.email,
               ),
-              commonTextfieldWithTitle("Password",
-                  hintText: "Password",
-                  isPasswordVisible: ispasswordVisible,
-                  issuffixIconVisible: true, changePasswordVisibility: () {
-                ispasswordVisible = !ispasswordVisible;
-                setState(() {});
-              }, passwordController, assetIconPath: AppAssetsPath.lock),
+              const SizedBox(height: 16),
+              ValueListenableBuilder<bool>(
+                valueListenable: isPasswordVisible,
+                builder: (context, visible, _) {
+                  return commonTextfieldWithTitle(
+                    "Password",
+                    hintText: "Password",
+                    isPasswordVisible: visible,
+                    issuffixIconVisible: true,
+                    changePasswordVisibility: () {
+                      isPasswordVisible.value = !visible;
+                    },
+                    passwordController,
+                    assetIconPath: AppAssetsPath.lock,
+                  );
+                },
+              ),
               Row(
                 children: [
-                  Checkbox(
-                    value: isRememberMeChecked,
-                    fillColor:
-                        MaterialStateProperty.resolveWith<Color>((states) {
-                      if (states.contains(MaterialState.selected)) {
-                        return AppColors.primary; // Your custom selected color
-                      }
-                      return Colors.transparent; // Unselected color
-                    }),
-                    onChanged: (value) {
-                      isRememberMeChecked = !isRememberMeChecked;
-                      setState(() {});
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isRememberMeChecked,
+                    builder: (context, checked, _) {
+                      return Checkbox(
+                        value: checked,
+                        fillColor:
+                            MaterialStateProperty.resolveWith<Color>((states) {
+                          if (states.contains(MaterialState.selected))
+                            return AppColors.primary;
+                          return Colors.transparent;
+                        }),
+                        onChanged: (value) {
+                          isRememberMeChecked.value = !checked;
+                        },
+                      );
                     },
                   ),
                   commonText("Remember me",
@@ -82,14 +93,36 @@ class _SignInPageState extends State<SignInPage> {
                 ],
               ),
               const SizedBox(height: 20),
+              Obx(() {
+                if (authController.isLoading.value)
+                  return const CircularProgressIndicator();
 
-              // Sign In Button
-              commonButton(
-                onTap: () {
-                  navigateToPage(RootPage());
-                },
-                "Sign In",
-              ),
+                return commonButton(
+                  onTap: () {
+                    final email = emailController.text.trim();
+                    final password = passwordController.text.trim();
+
+                    if (email.isEmpty || password.isEmpty) {
+                      commonSnackbar(
+                          context, "Please enter email and password");
+                      return;
+                    }
+
+                    authController.signIn(email, password);
+                  },
+                  "Sign In",
+                );
+              }),
+              Obx(() {
+                if (authController.errorMessage.isNotEmpty) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    commonSnackbar(context, authController.errorMessage.value,
+                        backgroundColor: Colors.red);
+                    authController.errorMessage.value = '';
+                  });
+                }
+                return const SizedBox.shrink();
+              }),
               const SizedBox(height: 10),
               InkWell(
                 onTap: () {
@@ -98,17 +131,14 @@ class _SignInPageState extends State<SignInPage> {
                 child: commonText("Forgot the password?",
                     size: 14, color: AppColors.black, isBold: true),
               ),
-
-              const SizedBox(
-                height: 30,
-              ),
+              const SizedBox(height: 30),
               commonText("or continue with",
                   size: 14, color: AppColors.black, isBold: true),
               const SizedBox(height: 20),
-
-              // Google Sign In Button
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  // TODO: Add Google Sign In logic
+                },
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -123,10 +153,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ),
               ),
-
-              const SizedBox(
-                height: 30,
-              ),
+              const SizedBox(height: 30),
               RichText(
                 text: TextSpan(
                   text: "Don’t have an account? ",

@@ -152,6 +152,17 @@ void navigateToPage(
   }
 }
 
+void commonSnackbar(BuildContext context, String message,
+    {Color? backgroundColor, Duration duration = const Duration(seconds: 3)}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: backgroundColor ?? Colors.redAccent,
+      duration: duration,
+    ),
+  );
+}
+
 Widget commonButton(
   String title, {
   Color color = AppColors.primary,
