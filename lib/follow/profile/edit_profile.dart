@@ -17,8 +17,8 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController nameController =
       TextEditingController(text: "Sarah Johnson");
-  final TextEditingController phoneController =
-      TextEditingController(text: "+1 111 467 378 399");
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController detailsController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             commonTextfieldWithTitle(
               "Phone Number",
               hintText: "123456789",
-              nameController,
+              phoneController,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            commonTextfieldWithTitle(
+              "My Details",
+              maxLine: 5,
+              hintText: "",
+              detailsController,
             ),
 
             const SizedBox(height: 10),

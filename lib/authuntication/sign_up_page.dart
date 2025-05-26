@@ -62,11 +62,12 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               const SizedBox(height: 16),
 
-              // User ID
+              // User Name
+
               commonTextfieldWithTitle(
-                "User ID",
+                "User Name",
                 userIdController,
-                hintText: "User ID",
+                hintText: "User Name",
                 assetIconPath: AppAssetsPath.person,
               ),
               const SizedBox(height: 16),

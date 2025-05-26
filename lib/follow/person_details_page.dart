@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:palette/colors.dart';
 import 'package:palette/commonDesigns.dart';
 import 'package:palette/commonWidgets.dart';
+import 'package:palette/follow/badges.dart';
 import 'package:palette/follow/follower.dart';
 import 'package:palette/follow/following.dart';
 import 'package:palette/follow/logs.dart';
@@ -15,6 +16,29 @@ class PersonDetailsScreen extends StatefulWidget {
 }
 
 class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
+  final List badges = [
+    {
+      "image":
+          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
+      "name": "Mixologist"
+    },
+    {
+      "image":
+          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
+      "name": "Sweet Tooth"
+    },
+    {
+      "image":
+          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
+      "name": "Taco Titan"
+    },
+    {
+      "image":
+          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
+      "name": "Pizza Pro"
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,9 +127,36 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           child: profileStat("30", "Logs")),
                     ],
                   ),
+
+                  SizedBox(height: 24),
+
+                  // Badges Section
+                  sectionHeader(
+                    "Badges",
+                    ontap: () {
+                      navigateToPage(BadgesScreen());
+                    },
+                  ),
+                  SizedBox(height: 12),
+                  SizedBox(
+                    height: 100,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: badges.length,
+                      separatorBuilder: (_, __) => SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        return badgesCard(
+                          imageUrl: badges[index]['image'],
+                          name: badges[index]['name'],
+                        );
+                      },
+                    ),
+                  ),
+
                   SizedBox(
                     height: 16,
                   ),
+
                   Row(
                     children: [
                       commonText("Stats", size: 18, isBold: true),
@@ -160,6 +211,16 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
         commonText(count, size: 18, isBold: true),
         SizedBox(height: 4),
         commonText(label, size: 14, color: AppColors.black, isBold: true),
+      ],
+    );
+  }
+
+  Widget sectionHeader(String title, {required Function()? ontap}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        commonText(title, size: 16, isBold: true),
+        InkWell(onTap: ontap, child: commonText("View All", isBold: true)),
       ],
     );
   }
