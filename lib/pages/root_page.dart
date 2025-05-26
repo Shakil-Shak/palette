@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/explore/explore.dart';
-import 'package:palette/pages/follow/feed.dart';
-import 'package:palette/pages/follow/profile.dart';
+import 'package:palette/pages/explore/explore_page.dart';
+import 'package:palette/pages/follow/feed_page.dart';
+import 'package:palette/pages/follow/profile_page.dart';
 import 'package:palette/pages/home/home_page.dart';
 
 class RootPage extends StatefulWidget {

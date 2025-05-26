@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/badges.dart';
-import 'package:palette/pages/follow/follower.dart';
-import 'package:palette/pages/follow/following.dart';
-import 'package:palette/pages/follow/logs.dart';
-import 'package:palette/pages/follow/post_details.dart';
+import 'package:palette/pages/follow/badges_page.dart';
+import 'package:palette/pages/follow/follower_page.dart';
+import 'package:palette/pages/follow/following_page.dart';
+import 'package:palette/pages/follow/logs_page.dart';
+import 'package:palette/pages/follow/post_details_page.dart';
 
 class PersonDetailsScreen extends StatefulWidget {
   const PersonDetailsScreen({super.key});

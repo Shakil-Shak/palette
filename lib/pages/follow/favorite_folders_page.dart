@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/favorites.dart';
+import 'package:palette/pages/follow/favorites_page.dart';
 
 class FavoriteFoldersPage extends StatelessWidget {
   FavoriteFoldersPage({super.key});

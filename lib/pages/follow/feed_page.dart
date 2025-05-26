@@ -3,7 +3,7 @@ import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 import 'package:palette/pages/follow/person_details_page.dart';
-import 'package:palette/pages/follow/post_details.dart';
+import 'package:palette/pages/follow/post_details_page.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});

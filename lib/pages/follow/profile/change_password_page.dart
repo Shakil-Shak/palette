@@ -3,7 +3,7 @@ import 'package:get/get.dart'; // Import GetX
 import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart'; // Assuming commonWidgets.dart includes commonTextfieldWithTitle, commonButton, etc.
-import 'package:palette/pages/controllers/ChangePasswordController.dart'; // Assuming this is the controller for change password functionality.
+import 'package:palette/controllers/ChangePasswordController.dart'; // Assuming this is the controller for change password functionality.
 
 class ChangePasswordScreen extends StatelessWidget {
   final ChangePasswordController controller =

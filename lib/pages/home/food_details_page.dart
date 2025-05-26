@@ -3,8 +3,8 @@ import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/home/give_review.dart';
-import 'package:palette/pages/home/resturant_details.dart';
+import 'package:palette/pages/home/give_review_page.dart';
+import 'package:palette/pages/home/resturant_details_page.dart';
 import 'package:palette/pages/home/review_page.dart';
 
 class FoodDetailsPage extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/home/food_details.dart';
+import 'package:palette/pages/home/food_details_page.dart';
 import 'package:palette/pages/home/notifications_page.dart';
 
 class HomePage extends StatelessWidget {

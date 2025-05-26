@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/badges.dart';
-import 'package:palette/pages/follow/challenges.dart';
+import 'package:palette/pages/follow/badges_page.dart';
+import 'package:palette/pages/follow/challenges_page.dart';
 import 'package:palette/pages/follow/favorite_folders_page.dart';
-import 'package:palette/pages/follow/follower.dart';
-import 'package:palette/pages/follow/following.dart';
-import 'package:palette/pages/follow/my_palette.dart';
-import 'package:palette/pages/follow/profile/profile_settings.dart';
-import 'package:palette/pages/follow/top_rated_iteams.dart';
-import 'package:palette/pages/model/challenge_data_model.dart';
+import 'package:palette/pages/follow/follower_page.dart';
+import 'package:palette/pages/follow/following_page.dart';
+import 'package:palette/pages/follow/my_palette_page.dart';
+import 'package:palette/pages/follow/profile/profile_settings_page.dart';
+import 'package:palette/pages/follow/top_rated_iteams_page.dart';
+import 'package:palette/model/challenge_data_model.dart';
 
 class ProfileScreen extends StatelessWidget {
   final List badges = [

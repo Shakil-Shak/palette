@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/profile/change_password.dart';
-import 'package:palette/pages/follow/profile/edit_profile.dart';
-import 'package:palette/pages/follow/profile/help_center.dart';
-import 'package:palette/pages/follow/profile/privacy_policy.dart';
-import 'package:palette/pages/follow/profile/terms_and_condition.dart';
+import 'package:palette/pages/follow/profile/change_password_page.dart';
+import 'package:palette/pages/follow/profile/edit_profile_page.dart';
+import 'package:palette/pages/follow/profile/help_center_page.dart';
+import 'package:palette/pages/follow/profile/privacy_policy_page.dart';
+import 'package:palette/pages/follow/profile/terms_and_condition_page.dart';
 
 class ProfileSettingsScreen extends StatelessWidget {
   ProfileSettingsScreen({super.key});

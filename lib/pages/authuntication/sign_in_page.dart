@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:palette/pages/res/image_path.dart';
-import 'package:palette/pages/authuntication/forget_password.dart';
+import 'package:palette/pages/authuntication/forget_password_page.dart';
 import 'package:palette/pages/authuntication/sign_up_page.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';

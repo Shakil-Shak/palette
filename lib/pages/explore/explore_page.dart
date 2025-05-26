@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
-import 'package:palette/pages/home/food_details.dart';
-import 'package:palette/pages/home/resturant_details.dart';
+import 'package:palette/pages/home/food_details_page.dart';
+import 'package:palette/pages/home/resturant_details_page.dart';
 
 import '../res/commonWidgets.dart';
 

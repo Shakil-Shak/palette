@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/model/challenge_data_model.dart';
+import 'package:palette/model/challenge_data_model.dart';
 
 class ChallengesScreen extends StatelessWidget {
   final List<ChallengeData> challenges = [

@@ -4,7 +4,7 @@ import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 import 'package:palette/pages/home/all_photo_page.dart';
-import 'package:palette/pages/home/food_details.dart';
+import 'package:palette/pages/home/food_details_page.dart';
 import 'package:palette/pages/home/menu_page.dart';
 import 'package:palette/pages/home/review_page.dart';
 
