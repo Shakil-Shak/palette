@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:palette/colors.dart';
-import 'package:palette/intro/splash_page.dart';
+import 'package:palette/pages/res/colors.dart';
+import 'package:palette/pages/intro/splash_page.dart';
 
 void main() {
   runApp(const MyApp());
