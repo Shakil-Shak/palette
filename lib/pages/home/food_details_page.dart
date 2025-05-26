@@ -5,7 +5,7 @@ import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 import 'package:palette/pages/home/give_review_page.dart';
 import 'package:palette/pages/home/resturant_details_page.dart';
-import 'package:palette/pages/home/review_page.dart';
+import 'package:palette/pages/home/reviews_page.dart';
 
 class FoodDetailsPage extends StatelessWidget {
   @override
@@ -117,7 +117,7 @@ class FoodDetailsPage extends StatelessWidget {
                       commonText("Reviews", size: 16, isBold: true),
                       TextButton(
                         onPressed: () {
-                          navigateToPage(ReviewPage());
+                          navigateToPage(ReviewsPage());
                         },
                         child: commonText("See All",
                             size: 14, color: AppColors.primary),

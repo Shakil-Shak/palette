@@ -3,14 +3,14 @@ import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 
-class ReviewPage extends StatefulWidget {
-  const ReviewPage({super.key});
+class ReviewsPage extends StatefulWidget {
+  const ReviewsPage({super.key});
 
   @override
-  State<ReviewPage> createState() => _ReviewPageState();
+  State<ReviewsPage> createState() => _ReviewsPageState();
 }
 
-class _ReviewPageState extends State<ReviewPage> {
+class _ReviewsPageState extends State<ReviewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

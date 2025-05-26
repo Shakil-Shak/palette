@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/profile/change_password_page.dart';
-import 'package:palette/pages/follow/profile/edit_profile_page.dart';
-import 'package:palette/pages/follow/profile/help_center_page.dart';
-import 'package:palette/pages/follow/profile/privacy_policy_page.dart';
-import 'package:palette/pages/follow/profile/terms_and_condition_page.dart';
+import 'package:palette/pages/Profile/change_password_page.dart';
+import 'package:palette/pages/Profile/edit_profile_page.dart';
+import 'package:palette/pages/Profile/help_center_page.dart';
+import 'package:palette/pages/Profile/privacy_policy_page.dart';
+import 'package:palette/pages/Profile/terms_and_condition_page.dart';
 
-class ProfileSettingsScreen extends StatelessWidget {
-  ProfileSettingsScreen({super.key});
+class ProfileSettingsPage extends StatelessWidget {
+  ProfileSettingsPage({super.key});
 
   // Mock Data for Profile Information
   final String profileImageUrl =
@@ -67,7 +67,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                             AppAssetsPath.edit_profile, "Edit Profile",
                             onTap: () {
                           // Navigate to Edit Profile Screen
-                          navigateToPage(EditProfileScreen());
+                          navigateToPage(EditProfilePage());
                         }),
                         const Divider(),
                         profileMenuItem(

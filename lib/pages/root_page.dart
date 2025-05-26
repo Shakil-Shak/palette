@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/explore/explore_page.dart';
-import 'package:palette/pages/follow/feed_page.dart';
-import 'package:palette/pages/follow/profile_page.dart';
-import 'package:palette/pages/home/home_page.dart';
+import 'package:palette/pages/Explore/explore_page.dart';
+import 'package:palette/pages/Feed/feed_page.dart';
+import 'package:palette/pages/Profile/profile_page.dart';
+import 'package:palette/pages/Home/home_page.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({Key? key}) : super(key: key);
@@ -29,8 +29,8 @@ class _RootPageState extends State<RootPage> {
   final List<Widget> pages = [
     HomePage(),
     ExploreScreen(),
-    FeedScreen(),
-    ProfileScreen()
+    FeedPage(),
+    ProfilePage()
   ];
 
   void _onTap(int index) {

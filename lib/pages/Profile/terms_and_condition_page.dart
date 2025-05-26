@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 
-import '../../res/commonWidgets.dart';
+import '../res/commonWidgets.dart';
 
 class TermsOfServiceScreen extends StatelessWidget {
   // Mock data for Terms of Service content

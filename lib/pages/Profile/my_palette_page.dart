@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:palette/pages/Feed/post_details_page.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
-import 'package:palette/pages/follow/add_new_log_page.dart';
-import 'package:palette/pages/follow/post_details.dart';
+import 'package:palette/pages/Profile/add_new_log_page.dart';
 
 import '../res/commonWidgets.dart';
 
-class MyPaletteScreen extends StatelessWidget {
+class MyPalettePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -115,7 +115,7 @@ class MyPaletteScreen extends StatelessWidget {
               ),
               onPressed: () {
                 // Navigate to Add New Log Page
-                navigateToPage(AddNewLogScreen());
+                navigateToPage(AddNewLogPage());
               },
               icon: Icon(
                 Icons.add,
@@ -142,7 +142,7 @@ class MyPaletteScreen extends StatelessWidget {
         return InkWell(
             onTap: () {
               // Navigate to Log Details Page
-              navigateToPage(PostDetailsScreen());
+              navigateToPage(PostDetailsPage());
             },
             child: buildLogsCardDesign());
       },

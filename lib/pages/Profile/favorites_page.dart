@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:palette/pages/Profile/favourite_items_page.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/favorites_page.dart';
 
-class FavoriteFoldersPage extends StatelessWidget {
-  FavoriteFoldersPage({super.key});
+class FavoritesPage extends StatelessWidget {
+  FavoritesPage({super.key});
 
   final Map<String, List<String>> favorites = {
     "Ramen's": [
@@ -86,7 +86,7 @@ class FavoriteFoldersPage extends StatelessWidget {
             final images = entry.value.take(4).toList();
             return InkWell(
               onTap: () {
-                navigateToPage(FavoritesPage());
+                navigateToPage(TopicWiseFavoritePage());
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

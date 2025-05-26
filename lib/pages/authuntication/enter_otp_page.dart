@@ -1,7 +1,7 @@
 import 'dart:async'; // <--- important for Timer
 import 'package:flutter/material.dart';
 import 'package:palette/pages/res/image_path.dart';
-import 'package:palette/pages/authuntication/new_password_page.dart';
+import 'package:palette/pages/Authuntication/new_password_page.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 
@@ -126,7 +126,7 @@ class _EnterOtpPageState extends State<EnterOtpPage> {
             commonButton(
               "Verify OTP",
               onTap: () {
-                navigateToPage(SetNewPasswordPage());
+                navigateToPage(NewPasswordPage());
               },
             ),
             const SizedBox(height: 40),

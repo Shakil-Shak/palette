@@ -7,14 +7,14 @@ import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  EditProfileScreen({super.key});
+class EditProfilePage extends StatefulWidget {
+  EditProfilePage({super.key});
 
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  _EditProfilePageState createState() => _EditProfilePageState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController nameController =
       TextEditingController(text: "Sarah Johnson");
   final TextEditingController phoneController = TextEditingController();

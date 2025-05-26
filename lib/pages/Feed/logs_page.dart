@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
-import 'package:palette/pages/follow/post_details_page.dart';
+import 'package:palette/pages/Feed/post_details_page.dart';
 
 import '../res/commonWidgets.dart';
 
-class LogsScreen extends StatelessWidget {
+class LogsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -27,7 +27,7 @@ class LogsScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return InkWell(
                     onTap: () {
-                      navigateToPage(PostDetailsScreen());
+                      navigateToPage(PostDetailsPage());
                     },
                     child: buildLogsCardDesign());
               },

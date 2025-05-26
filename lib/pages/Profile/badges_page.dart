@@ -3,14 +3,14 @@ import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 
-class BadgesScreen extends StatefulWidget {
-  const BadgesScreen({super.key});
+class BadgesPage extends StatefulWidget {
+  const BadgesPage({super.key});
 
   @override
-  State<BadgesScreen> createState() => _BadgesScreenState();
+  State<BadgesPage> createState() => _BadgesPageState();
 }
 
-class _BadgesScreenState extends State<BadgesScreen> {
+class _BadgesPageState extends State<BadgesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -3,10 +3,10 @@ import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/home/all_photo_page.dart';
+import 'package:palette/pages/home/photos_page.dart';
 import 'package:palette/pages/home/food_details_page.dart';
-import 'package:palette/pages/home/menu_page.dart';
-import 'package:palette/pages/home/review_page.dart';
+import 'package:palette/pages/home/menus_page.dart';
+import 'package:palette/pages/home/reviews_page.dart';
 
 class RestaurantDetailsPage extends StatefulWidget {
   @override
@@ -160,7 +160,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true),
                             commonButton("View all reviews", onTap: () {
-                              navigateToPage(ReviewPage());
+                              navigateToPage(ReviewsPage());
                             }, height: 40, width: 150, borderRadious: 8),
                             SizedBox(height: 16),
                           ],
@@ -251,7 +251,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
           height: 16,
         ),
         commonButton("View all menus", onTap: () {
-          navigateToPage(MenuScreen());
+          navigateToPage(MenusScreen());
         }, height: 40, width: 150, borderRadious: 8),
         SizedBox(height: 16),
         Container(

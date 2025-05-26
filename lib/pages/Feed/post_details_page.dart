@@ -3,14 +3,14 @@ import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 
-class PostDetailsScreen extends StatefulWidget {
-  const PostDetailsScreen({super.key});
+class PostDetailsPage extends StatefulWidget {
+  const PostDetailsPage({super.key});
 
   @override
-  State<PostDetailsScreen> createState() => _PostDetailsScreenState();
+  State<PostDetailsPage> createState() => _PostDetailsPageState();
 }
 
-class _PostDetailsScreenState extends State<PostDetailsScreen> {
+class _PostDetailsPageState extends State<PostDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

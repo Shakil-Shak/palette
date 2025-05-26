@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:palette/pages/res/image_path.dart';
-import 'package:palette/pages/authuntication/sign_in_page.dart';
+import 'package:palette/pages/Authuntication/sign_in_page.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 
-class SetNewPasswordPage extends StatefulWidget {
-  const SetNewPasswordPage({super.key});
+class NewPasswordPage extends StatefulWidget {
+  const NewPasswordPage({super.key});
 
   @override
-  State<SetNewPasswordPage> createState() => _SetNewPasswordPageState();
+  State<NewPasswordPage> createState() => _NewPasswordPageState();
 }
 
-class _SetNewPasswordPageState extends State<SetNewPasswordPage> {
+class _NewPasswordPageState extends State<NewPasswordPage> {
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   bool isNewPasswordVisible = false;

@@ -4,14 +4,14 @@ import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 import 'package:palette/pages/home/food_details_page.dart';
 
-class MenuScreen extends StatefulWidget {
-  const MenuScreen({super.key});
+class MenusScreen extends StatefulWidget {
+  const MenusScreen({super.key});
 
   @override
-  State<MenuScreen> createState() => _MenuScreenState();
+  State<MenusScreen> createState() => _MenusScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen> {
+class _MenusScreenState extends State<MenusScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

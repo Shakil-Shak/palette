@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:palette/pages/res/image_path.dart';
-import 'package:palette/pages/authuntication/sign_in_page.dart';
+import 'package:palette/pages/Authuntication/sign_in_page.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 

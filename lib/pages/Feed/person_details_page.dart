@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/badges_page.dart';
-import 'package:palette/pages/follow/follower_page.dart';
-import 'package:palette/pages/follow/following_page.dart';
-import 'package:palette/pages/follow/logs_page.dart';
-import 'package:palette/pages/follow/post_details_page.dart';
+import 'package:palette/pages/Profile/badges_page.dart';
+import 'package:palette/pages/Feed/followers_page.dart';
+import 'package:palette/pages/Feed/following_page.dart';
+import 'package:palette/pages/Feed/logs_page.dart';
+import 'package:palette/pages/Feed/post_details_page.dart';
 
-class PersonDetailsScreen extends StatefulWidget {
-  const PersonDetailsScreen({super.key});
+class PersonDetailsPage extends StatefulWidget {
+  const PersonDetailsPage({super.key});
 
   @override
-  State<PersonDetailsScreen> createState() => _PersonDetailsScreenState();
+  State<PersonDetailsPage> createState() => _PersonDetailsPageState();
 }
 
-class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
+class _PersonDetailsPageState extends State<PersonDetailsPage> {
   final List badges = [
     {
       "image":
@@ -122,7 +122,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       ),
                       InkWell(
                           onTap: () {
-                            navigateToPage(LogsScreen());
+                            navigateToPage(LogsPage());
                           },
                           child: profileStat("30", "Logs")),
                     ],
@@ -134,7 +134,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   sectionHeader(
                     "Badges",
                     ontap: () {
-                      navigateToPage(BadgesScreen());
+                      navigateToPage(BadgesPage());
                     },
                   ),
                   SizedBox(height: 12),
@@ -191,7 +191,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     itemBuilder: (context, index) {
                       return InkWell(
                           onTap: () {
-                            navigateToPage(PostDetailsScreen());
+                            navigateToPage(PostDetailsPage());
                           },
                           child: buildPostCardDesign());
                     },

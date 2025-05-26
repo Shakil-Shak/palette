@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/person_details_page.dart';
-import 'package:palette/pages/follow/post_details_page.dart';
+import 'package:palette/pages/Feed/person_details_page.dart';
+import 'package:palette/pages/Feed/post_details_page.dart';
 
-class FeedScreen extends StatefulWidget {
-  const FeedScreen({super.key});
+class FeedPage extends StatefulWidget {
+  const FeedPage({super.key});
 
   @override
-  State<FeedScreen> createState() => _FeedScreenState();
+  State<FeedPage> createState() => _FeedPageState();
 }
 
-class _FeedScreenState extends State<FeedScreen> {
+class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +47,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        navigateToPage(PersonDetailsScreen());
+                        navigateToPage(PersonDetailsPage());
                       },
                       child: profileFolllowdesign(
                           imageUrl:
@@ -72,7 +72,7 @@ class _FeedScreenState extends State<FeedScreen> {
                 itemBuilder: (context, index) {
                   return InkWell(
                       onTap: () {
-                        navigateToPage(PostDetailsScreen());
+                        navigateToPage(PostDetailsPage());
                       },
                       child: buildPostCardDesign());
                 },

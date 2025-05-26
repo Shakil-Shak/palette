@@ -4,7 +4,7 @@ import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 
-class AddNewLogScreen extends StatelessWidget {
+class AddNewLogPage extends StatelessWidget {
   final TextEditingController restaurantController = TextEditingController();
   final TextEditingController itemController = TextEditingController();
   final TextEditingController notesController = TextEditingController();

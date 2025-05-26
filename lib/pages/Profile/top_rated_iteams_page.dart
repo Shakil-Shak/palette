@@ -3,7 +3,7 @@ import 'package:palette/pages/res/image_path.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 
-class TopRatedItemsScreen extends StatelessWidget {
+class TopRatedItemsPage extends StatelessWidget {
   final List<TopRatedItem> items = List.generate(
     10,
     (index) => TopRatedItem(

@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
-import 'package:palette/pages/follow/badges_page.dart';
-import 'package:palette/pages/follow/challenges_page.dart';
-import 'package:palette/pages/follow/favorite_folders_page.dart';
-import 'package:palette/pages/follow/follower_page.dart';
-import 'package:palette/pages/follow/following_page.dart';
-import 'package:palette/pages/follow/my_palette_page.dart';
-import 'package:palette/pages/follow/profile/profile_settings_page.dart';
-import 'package:palette/pages/follow/top_rated_iteams_page.dart';
+import 'package:palette/pages/Profile/badges_page.dart';
+import 'package:palette/pages/Profile/challenges_page.dart';
+import 'package:palette/pages/Profile/favorites_page.dart';
+import 'package:palette/pages/Feed/followers_page.dart';
+import 'package:palette/pages/Feed/following_page.dart';
+import 'package:palette/pages/Profile/my_palette_page.dart';
+import 'package:palette/pages/Profile/profile_settings_page.dart';
+import 'package:palette/pages/Profile/top_rated_iteams_page.dart';
 import 'package:palette/model/challenge_data_model.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfilePage extends StatelessWidget {
   final List badges = [
     {
       "image":
@@ -93,7 +93,7 @@ class ProfileScreen extends StatelessWidget {
                     text: "Profile Settings",
                     ontap: () {
                       // Navigate to Profile Settings Page
-                      navigateToPage(ProfileSettingsScreen());
+                      navigateToPage(ProfileSettingsPage());
                     },
                     width: 110,
                   ),
@@ -134,7 +134,7 @@ class ProfileScreen extends StatelessWidget {
               sectionHeader(
                 "Badges",
                 ontap: () {
-                  navigateToPage(BadgesScreen());
+                  navigateToPage(BadgesPage());
                 },
               ),
               SizedBox(height: 12),
@@ -157,7 +157,7 @@ class ProfileScreen extends StatelessWidget {
               // Current Challenges
               sectionHeader("Current Challenges", ontap: () {
                 // Navigate to Challenges Page
-                navigateToPage(ChallengesScreen());
+                navigateToPage(ChallengesPage());
               }),
 
               SizedBox(height: 12),
@@ -176,21 +176,21 @@ class ProfileScreen extends StatelessWidget {
                 "My Palette",
                 ontap: () {
                   // Navigate to My Palette Page
-                  navigateToPage(MyPaletteScreen());
+                  navigateToPage(MyPalettePage());
                 },
               ),
               menuItem(
                 "Top Rated Items",
                 ontap: () {
                   // Navigate to Top Rated Items Page
-                  navigateToPage(TopRatedItemsScreen());
+                  navigateToPage(TopRatedItemsPage());
                 },
               ),
               menuItem(
                 "Favorites",
                 ontap: () {
                   // Navigate to Favorites Page
-                  navigateToPage(FavoriteFoldersPage());
+                  navigateToPage(FavoritesPage());
                 },
               ),
             ],

@@ -4,7 +4,7 @@ import 'package:palette/pages/res/colors.dart';
 import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 import 'package:palette/pages/home/food_details_page.dart';
-import 'package:palette/pages/home/notifications_page.dart';
+import 'package:palette/pages/Notification/notifications_page.dart';
 
 class HomePage extends StatelessWidget {
   final controller = TextEditingController(); // If needed for search

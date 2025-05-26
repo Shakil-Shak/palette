@@ -4,7 +4,7 @@ import 'package:palette/pages/res/commonDesigns.dart';
 import 'package:palette/pages/res/commonWidgets.dart';
 import 'package:palette/model/challenge_data_model.dart';
 
-class ChallengesScreen extends StatelessWidget {
+class ChallengesPage extends StatelessWidget {
   final List<ChallengeData> challenges = [
     ChallengeData(
         title: "Breakfast Champion",
