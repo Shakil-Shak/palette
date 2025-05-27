@@ -9,6 +9,7 @@ class ApiEndpoints {
   static const String verifyOtp = 'auth/verify-otp';
   static const String resetPassword = 'auth/reset-password';
   static const String changePassword = 'auth/change-password';
+  static const String resendOtp = 'auth/resend-otp';
 
   // User endpoints
   static const String updateProfile = 'users/update-profile';

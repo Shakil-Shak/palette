@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:palette/controller/auth_controller.dart';
@@ -6,13 +8,12 @@ import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
 class EnterOtpPage extends StatelessWidget {
-  EnterOtpPage({super.key});
+  EnterOtpPage({super.key, required this.isEmailVerified, required this.email});
+  bool isEmailVerified;
+  String email;
 
   final List<TextEditingController> otpControllers =
       List.generate(6, (_) => TextEditingController());
-
-  final TextEditingController emailController =
-      TextEditingController(text: 'user@example.com'); // Pass real email here
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class EnterOtpPage extends StatelessWidget {
             Image.asset(AppAssetsPath.verified),
             const SizedBox(height: 40),
             commonText(
-              "Code has been sent to\n${emailController.text}",
+              "Code has been sent to\n${email}",
               size: 21,
               isBold: true,
               textAlign: TextAlign.center,
@@ -68,7 +69,8 @@ class EnterOtpPage extends StatelessWidget {
                             size: 14, color: AppColors.black, isBold: true),
                         InkWell(
                           onTap: () {
-                            authController.resendOtp(emailController.text);
+                            authController.resendOtp(email,
+                                isEmailVerification: isEmailVerified);
                           },
                           child: commonText(
                             "Resend Code",
@@ -95,7 +97,7 @@ class EnterOtpPage extends StatelessWidget {
                     commonSnackbar(context, "Please enter complete OTP");
                     return;
                   }
-                  authController.verifyOtp(emailController.text.trim(), otp);
+                  authController.verifyOtp(email, otp, isEmailVerified);
                 },
               );
             }),

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/auth_controller.dart';
 import 'package:palette/views/res/image_path.dart';
-import 'package:palette/views/Authuntication/enter_otp_page.dart';
-import 'package:palette/views/res/colors.dart';
-import 'package:palette/views/res/commonWidgets.dart';
+import '../res/colors.dart';
+import '../res/commonWidgets.dart';
 
-class ForgetPasswordPage extends StatefulWidget {
-  const ForgetPasswordPage({super.key});
+class ForgetPasswordPage extends StatelessWidget {
+  ForgetPasswordPage({super.key});
 
-  @override
-  State<ForgetPasswordPage> createState() => _ForgetPasswordPageState();
-}
+  final TextEditingController emailController = TextEditingController();
 
-class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
-  TextEditingController emailController = TextEditingController();
+  late final AuthController authController;
 
   @override
   Widget build(BuildContext context) {
+    authController = Get.put(AuthController());
+
     return Scaffold(
       appBar: AppBar(
           backgroundColor: AppColors.backgroundWhite,
@@ -28,38 +28,40 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
               AppAssetsPath.forgetLock,
             ),
             const SizedBox(height: 40),
-
-            // Title
             commonText(
               "Forgot Password?",
               size: 24,
               isBold: true,
             ),
             const SizedBox(height: 10),
-
-            // Subtitle
             commonText(
               "Enter your email to reset your password.",
               size: 16,
             ),
             const SizedBox(height: 30),
-
-            // Email Field
             commonTextfieldWithTitle(
               "Email",
               emailController,
               hintText: "Email",
               assetIconPath: AppAssetsPath.email,
             ),
-            Spacer(),
-
-            // Send Reset Link Button
-            commonButton(
-              "Next",
-              onTap: () {
-                navigateToPage(EnterOtpPage());
-              },
-            ),
+            const Spacer(),
+            Obx(() {
+              if (authController.isLoading.value) {
+                return const CircularProgressIndicator();
+              }
+              return commonButton(
+                "Next",
+                onTap: () {
+                  final email = emailController.text.trim();
+                  if (email.isEmpty) {
+                    commonSnackbar(context, "Please enter your email");
+                    return;
+                  }
+                  authController.sendForgetPasswordOtp(email);
+                },
+              );
+            }),
             const SizedBox(height: 40),
           ],
         ),

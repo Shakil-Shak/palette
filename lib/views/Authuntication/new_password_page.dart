@@ -1,24 +1,28 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/auth_controller.dart';
 import 'package:palette/views/res/image_path.dart';
-import 'package:palette/views/Authuntication/sign_in_page.dart';
-import 'package:palette/views/res/colors.dart';
-import 'package:palette/views/res/commonWidgets.dart';
+import '../res/colors.dart';
+import '../res/commonWidgets.dart';
 
-class NewPasswordPage extends StatefulWidget {
-  const NewPasswordPage({super.key});
+class NewPasswordPage extends StatelessWidget {
+  NewPasswordPage({super.key, required this.userEmail});
+  final String userEmail;
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
-  @override
-  State<NewPasswordPage> createState() => _NewPasswordPageState();
-}
-
-class _NewPasswordPageState extends State<NewPasswordPage> {
-  TextEditingController newPasswordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
   bool isNewPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
 
+  late final AuthController authController;
+
   @override
   Widget build(BuildContext context) {
+    authController = Get.put(AuthController());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundWhite,
@@ -28,49 +32,62 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           children: [
-            Image.asset(
-              AppAssetsPath.unlock,
-            ),
+            Image.asset(AppAssetsPath.unlock),
             const SizedBox(height: 30),
-
-            // Title
-            commonText(
-              "Create Your New Password",
-              size: 21,
-              isBold: true,
-            ),
-
+            commonText("Create Your New Password", size: 21, isBold: true),
             const SizedBox(height: 24),
-            commonTextfieldWithTitle("New Password", newPasswordController,
-                assetIconPath: AppAssetsPath.lock,
-                hintText: "New Password",
-                isPasswordVisible: isNewPasswordVisible,
-                changePasswordVisibility: () {
-              isNewPasswordVisible = !isNewPasswordVisible;
-              setState(() {});
-            }, issuffixIconVisible: true),
-            SizedBox(
-              height: 16,
-            ),
-            commonTextfieldWithTitle(
-                "Confirm Password", confirmPasswordController,
-                assetIconPath: AppAssetsPath.lock,
-                hintText: "Confirm Password",
-                isPasswordVisible: isConfirmPasswordVisible,
-                changePasswordVisibility: () {
-              isConfirmPasswordVisible = !isConfirmPasswordVisible;
-              setState(() {});
-            }, issuffixIconVisible: true),
-
+            Obx(() => commonTextfieldWithTitle(
+                  "New Password",
+                  newPasswordController,
+                  assetIconPath: AppAssetsPath.lock,
+                  hintText: "New Password",
+                  isPasswordVisible: authController.isLoading.value
+                      ? false
+                      : !isNewPasswordVisible,
+                  issuffixIconVisible: true,
+                  changePasswordVisibility: () {
+                    isNewPasswordVisible = !isNewPasswordVisible;
+                  },
+                )),
+            const SizedBox(height: 16),
+            Obx(() => commonTextfieldWithTitle(
+                  "Confirm Password",
+                  confirmPasswordController,
+                  assetIconPath: AppAssetsPath.lock,
+                  hintText: "Confirm Password",
+                  isPasswordVisible: authController.isLoading.value
+                      ? false
+                      : !isConfirmPasswordVisible,
+                  issuffixIconVisible: true,
+                  changePasswordVisibility: () {
+                    isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                  },
+                )),
             const Spacer(),
+            Obx(() {
+              if (authController.isLoading.value) {
+                return const CircularProgressIndicator();
+              }
+              return commonButton(
+                "Continue",
+                onTap: () {
+                  final newPassword = newPasswordController.text.trim();
+                  final confirmPassword = confirmPasswordController.text.trim();
 
-            // Send Reset Link Button
-            commonButton(
-              "Continue",
-              onTap: () {
-                navigateToPage(SignInPage());
-              },
-            ),
+                  if (newPassword.isEmpty || confirmPassword.isEmpty) {
+                    commonSnackbar(context, "Please fill both password fields");
+                    return;
+                  }
+
+                  if (newPassword != confirmPassword) {
+                    commonSnackbar(context, "Passwords do not match");
+                    return;
+                  }
+
+                  authController.resetPassword(userEmail, newPassword);
+                },
+              );
+            }),
             const SizedBox(height: 40),
           ],
         ),

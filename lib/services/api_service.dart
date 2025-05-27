@@ -11,6 +11,7 @@ class ApiService {
 
   Future<Map<String, String>> _getHeaders() async {
     final token = await _localStorageService.getToken();
+    log(token.toString());
 
     return {
       'Content-Type': 'application/json',

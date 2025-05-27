@@ -1,13 +1,17 @@
 // lib/controllers/auth_controller.dart
 import 'dart:async';
-
 import 'package:get/get.dart';
 import 'package:palette/models/email_verified_model.dart';
+import 'package:palette/models/forget_password_model.dart';
+import 'package:palette/models/otp_verified_model.dart';
 import 'package:palette/models/password_reset_model.dart';
 import 'package:palette/models/signin_model.dart';
 import 'package:palette/models/signup_model.dart';
 import 'package:palette/services/local_storage_service.dart';
 import 'package:palette/views/Authuntication/enter_otp_page.dart';
+import 'package:palette/views/Authuntication/new_password_page.dart';
+import 'package:palette/views/Authuntication/sign_in_page.dart';
+import 'package:palette/views/res/commonWidgets.dart';
 import 'package:palette/views/root_page.dart';
 import '../repositories/auth_repository.dart';
 
@@ -24,6 +28,7 @@ class AuthController extends GetxController {
   // Timer states for OTP resend
   var canResend = false.obs;
   var countdown = 55.obs;
+  var isResendOtp = false.obs;
   Timer? _timer;
 
   Future<void> signIn(String email, String password) async {
@@ -35,7 +40,7 @@ class AuthController extends GetxController {
       user.value = response;
       isLoading.value = false;
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        Get.to(RootPage());
+        navigateToPage(RootPage(), clearStack: true);
       } else {
         errorMessage.value = response.message;
       }
@@ -55,7 +60,10 @@ class AuthController extends GetxController {
       isLoading.value = false;
       if (response.statusCode >= 200 && response.statusCode < 300) {
         LocalStorageService().saveToken(response.data.signUpToken);
-        Get.to(EnterOtpPage());
+        navigateToPage(EnterOtpPage(
+          email: email,
+          isEmailVerified: true,
+        ));
       } else {
         otpErrorMessage.value = response.message;
       }
@@ -82,30 +90,57 @@ class AuthController extends GetxController {
     });
   }
 
-  // OTP verification
-  Future<void> verifyOtp(String email, String otp) async {
+  Future<void> resendOtp(String email,
+      {required bool isEmailVerification}) async {
     try {
-      isVerifyingOtp.value = true;
-      otpErrorMessage.value = '';
-      final EmailVerifiedResponse response =
-          await authRepository.verifyEmail(email, otp);
-      isVerifyingOtp.value = false;
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        Get.to(RootPage());
-      } else {
-        otpErrorMessage.value = response.message;
-      }
+      startOtpTimer();
+      authRepository.resendOtp(email);
+      isResendOtp.value = true;
     } catch (e) {
-      isVerifyingOtp.value = false;
       otpErrorMessage.value = e.toString();
     }
   }
 
-  Future<void> resendOtp(String email) async {
-    try {
-      startOtpTimer();
-    } catch (e) {
-      otpErrorMessage.value = e.toString();
+  // OTP verification
+  Future<void> verifyOtp(
+      String email, String otp, bool isEmailVarification) async {
+    if (isEmailVarification) {
+      try {
+        isVerifyingOtp.value = true;
+        otpErrorMessage.value = '';
+        final EmailVerifiedResponse response = await authRepository
+            .verifyEmail(email, otp, isResendPurpose: isResendOtp.value);
+        isVerifyingOtp.value = false;
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          navigateToPage(RootPage(), clearStack: true);
+          LocalStorageService().saveToken(response.accessToken);
+        } else {
+          otpErrorMessage.value = response.message;
+        }
+      } catch (e) {
+        isVerifyingOtp.value = false;
+        otpErrorMessage.value = e.toString();
+      }
+    } else {
+      try {
+        isVerifyingOtp.value = true;
+        otpErrorMessage.value = '';
+        final OtpVerifiedResponse response =
+            await authRepository.verifyForgetPasswordOtp(email, otp,
+                isResendPurpose: isResendOtp.value);
+        isVerifyingOtp.value = false;
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          LocalStorageService().saveToken(response.forgetPasswordToken);
+          navigateToPage(NewPasswordPage(
+            userEmail: email,
+          ));
+        } else {
+          otpErrorMessage.value = response.message;
+        }
+      } catch (e) {
+        isVerifyingOtp.value = false;
+        otpErrorMessage.value = e.toString();
+      }
     }
   }
 
@@ -117,6 +152,33 @@ class AuthController extends GetxController {
       final response = await authRepository.resetPassword(email, newPassword);
       resetPasswordResponse.value = response;
       isLoading.value = false;
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        navigateToPage(SignInPage());
+      } else {
+        otpErrorMessage.value = response.message;
+      }
+    } catch (e) {
+      isLoading.value = false;
+      errorMessage.value = e.toString();
+    }
+  }
+
+  Future<void> sendForgetPasswordOtp(String email) async {
+    var forgetPasswordOtpResponse = Rxn<ForgetPasswordOtpResponse>();
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+      final response = await authRepository.sendForgetPasswordOtp(email);
+      forgetPasswordOtpResponse.value = response;
+      isLoading.value = false;
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        navigateToPage(EnterOtpPage(
+          email: email,
+          isEmailVerified: false,
+        ));
+      } else {
+        errorMessage.value = response.message;
+      }
     } catch (e) {
       isLoading.value = false;
       errorMessage.value = e.toString();

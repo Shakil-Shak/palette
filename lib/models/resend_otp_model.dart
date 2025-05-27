@@ -1,18 +1,18 @@
-class PasswordResetResponse {
+class ResendOtpResponse {
   final String status;
   final int statusCode;
   final String message;
 
-  PasswordResetResponse({
+  ResendOtpResponse({
     required this.status,
     required this.statusCode,
     required this.message,
   });
 
-  factory PasswordResetResponse.fromJson(Map<String, dynamic> json) {
-    return PasswordResetResponse(
+  factory ResendOtpResponse.fromJson(Map<String, dynamic> json) {
+    return ResendOtpResponse(
       status: json['status'] ?? '',
-      statusCode: json['statusCode'] ?? '',
+      statusCode: int.tryParse(json['statusCode'].toString()) ?? 0,
       message: json['message'] ?? '',
     );
   }
