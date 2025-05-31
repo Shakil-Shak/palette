@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/repositories/user_repository.dart';
+import 'package:palette/services/api_service.dart';
+import 'package:palette/services/user_service.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
 import 'package:palette/views/res/commonWidgets.dart';
@@ -11,6 +15,8 @@ import 'package:palette/views/Profile/my_palette_page.dart';
 import 'package:palette/views/Profile/profile_settings_page.dart';
 import 'package:palette/views/Profile/top_rated_iteams_page.dart';
 import 'package:palette/models/challenge_data_model.dart';
+
+import '../../controller/user_controller.dart';
 
 class ProfilePage extends StatelessWidget {
   final List badges = [
@@ -92,7 +98,9 @@ class ProfilePage extends StatelessWidget {
                   commonSmallButton(
                     text: "Profile Settings",
                     ontap: () {
-                      // Navigate to Profile Settings Page
+                      Get.put(UserController(
+                          UserRepository(UserService(ApiService()))));
+
                       navigateToPage(ProfileSettingsPage());
                     },
                     width: 110,

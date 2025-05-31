@@ -1,26 +1,30 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:palette/controller/user_controller.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
-  TextEditingController currentPasswordController = TextEditingController();
-  TextEditingController newPasswordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-
-  bool isObscuredCurrent = true;
-  bool isObscuredNew = true;
-  bool isObscuredConfirm = true;
-
-  var loading = false;
-
   ChangePasswordScreen({super.key});
+
+  final TextEditingController currentPasswordController =
+      TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  final RxBool isObscuredCurrent = true.obs;
+  final RxBool isObscuredNew = true.obs;
+  final RxBool isObscuredConfirm = true.obs;
+
+  final UserController userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
+    // Replace with actual logged-in user email
+    final String userEmail = "tushar@gmail.com";
+
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: AppBar(
@@ -39,71 +43,93 @@ class ChangePasswordScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            // Current Password Field
             _buildPasswordField(
               "Enter Current Password",
               currentPasswordController,
               isObscured: isObscuredCurrent,
-              onVisibilityToggle: () {
-                isObscuredCurrent = !isObscuredCurrent;
-              },
+              onVisibilityToggle: () =>
+                  isObscuredCurrent.value = !isObscuredCurrent.value,
             ),
             const SizedBox(height: 12),
-
-            // New Password Field
             _buildPasswordField(
               "New Password",
               newPasswordController,
               isObscured: isObscuredNew,
-              onVisibilityToggle: () {
-                isObscuredNew = !isObscuredNew;
-              },
+              onVisibilityToggle: () =>
+                  isObscuredNew.value = !isObscuredNew.value,
             ),
             const SizedBox(height: 12),
-
-            // Confirm New Password Field
             _buildPasswordField(
               "Confirm New Password",
               confirmPasswordController,
               isObscured: isObscuredConfirm,
-              onVisibilityToggle: () {
-                isObscuredConfirm = !isObscuredConfirm;
-              },
+              onVisibilityToggle: () =>
+                  isObscuredConfirm.value = !isObscuredConfirm.value,
             ),
-            Spacer(),
+            const Spacer(),
+            Obx(() {
+              if (userController.isLoading.value) {
+                return const CircularProgressIndicator();
+              }
+              return commonButton(
+                "Update Password",
+                onTap: () {
+                  final currentPwd = currentPasswordController.text.trim();
+                  final newPwd = newPasswordController.text.trim();
+                  final confirmPwd = confirmPasswordController.text.trim();
 
-            // Update Password Button
-            commonButton(
-              "Update Password",
-              onTap: () {
-                // changePasswordApiCall();
-                Get.back();
-              },
-              isLoading: loading,
-            ),
+                  if (currentPwd.isEmpty ||
+                      newPwd.isEmpty ||
+                      confirmPwd.isEmpty) {
+                    commonSnackbar(context, "Please fill all password fields");
+                    return;
+                  }
+                  if (newPwd != confirmPwd) {
+                    commonSnackbar(context, "New passwords do not match");
+                    return;
+                  }
+
+                  userController
+                      .changePassword(currentPwd, newPwd, userEmail)
+                      .then((_) {
+                    if (userController.errorMessage.value.isEmpty) {
+                      commonSnackbar(context, "Password changed successfully",
+                          backgroundColor: Colors.green);
+                      Get.back(); // Close screen on success
+                    } else {
+                      commonSnackbar(context, userController.errorMessage.value,
+                          backgroundColor: Colors.red);
+                    }
+                  });
+                },
+                isLoading: userController.isLoading.value,
+              );
+            }),
           ],
         ),
       ),
     );
   }
 
-  // Builds the password field with visibility toggle
   Widget _buildPasswordField(
     String hintText,
     TextEditingController controller, {
-    required bool isObscured,
+    required RxBool isObscured,
     required VoidCallback onVisibilityToggle,
   }) {
-    return Obx(
-      () => Padding(
+    return Obx(() {
+      return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: commonTextfieldWithTitle(hintText, controller,
-            hintText: hintText,
-            isPasswordVisible: !isObscured,
-            changePasswordVisibility: onVisibilityToggle,
-            issuffixIconVisible: true,
-            assetIconPath: AppAssetsPath.lock),
-      ),
-    );
+        child: commonTextfieldWithTitle(
+          hintText,
+          controller,
+          hintText: hintText,
+          isPasswordVisible: !isObscured.value,
+          changePasswordVisibility: onVisibilityToggle,
+          issuffixIconVisible: true,
+          assetIconPath: AppAssetsPath.lock,
+        ),
+      );
+    });
   }
 }

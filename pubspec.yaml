@@ -38,6 +38,11 @@ dependencies:
   google_fonts: ^6.2.1
   shared_preferences: ^2.5.3
   flutter_bloc: ^9.1.1
+  image_picker: ^1.1.2
+  http: ^1.4.0
+  flutter_html: ^3.0.0
+  html_unescape: ^2.0.0
+  flutter_markdown: ^0.7.7+1
 
 dev_dependencies:
   flutter_test:

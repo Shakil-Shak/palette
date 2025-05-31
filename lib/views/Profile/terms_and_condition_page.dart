@@ -1,101 +1,97 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/StaticContentController.dart';
+import 'package:palette/repositories/StaticContentRepository.dart';
+import 'package:palette/services/StaticContentService.dart';
+import 'package:palette/services/api_service.dart';
 import 'package:palette/views/res/colors.dart';
+import 'package:palette/views/res/commonWidgets.dart';
 
-import '../res/commonWidgets.dart';
+class TermsAndServicesScreen extends StatefulWidget {
+  const TermsAndServicesScreen({super.key});
 
-class TermsOfServiceScreen extends StatelessWidget {
-  // Mock data for Terms of Service content
-  final List<Faq> termsOfServiceContent = [
-    Faq(
-        title: "Introduction",
-        content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-    Faq(
-        title: "User Responsibilities",
-        content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-    Faq(
-        title: "Privacy Policy",
-        content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-    Faq(
-        title: "Changes to Terms",
-        content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-    // Add more sections as needed
-  ];
+  @override
+  State<TermsAndServicesScreen> createState() => _TermsAndServicesScreenState();
+}
 
-  TermsOfServiceScreen({super.key});
+class _TermsAndServicesScreenState extends State<TermsAndServicesScreen> {
+  late StaticContentController staticContentController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final apiService = ApiService();
+    final staticContentService = StaticContentService(apiService);
+    final staticContentRepository =
+        StaticContentRepository(staticContentService);
+    staticContentController =
+        Get.put(StaticContentController(staticContentRepository));
+
+    // Fetch terms and conditions content
+    staticContentController.fetchStaticContent('terms-of-condition');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: AppBar(
-        backgroundColor: AppColors.primary, // Matches the design
+        backgroundColor: AppColors.primary,
         elevation: 0,
+        leading: commonBackButton(),
+        centerTitle: true,
         title: commonText(
-          "Terms of Service",
+          "Terms and Conditions",
           size: 21,
           isBold: true,
           color: AppColors.white,
         ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
-      bottomSheet: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 5,
-              spreadRadius: 2,
+      body: Obx(() {
+        if (staticContentController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (staticContentController.errorMessage.isNotEmpty) {
+          return Center(
+            child: commonText(
+              "Error: ${staticContentController.errorMessage.value}",
+              color: Colors.red,
             ),
-          ],
-        ),
-        child: ListView.builder(
-          itemCount: termsOfServiceContent.length,
-          itemBuilder: (context, index) {
-            Faq faq = termsOfServiceContent[index];
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildSectionTitle(faq.title ?? "Untitled"),
-                _buildSectionText(faq.content ?? "No content available."),
-                const SizedBox(height: 20),
-              ],
-            );
-          },
-        ),
-      ),
+          );
+        }
+
+        final content = staticContentController
+                .staticContentResponse.value?.attributes.content ??
+            'No content available';
+
+        return Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Markdown(
+            data: content,
+            selectable: true,
+            styleSheet:
+                MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+              p: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14),
+              h1: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+              h2: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+              strong: const TextStyle(fontWeight: FontWeight.bold),
+              listBullet: const TextStyle(fontSize: 14),
+            ),
+          ),
+        );
+      }),
     );
   }
-
-  Widget _buildSectionTitle(String title) {
-    return commonText(title, size: 16, isBold: true);
-  }
-
-  Widget _buildSectionText(String text) {
-    return commonText(
-      text,
-      size: 14,
-    );
-  }
-}
-
-// Mock class to represent FAQ structure
-class Faq {
-  final String? title;
-  final String? content;
-
-  Faq({this.title, this.content});
 }

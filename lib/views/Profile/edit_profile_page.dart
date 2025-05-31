@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:palette/controller/user_controller.dart';
+
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
@@ -11,14 +14,28 @@ class EditProfilePage extends StatefulWidget {
   EditProfilePage({super.key});
 
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController nameController =
-      TextEditingController(text: "Sarah Johnson");
+  final TextEditingController nameController = TextEditingController();
+
   final TextEditingController phoneController = TextEditingController();
+
   final TextEditingController detailsController = TextEditingController();
+
+  UserController controller = Get.find<UserController>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (controller.userProfile.value != null) {
+      nameController.text = controller.userProfile.value!.fullName;
+      phoneController.text = controller.userProfile.value!.phoneNumber;
+      detailsController.text = controller.userProfile.value!.aboutMe;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,40 +68,44 @@ class _EditProfilePageState extends State<EditProfilePage> {
               children: [
                 Column(
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(12),
-                      height: 150,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://steemitimages.com/DQmeTTugWLHCxj4g4gpiJmjtnLAi1zVAZR3G7cWX4iGTiK4/dfg5678.jpg"),
-                              fit: BoxFit.cover)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  print("Edit Profile Image");
-                                  // Add image picker functionality here
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary,
-                                    borderRadius: BorderRadius.circular(50),
+                    Obx(() {
+                      return Container(
+                        padding: EdgeInsets.all(12),
+                        height: 150,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                                image: controller.coverImageFile.value != null
+                                    ? FileImage(
+                                        controller.coverImageFile.value!)
+                                    : NetworkImage(
+                                        getFullImagePath(controller
+                                            .userProfile.value!.coverImage),
+                                      ) as ImageProvider,
+                                fit: BoxFit.cover)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                  onTap: controller.pickCoverImage,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    padding: const EdgeInsets.all(5),
+                                    child: Image.asset(AppAssetsPath.camera),
                                   ),
-                                  padding: const EdgeInsets.all(5),
-                                  child: Image.asset(AppAssetsPath.camera),
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    }),
                     SizedBox(
                       height: 40,
                     ),
@@ -95,15 +116,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(
-                        "https://www.w3schools.com/w3images/avatar2.png",
-                      ), // Replace with actual image
+                      backgroundImage: controller.profileImageFile.value != null
+                          ? FileImage(
+                              controller.profileImageFile.value!,
+                            )
+                          : NetworkImage(
+                              getFullImagePath(
+                                controller.userProfile.value!.image,
+                              ),
+                            ) as ImageProvider, // Replace with actual image
                     ),
                     GestureDetector(
-                      onTap: () {
-                        print("Edit Profile Image");
-                        // Add image picker functionality here
-                      },
+                      onTap: controller.pickProfileImage,
                       child: Container(
                         decoration: BoxDecoration(
                           color: AppColors.primary,
@@ -152,7 +176,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 Get.snackbar("Empty Field", "Name can't be empty");
               } else if (phoneController.text.isEmpty) {
                 Get.snackbar("Empty Field", "Phone number can't be empty");
-              } else {}
+              } else {
+                controller.updateUserProfile(
+                    fullName: nameController.text,
+                    phoneNumber: phoneController.text,
+                    profileImage: controller.profileImageFile.value,
+                    coverImage: controller.coverImageFile.value);
+              }
             }),
             const SizedBox(height: 30),
           ],

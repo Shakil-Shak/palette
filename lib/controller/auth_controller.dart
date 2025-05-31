@@ -1,12 +1,12 @@
 // lib/controllers/auth_controller.dart
 import 'dart:async';
 import 'package:get/get.dart';
-import 'package:palette/models/email_verified_model.dart';
-import 'package:palette/models/forget_password_model.dart';
-import 'package:palette/models/otp_verified_model.dart';
-import 'package:palette/models/password_reset_model.dart';
-import 'package:palette/models/signin_model.dart';
-import 'package:palette/models/signup_model.dart';
+import 'package:palette/models/auth%20models/email_verified_model.dart';
+import 'package:palette/models/auth%20models/forget_password_model.dart';
+import 'package:palette/models/auth%20models/otp_verified_model.dart';
+import 'package:palette/models/auth%20models/password_reset_model.dart';
+import 'package:palette/models/auth%20models/signin_model.dart';
+import 'package:palette/models/auth%20models/signup_model.dart';
 import 'package:palette/services/local_storage_service.dart';
 import 'package:palette/views/Authuntication/enter_otp_page.dart';
 import 'package:palette/views/Authuntication/new_password_page.dart';
@@ -16,7 +16,7 @@ import 'package:palette/views/root_page.dart';
 import '../repositories/auth_repository.dart';
 
 class AuthController extends GetxController {
-  final AuthRepository authRepository = AuthRepository();
+  AuthRepository authRepository = AuthRepository();
 
   var isLoading = false.obs;
   var errorMessage = ''.obs;
@@ -40,6 +40,7 @@ class AuthController extends GetxController {
       user.value = response;
       isLoading.value = false;
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        LocalStorageService().saveToken(response.data.accessToken);
         navigateToPage(RootPage(), clearStack: true);
       } else {
         errorMessage.value = response.message;

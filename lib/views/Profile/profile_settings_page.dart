@@ -1,30 +1,33 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
-import 'package:palette/views/res/image_path.dart';
-import 'package:palette/views/res/colors.dart';
-import 'package:palette/views/res/commonWidgets.dart';
-import 'package:palette/views/Profile/change_password_page.dart';
-import 'package:palette/views/Profile/edit_profile_page.dart';
-import 'package:palette/views/Profile/help_center_page.dart';
-import 'package:palette/views/Profile/privacy_policy_page.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/user_controller.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/Profile/terms_and_condition_page.dart';
+import '../res/colors.dart';
+import '../res/commonWidgets.dart';
+import '../res/image_path.dart';
+import 'edit_profile_page.dart';
+import 'change_password_page.dart';
+import 'help_center_page.dart';
+import 'privacy_policy_page.dart';
 
 class ProfileSettingsPage extends StatelessWidget {
   ProfileSettingsPage({super.key});
 
-  // Mock Data for Profile Information
-  final String profileImageUrl =
-      'https://www.w3schools.com/w3images/avatar2.png'; // Placeholder URL
-  final String name = "John Doe";
-  final String email = "johndoe@example.com";
+  final UserController userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
+    userController.fetchUserProfile();
+
     return Scaffold(
-      backgroundColor: AppColors.primary, // Background color
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
-        leading: commonBackButton(), // No back button, keeping it empty
+        leading: commonBackButton(),
         title: commonText(
           "Profile Settings",
           size: 21,
@@ -34,105 +37,119 @@ class ProfileSettingsPage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      bottomSheet: Container(
-        padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            // Profile Image, Name, and Email
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(profileImageUrl),
-                ),
-                const SizedBox(height: 10),
-                commonText(name, size: 18, color: Colors.black, isBold: true),
-                commonText(email, size: 14, color: Colors.black87),
-              ],
+      bottomSheet: Obx(() {
+        if (userController.isLoading.value) {
+          return const SizedBox(
+            height: 300,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (userController.errorMessage.isNotEmpty) {
+          return SizedBox(
+            height: 100,
+            child: Center(
+              child: commonText(
+                "Error: ${userController.errorMessage.value}",
+                size: 16,
+                color: Colors.red,
+              ),
             ),
-            const SizedBox(height: 20),
+          );
+        }
+        final user = userController.userProfile.value;
+        if (user == null) {
+          return const SizedBox.shrink();
+        }
 
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Column(
-                      children: [
-                        profileMenuItem(
-                            AppAssetsPath.edit_profile, "Edit Profile",
-                            onTap: () {
-                          // Navigate to Edit Profile Screen
-                          navigateToPage(EditProfilePage());
-                        }),
-                        const Divider(),
-                        profileMenuItem(
-                            AppAssetsPath.change_password, "Change Password",
-                            onTap: () {
-                          // Navigate to Change Password Screen
-                          navigateToPage(ChangePasswordScreen());
-                        }),
-                        const Divider(),
-                        profileMenuItem(
-                            AppAssetsPath.help_center, "Help Center",
-                            onTap: () {
-                          // Navigate to Help Center Screen
-                          navigateToPage(HelpCenterScreen());
-                        }),
-                        const Divider(),
-                        profileMenuItem(AppAssetsPath.terms_and_condition,
-                            "Terms of Service", onTap: () {
-                          // Navigate to Terms of Service Screen
-                          navigateToPage(TermsOfServiceScreen());
-                        }),
-                        const Divider(),
-                        profileMenuItem(
-                            AppAssetsPath.privacy_policy, "Privacy Policy",
-                            onTap: () {
-                          // Navigate to Privacy Policy Screen
-                          navigateToPage(PrivacyPolicyScreen());
-                        }),
-                        const Divider(),
-                      ],
+        return Container(
+          padding: const EdgeInsets.all(20.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              // Profile Image, Name, Email
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(
+                      user.image.isNotEmpty
+                          ? getFullImagePath(user.image)
+                          : 'https://www.w3schools.com/w3images/avatar2.png',
                     ),
-                    const SizedBox(height: 10),
-                    // Logout Button
-                    InkWell(
-                      onTap: () async {
-                        // Mock logout behavior
-                        // Replace with actual logout logic
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              AppAssetsPath.logout,
-                              width: 24,
-                            ),
-                            const SizedBox(width: 10),
-                            commonText("Logout",
-                                size: 16, color: Colors.red, isBold: true),
-                          ],
+                  ),
+                  const SizedBox(height: 10),
+                  commonText(user.fullName,
+                      size: 18, color: Colors.black, isBold: true),
+                  commonText(user.email, size: 14, color: Colors.black87),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      profileMenuItem(
+                          AppAssetsPath.edit_profile, "Edit Profile",
+                          onTap: () {
+                        navigateToPage(EditProfilePage());
+                      }),
+                      const Divider(),
+                      profileMenuItem(
+                          AppAssetsPath.change_password, "Change Password",
+                          onTap: () {
+                        navigateToPage(ChangePasswordScreen());
+                      }),
+                      const Divider(),
+                      profileMenuItem(AppAssetsPath.help_center, "Help Center",
+                          onTap: () {
+                        navigateToPage(HelpCenterScreen());
+                      }),
+                      const Divider(),
+                      profileMenuItem(
+                          AppAssetsPath.terms_and_condition, "Terms of Service",
+                          onTap: () {
+                        navigateToPage(TermsAndServicesScreen());
+                      }),
+                      const Divider(),
+                      profileMenuItem(
+                          AppAssetsPath.privacy_policy, "Privacy Policy",
+                          onTap: () {
+                        navigateToPage(PrivacyPolicyScreen());
+                      }),
+                      const Divider(),
+                      const SizedBox(height: 10),
+                      InkWell(
+                        onTap: () async {
+                          // TODO: Implement logout logic here
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Row(
+                            children: [
+                              Image.asset(AppAssetsPath.logout, width: 24),
+                              const SizedBox(width: 10),
+                              commonText("Logout",
+                                  size: 16, color: Colors.red, isBold: true),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            )
-            // Profile Menu Items
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 
-  // Profile menu item widget
   Widget profileMenuItem(String iconPath, String text,
       {String? value, VoidCallback? onTap}) {
     return InkWell(
@@ -141,18 +158,9 @@ class ProfileSettingsPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            Image.asset(
-              iconPath,
-              width: 24,
-            ),
+            Image.asset(iconPath, width: 24),
             const SizedBox(width: 10),
-            Expanded(
-              child: Row(
-                children: [
-                  commonText(text, size: 14, isBold: true),
-                ],
-              ),
-            ),
+            Expanded(child: commonText(text, size: 14, isBold: true)),
             if (value != null) ...[
               commonText(value, size: 14, isBold: true),
               const SizedBox(width: 10),

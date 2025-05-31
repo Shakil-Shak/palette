@@ -1,15 +1,15 @@
-import 'package:palette/models/email_verified_model.dart';
-import 'package:palette/models/forget_password_model.dart';
-import 'package:palette/models/otp_verified_model.dart';
-import 'package:palette/models/password_reset_model.dart';
-import 'package:palette/models/resend_otp_model.dart';
-import 'package:palette/models/signin_model.dart';
-import 'package:palette/models/signup_model.dart';
+import 'package:palette/models/auth%20models/email_verified_model.dart';
+import 'package:palette/models/auth%20models/forget_password_model.dart';
+import 'package:palette/models/auth%20models/otp_verified_model.dart';
+import 'package:palette/models/auth%20models/password_reset_model.dart';
+import 'package:palette/models/auth%20models/resend_otp_model.dart';
+import 'package:palette/models/auth%20models/signin_model.dart';
+import 'package:palette/models/auth%20models/signup_model.dart';
 import 'api_service.dart';
 import '../utils/api_endpoints.dart';
 
 class AuthService {
-  final ApiService apiService = ApiService();
+  ApiService apiService = ApiService();
 
   Future<LoginResponse> login(String email, String password) async {
     final body = {

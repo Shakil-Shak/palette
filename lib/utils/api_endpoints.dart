@@ -1,5 +1,6 @@
 class ApiEndpoints {
-  static const String baseUrl = 'http://10.0.70.37:8023/api/v1/';
+  static const String baseUrl = 'http://172.252.13.74:8029/api/v1/';
+  static const String imageUrl = 'http://172.252.13.74:8029/';
 
   // Auth endpoints
   static const String signIn = 'auth/local';
@@ -14,5 +15,7 @@ class ApiEndpoints {
   // User endpoints
   static const String updateProfile = 'users/update-profile';
   static const String userDetails = 'users/user-details';
+  static String staticContents(String type) => 'static-contents?type=$type';
+
   static const String deleteOwnAccount = 'users/delete-own-account';
 }

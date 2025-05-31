@@ -5,7 +5,7 @@ import 'package:palette/utils/api_endpoints.dart';
 import 'local_storage_service.dart';
 
 class ApiService {
-  final LocalStorageService _localStorageService = LocalStorageService();
+  LocalStorageService _localStorageService = LocalStorageService();
 
   ApiService();
 
@@ -18,7 +18,6 @@ class ApiService {
       'Authorization': 'Bearer $token',
       "SignUpToken": "signUpToken $token",
       "Forget-password": "Forget-password $token",
-      // 'token': '$token',
     };
   }
 

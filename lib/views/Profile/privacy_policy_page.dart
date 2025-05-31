@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/StaticContentController.dart';
+import 'package:palette/repositories/StaticContentRepository.dart';
+import 'package:palette/services/StaticContentService.dart';
+import 'package:palette/services/api_service.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
@@ -10,90 +16,83 @@ class PrivacyPolicyScreen extends StatefulWidget {
 }
 
 class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
-  // Mock data for Privacy Policy sections (similar to FAQ)
-  List<Faq> privacyPolicySections = [
-    Faq(
-        title: "Introduction",
-        content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-    Faq(
-        title: "Data Collection",
-        content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-    Faq(
-        title: "Data Usage",
-        content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-    Faq(
-        title: "User Rights",
-        content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-  ];
+  late StaticContentController staticContentController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final apiService = ApiService();
+    final staticContentService = StaticContentService(apiService);
+    final staticContentRepository =
+        StaticContentRepository(staticContentService);
+    staticContentController =
+        Get.put(StaticContentController(staticContentRepository));
+
+    // Fetch privacy policy markdown content from API
+    staticContentController.fetchStaticContent('privacy-policy');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: AppBar(
-          backgroundColor: AppColors.primary, // Matches the design
-          elevation: 0,
-          title: commonText(
-            "Privacy Policy",
-            size: 21,
-            isBold: true,
-            color: AppColors.white,
-          ),
-          centerTitle: true,
-          leading: commonBackButton()),
-      bottomSheet: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 5,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: ListView.builder(
-          itemCount: privacyPolicySections.length,
-          itemBuilder: (context, index) {
-            Faq faq = privacyPolicySections[index];
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildSectionTitle(faq.title ?? "Untitled"),
-                _buildSectionText(faq.content ?? "No content available"),
-                const SizedBox(height: 20),
-              ],
-            );
-          },
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        leading: commonBackButton(),
+        centerTitle: true,
+        title: commonText(
+          "Privacy Policy",
+          size: 21,
+          isBold: true,
+          color: AppColors.white,
         ),
       ),
+      body: Obx(() {
+        if (staticContentController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (staticContentController.errorMessage.isNotEmpty) {
+          return Center(
+            child: commonText(
+              "Error: ${staticContentController.errorMessage.value}",
+              color: Colors.red,
+            ),
+          );
+        }
+
+        final content = staticContentController
+                .staticContentResponse.value?.attributes.content ??
+            'No content available';
+
+        return Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Markdown(
+            data: content,
+            selectable: true,
+            styleSheet:
+                MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+              p: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14),
+              h1: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+              h2: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+              strong:
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              listBullet: const TextStyle(fontSize: 14),
+            ),
+          ),
+        );
+      }),
     );
   }
-
-  Widget _buildSectionTitle(String title) {
-    return commonText(title,
-        size: 16, isBold: true, textAlign: TextAlign.start);
-  }
-
-  Widget _buildSectionText(String text) {
-    return commonText(
-      text,
-      textAlign: TextAlign.start,
-      size: 14,
-    );
-  }
-}
-
-class Faq {
-  final String? title;
-  final String? content;
-
-  Faq({this.title, this.content});
 }
