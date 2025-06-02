@@ -136,19 +136,21 @@ Widget commonBackButton() {
   );
 }
 
-void navigateToPage(
-  Widget page, {
-  bool replace = false,
-  bool clearStack = false,
-  Transition transition = Transition.rightToLeft,
-  Duration duration = const Duration(milliseconds: 400),
-}) {
+void navigateToPage(Widget page,
+    {bool replace = false,
+    bool clearStack = false,
+    Transition transition = Transition.rightToLeft,
+    Duration duration = const Duration(milliseconds: 400),
+    onPop}) {
   if (clearStack) {
-    Get.offAll(page, transition: transition, duration: duration);
+    Get.offAll(page, transition: transition, duration: duration)!
+        .then(onPop ?? (value) {});
   } else if (replace) {
-    Get.off(page, transition: transition, duration: duration);
+    Get.off(page, transition: transition, duration: duration)!
+        .then(onPop ?? (value) {});
   } else {
-    Get.to(page, transition: transition, duration: duration);
+    Get.to(page, transition: transition, duration: duration)!
+        .then(onPop ?? (value) {});
   }
 }
 

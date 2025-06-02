@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:palette/services/local_storage_service.dart';
 import '../../utils/api_endpoints.dart';
 import 'api_service.dart';
+import 'package:http_parser/http_parser.dart';
 
 class UserService {
   ApiService apiService;
@@ -47,19 +48,45 @@ class UserService {
     request.headers['Authorization'] =
         'Bearer ${await _localStorage.getToken()}';
 
-    // Add data as JSON string field named 'data'
     request.fields['data'] = jsonEncode(data);
 
+    // Helper function to get MIME type from file extension
+    MediaType getMediaType(String path) {
+      final ext = path.split('.').last.toLowerCase();
+      switch (ext) {
+        case 'jpg':
+        case 'jpeg':
+          return MediaType('image', 'jpeg');
+        case 'png':
+          return MediaType('image', 'png');
+        case 'heic':
+          return MediaType('image', 'heic');
+        case 'heif':
+          return MediaType('image', 'heif');
+        default:
+          // Default fallback MIME type; you may also throw here if unsupported
+          return MediaType('application', 'octet-stream');
+      }
+    }
+
     if (profileImage != null) {
-      request.files.add(
-        await http.MultipartFile.fromPath('profileImage', profileImage.path),
-      );
+      final mimeType = getMediaType(profileImage.path);
+      request.files.add(await http.MultipartFile.fromPath(
+        'profileImage',
+        profileImage.path,
+        contentType: mimeType,
+      ));
+      log('Uploading profile image: ${profileImage.path} with MIME type: $mimeType');
     }
 
     if (coverImage != null) {
-      request.files.add(
-        await http.MultipartFile.fromPath('coverImage', coverImage.path),
-      );
+      final mimeType = getMediaType(coverImage.path);
+      request.files.add(await http.MultipartFile.fromPath(
+        'coverImage',
+        coverImage.path,
+        contentType: mimeType,
+      ));
+      log('Uploading cover image: ${coverImage.path} with MIME type: $mimeType');
     }
 
     final streamedResponse = await request.send();

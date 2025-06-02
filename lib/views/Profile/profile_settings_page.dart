@@ -56,8 +56,8 @@ class ProfileSettingsPage extends StatelessWidget {
             ),
           );
         }
-        final user = userController.userProfile.value;
-        if (user == null) {
+
+        if (userController.userProfile.value == null) {
           return const SizedBox.shrink();
         }
 
@@ -73,18 +73,22 @@ class ProfileSettingsPage extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                      user.image.isNotEmpty
-                          ? getFullImagePath(user.image)
-                          : 'https://www.w3schools.com/w3images/avatar2.png',
-                    ),
-                  ),
+                  Obx(() {
+                    return CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(
+                        userController.userProfile.value!.image.isNotEmpty
+                            ? getFullImagePath(
+                                userController.userProfile.value!.image)
+                            : 'https://www.w3schools.com/w3images/avatar2.png',
+                      ),
+                    );
+                  }),
                   const SizedBox(height: 10),
-                  commonText(user.fullName,
+                  commonText(userController.userProfile.value!.fullName,
                       size: 18, color: Colors.black, isBold: true),
-                  commonText(user.email, size: 14, color: Colors.black87),
+                  commonText(userController.userProfile.value!.email,
+                      size: 14, color: Colors.black87),
                 ],
               ),
               const SizedBox(height: 20),
@@ -96,7 +100,12 @@ class ProfileSettingsPage extends StatelessWidget {
                       profileMenuItem(
                           AppAssetsPath.edit_profile, "Edit Profile",
                           onTap: () {
-                        navigateToPage(EditProfilePage());
+                        navigateToPage(
+                          EditProfilePage(),
+                          onPop: (value) {
+                            userController.fetchUserProfile();
+                          },
+                        );
                       }),
                       const Divider(),
                       profileMenuItem(

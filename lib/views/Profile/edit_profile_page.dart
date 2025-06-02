@@ -114,18 +114,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: controller.profileImageFile.value != null
-                          ? FileImage(
-                              controller.profileImageFile.value!,
-                            )
-                          : NetworkImage(
-                              getFullImagePath(
-                                controller.userProfile.value!.image,
-                              ),
-                            ) as ImageProvider, // Replace with actual image
-                    ),
+                    Obx(() {
+                      return CircleAvatar(
+                        radius: 50,
+                        backgroundImage: controller.profileImageFile.value !=
+                                null
+                            ? FileImage(
+                                controller.profileImageFile.value!,
+                              )
+                            : NetworkImage(
+                                getFullImagePath(
+                                  controller.userProfile.value!.image,
+                                ),
+                              ) as ImageProvider, // Replace with actual image
+                      );
+                    }),
                     GestureDetector(
                       onTap: controller.pickProfileImage,
                       child: Container(

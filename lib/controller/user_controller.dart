@@ -96,7 +96,15 @@ class UserController extends GetxController {
       source: ImageSource.gallery,
     );
     if (pickedFile != null) {
-      profileImageFile.value = File(pickedFile.path);
+      final allowedExtensions = ['jpg', 'jpeg', 'png', 'heic', 'heif'];
+      final ext = pickedFile.name.split('.').last.toLowerCase();
+
+      if (allowedExtensions.contains(ext)) {
+        profileImageFile.value = File(pickedFile.path);
+      } else {
+        Get.snackbar("Invalid format",
+            "Please select a jpg, png, jpeg, heic or heif image");
+      }
     }
   }
 
@@ -105,7 +113,15 @@ class UserController extends GetxController {
       source: ImageSource.gallery,
     );
     if (pickedFile != null) {
-      coverImageFile.value = File(pickedFile.path);
+      final allowedExtensions = ['jpg', 'jpeg', 'png', 'heic', 'heif'];
+      final ext = pickedFile.name.split('.').last.toLowerCase();
+
+      if (allowedExtensions.contains(ext)) {
+        coverImageFile.value = File(pickedFile.path);
+      } else {
+        Get.snackbar("Invalid format",
+            "Please select a jpg, png, jpeg, heic or heif image");
+      }
     }
   }
 }
