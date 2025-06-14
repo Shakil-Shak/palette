@@ -13,9 +13,9 @@ class SignInPage extends StatelessWidget {
   SignInPage({super.key});
 
   final TextEditingController emailController =
-      TextEditingController(text: "tushar@gmail.com");
+      TextEditingController(text: "rasel@gmail.com");
   final TextEditingController passwordController =
-      TextEditingController(text: "hello1234");
+      TextEditingController(text: "hello123");
 
   final ValueNotifier<bool> isPasswordVisible = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isRememberMeChecked = ValueNotifier<bool>(false);

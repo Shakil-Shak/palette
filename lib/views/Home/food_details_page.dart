@@ -1,4 +1,9 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/home%20page%20controller/food_details_page_controller.dart';
+
 import 'package:palette/views/Home/resturant_details_page.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
@@ -8,8 +13,15 @@ import 'package:palette/views/Home/give_review_page.dart';
 import 'package:palette/views/Home/reviews_page.dart';
 
 class FoodDetailsPage extends StatelessWidget {
+  String id;
+
+  FoodDetailsPage({super.key, required this.id});
+
   @override
   Widget build(BuildContext context) {
+    // Initialize the controller with the id once.
+    final MenuDetailsController controller =
+        Get.put(MenuDetailsController(id), tag: id);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(

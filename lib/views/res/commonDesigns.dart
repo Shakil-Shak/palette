@@ -200,6 +200,7 @@ Widget cardDesign(
     required String buttonName,
     required String ratting,
     bool isleft = true,
+    width,
     bool isdelete = false,
     required String location}) {
   Widget badge(String label) {
@@ -216,6 +217,7 @@ Widget cardDesign(
   }
 
   return Container(
+    width: width,
     padding: EdgeInsets.all(8),
     decoration: BoxDecoration(
       color: Colors.white,

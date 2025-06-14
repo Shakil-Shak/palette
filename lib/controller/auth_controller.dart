@@ -41,7 +41,11 @@ class AuthController extends GetxController {
       isLoading.value = false;
       if (response.statusCode >= 200 && response.statusCode < 300) {
         LocalStorageService().saveToken(response.data.accessToken);
-        navigateToPage(RootPage(), clearStack: true);
+        navigateToPage(
+            RootPage(
+              userInfo: response.data.attributes,
+            ),
+            clearStack: true);
       } else {
         errorMessage.value = response.message;
       }
@@ -113,7 +117,7 @@ class AuthController extends GetxController {
             .verifyEmail(email, otp, isResendPurpose: isResendOtp.value);
         isVerifyingOtp.value = false;
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          navigateToPage(RootPage(), clearStack: true);
+          navigateToPage(SignInPage(), clearStack: true);
           LocalStorageService().saveToken(response.accessToken);
         } else {
           otpErrorMessage.value = response.message;

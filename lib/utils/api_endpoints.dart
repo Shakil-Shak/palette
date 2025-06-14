@@ -19,5 +19,10 @@ class ApiEndpoints {
   static const String userDetails = 'users/user-details';
   static String staticContents(String type) => 'static-contents?type=$type';
 
-  static const String deleteOwnAccount = 'users/delete-own-account';
+  // static const String deleteOwnAccount = 'users/delete-own-account';
+
+  // Home page
+  static const String highlights = 'menu-management/menu-highlights';
+  static const String forYou = 'menu-management/manu-for-you';
+  static String getMenuDetails(String id) => 'menu-management/get-menu/$id';
 }

@@ -104,7 +104,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 2,
                 (index) => InkWell(
                       onTap: () {
-                        navigateToPage(FoodDetailsPage());
+                        navigateToPage(FoodDetailsPage(
+                          id: "",
+                        ));
                       },
                       child: cardDesign(
                         imageUrl:
@@ -145,7 +147,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 2,
                 (index) => InkWell(
                       onTap: () {
-                        navigateToPage(FoodDetailsPage());
+                        navigateToPage(FoodDetailsPage(
+                          id: "",
+                        ));
                       },
                       child: cardDesign(
                           imageUrl:

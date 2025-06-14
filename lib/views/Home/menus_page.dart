@@ -35,7 +35,9 @@ class _MenusScreenState extends State<MenusScreen> {
                 itemBuilder: (context, index) {
                   return InkWell(
                       onTap: () {
-                        navigateToPage(FoodDetailsPage());
+                        navigateToPage(FoodDetailsPage(
+                          id: "",
+                        ));
                       },
                       child: menuCard());
                 },

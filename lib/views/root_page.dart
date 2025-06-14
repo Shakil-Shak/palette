@@ -1,4 +1,7 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:palette/models/common_models.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
@@ -8,7 +11,8 @@ import 'package:palette/views/Profile/profile_page.dart';
 import 'package:palette/views/Home/home_page.dart';
 
 class RootPage extends StatefulWidget {
-  const RootPage({Key? key}) : super(key: key);
+  UserAttributes userInfo;
+  RootPage({Key? key, required this.userInfo});
 
   @override
   State<RootPage> createState() => _RootPageState();
@@ -26,12 +30,20 @@ class _RootPageState extends State<RootPage> {
     AppAssetsPath.profile
   ];
 
-  final List<Widget> pages = [
-    HomePage(),
-    ExploreScreen(),
-    FeedPage(),
-    ProfilePage()
-  ];
+  late List<Widget> pages;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    pages = [
+      HomePage(
+        userInfo: widget.userInfo,
+      ),
+      ExploreScreen(),
+      FeedPage(),
+      ProfilePage()
+    ];
+  }
 
   void _onTap(int index) {
     setState(() => _selectedIndex = index);

@@ -234,17 +234,23 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         SizedBox(height: 10),
         menuCard(
           onTap: () {
-            navigateToPage(FoodDetailsPage());
+            navigateToPage(FoodDetailsPage(
+              id: "",
+            ));
           },
         ),
         menuCard(
           onTap: () {
-            navigateToPage(FoodDetailsPage());
+            navigateToPage(FoodDetailsPage(
+              id: "",
+            ));
           },
         ),
         menuCard(
           onTap: () {
-            navigateToPage(FoodDetailsPage());
+            navigateToPage(FoodDetailsPage(
+              id: "",
+            ));
           },
         ),
         SizedBox(
