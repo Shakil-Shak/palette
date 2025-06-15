@@ -24,5 +24,7 @@ class ApiEndpoints {
   // Home page
   static const String highlights = 'menu-management/menu-highlights';
   static const String forYou = 'menu-management/manu-for-you';
+  static const String ads = 'ads/allActive-ads';
   static String getMenuDetails(String id) => 'menu-management/get-menu/$id';
+  static const String submitFeedback = 'feedback/add-menu-feedback';
 }

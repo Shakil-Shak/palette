@@ -1,20 +1,18 @@
-import 'package:palette/models/common_models.dart';
+class FoodMenuDetailsResponse {
+  String status;
+  int statusCode;
+  String message;
+  MenuData data;
 
-class MenuDetailsResponse {
-  final String status;
-  final int statusCode;
-  final String message;
-  final MenuData data;
-
-  MenuDetailsResponse({
+  FoodMenuDetailsResponse({
     required this.status,
     required this.statusCode,
     required this.message,
     required this.data,
   });
 
-  factory MenuDetailsResponse.fromJson(Map<String, dynamic> json) {
-    return MenuDetailsResponse(
+  factory FoodMenuDetailsResponse.fromJson(Map<String, dynamic> json) {
+    return FoodMenuDetailsResponse(
       status: json['status'],
       statusCode: json['statusCode'],
       message: json['message'],
@@ -24,36 +22,34 @@ class MenuDetailsResponse {
 }
 
 class MenuData {
-  final String type;
-  final List<MenuItem> attributes;
+  String type;
+  List<FoodMenuAttributes> attributes;
 
-  MenuData({
-    required this.type,
-    required this.attributes,
-  });
+  MenuData({required this.type, required this.attributes});
 
   factory MenuData.fromJson(Map<String, dynamic> json) {
     return MenuData(
       type: json['type'],
-      attributes: List<MenuItem>.from(
-        json['attributes'].map((x) => MenuItem.fromJson(x)),
+      attributes: List<FoodMenuAttributes>.from(
+        json['attributes'].map((x) => FoodMenuAttributes.fromJson(x)),
       ),
     );
   }
 }
 
-class MenuItem {
-  final String id;
-  final String name;
-  final String image;
-  final String description;
-  final double price;
-  final List<String> category;
-  final int rating;
-  final List<FeedbackItem> feedbacks;
-  final String restaurentName;
+class FoodMenuAttributes {
+  String id;
+  String name;
+  String image;
+  String description;
+  double price;
+  List<String> category;
+  double rating;
+  List<FeedbackModel> feedbacks;
+  String restaurentName;
+  String restaurentId;
 
-  MenuItem({
+  FoodMenuAttributes({
     required this.id,
     required this.name,
     required this.image,
@@ -63,21 +59,69 @@ class MenuItem {
     required this.rating,
     required this.feedbacks,
     required this.restaurentName,
+    required this.restaurentId,
   });
 
-  factory MenuItem.fromJson(Map<String, dynamic> json) {
-    return MenuItem(
+  factory FoodMenuAttributes.fromJson(Map<String, dynamic> json) {
+    return FoodMenuAttributes(
       id: json['_id'],
       name: json['name'],
       image: json['image'],
       description: json['description'],
       price: (json['price'] as num).toDouble(),
       category: List<String>.from(json['category']),
-      rating: json['rating'],
-      feedbacks: List<FeedbackItem>.from(
-        json['feedbacks'].map((x) => FeedbackItem.fromJson(x)),
-      ),
+      rating: (json['rating'] as num).toDouble(),
+      feedbacks: json['feedbacks'] != null
+          ? List<FeedbackModel>.from(
+              json['feedbacks'].map((x) => FeedbackModel.fromJson(x)),
+            )
+          : [],
       restaurentName: json['restaurentName'],
+      restaurentId: json['restaurentId'],
+    );
+  }
+}
+
+class FeedbackModel {
+  String id;
+  String sender;
+  double rating;
+  String comment;
+  String? image;
+  String? video;
+  String? createdAt;
+  String? updatedAt;
+  String reviewerName;
+  String reviewerImage;
+  String reviewerId;
+
+  FeedbackModel({
+    required this.id,
+    required this.sender,
+    required this.rating,
+    required this.comment,
+    this.image,
+    this.video,
+    this.createdAt,
+    this.updatedAt,
+    required this.reviewerName,
+    required this.reviewerImage,
+    required this.reviewerId,
+  });
+
+  factory FeedbackModel.fromJson(Map<String, dynamic> json) {
+    return FeedbackModel(
+      id: json['_id'],
+      sender: json['sender'],
+      rating: (json['rating'] as num).toDouble(),
+      comment: json['comment'],
+      image: json['image'],
+      video: json['video'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+      reviewerName: json['reviewerName'],
+      reviewerImage: json['reviewerImage'],
+      reviewerId: json['reviewerId'],
     );
   }
 }

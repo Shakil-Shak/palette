@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
 import 'package:palette/models/home%20models/menu_details_model.dart';
-import 'package:palette/repositories/home_repository.dart';
+import 'package:palette/repositories/home%20repository/home_repository.dart';
 
 class MenuDetailsController extends GetxController {
   final HomeRepository _homeRepository = HomeRepository();
 
   var isLoading = false.obs;
   var errorMessage = RxnString(); // Rxn<String> shorthand
-  var menuDetails = Rxn<MenuItem>();
+  var menuDetails = Rxn<FoodMenuAttributes>();
   final String id;
   MenuDetailsController(this.id);
 

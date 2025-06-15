@@ -1,3 +1,4 @@
+import 'package:palette/models/home%20models/ads_monetization_model.dart';
 import 'package:palette/models/home%20models/for_you_model.dart';
 import 'package:palette/models/home%20models/hightlight_model.dart';
 import 'package:palette/models/home%20models/menu_details_model.dart';
@@ -18,8 +19,13 @@ class HomeService {
     return HighLightsResponse.fromJson(jsonResponse);
   }
 
-  Future<MenuDetailsResponse> fetchMenuDetailsByid(String id) async {
+  Future<FoodMenuDetailsResponse> fetchMenuDetailsByid(String id) async {
     final jsonResponse = await apiService.get(ApiEndpoints.getMenuDetails(id));
-    return MenuDetailsResponse.fromJson(jsonResponse);
+    return FoodMenuDetailsResponse.fromJson(jsonResponse);
+  }
+
+  Future<AdsMonetizationResponse> fetchAds() async {
+    final jsonResponse = await apiService.get(ApiEndpoints.ads);
+    return AdsMonetizationResponse.fromJson(jsonResponse);
   }
 }

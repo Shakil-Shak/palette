@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:palette/utils/api_endpoints.dart';
 import 'local_storage_service.dart';
@@ -91,6 +92,42 @@ class ApiService {
     final response = await http.delete(url, headers: headers);
 
     return _processResponse(response);
+  }
+
+  Future<dynamic> postMultipart({
+    required String url,
+    required Map<String, String> fields,
+    File? imageFile,
+    File? videoFile,
+  }) async {
+    var uri = Uri.parse(ApiEndpoints.baseUrl + url);
+
+    var request = http.MultipartRequest('POST', uri);
+    final headers = await _getHeaders();
+
+    request.fields.addAll(fields);
+
+    if (imageFile != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('image', imageFile.path));
+    }
+
+    if (videoFile != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('video', videoFile.path));
+    }
+    request.headers.addAll(headers);
+
+    var response = await request.send();
+    final resBody = await response.stream.bytesToString();
+
+    log(resBody);
+    if (response.statusCode == 200) {
+      return json.decode(resBody);
+    } else {
+      log(response.stream.toString());
+      throw Exception('Failed to post feedback: ${response.statusCode}');
+    }
   }
 
   dynamic _processResponse(http.Response response) {

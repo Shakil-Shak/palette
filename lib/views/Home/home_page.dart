@@ -1,4 +1,6 @@
 // ignore_for_file: must_be_immutable
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:palette/controller/home%20page%20controller/home_controller.dart';
@@ -63,15 +65,25 @@ class HomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Promo Banner
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  "https://www.pennlive.com/resizer/v2/ZL54C3EDKFGWLJY7XRAZPDU4LQ.jpg?auth=2a7815790f3b62ed7b10ac63e852c4fc1f619bae52ea35d1a36ca5a3e8ab14c4&width=1280&quality=90",
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
+              Obx(() {
+                if (homeController.isLoading.value &&
+                    homeController.ads.isEmpty) {
+                  return SizedBox(
+                    height: 150,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                if (homeController.ads.isEmpty) {
+                  return SizedBox(); // or show "No Ads"
+                }
+
+                List<String> imageUrls = homeController.ads
+                    .map((ad) => getFullImagePath("/${ad.image}"))
+                    .toList();
+
+                return AdsCarousel(imageUrls: imageUrls);
+              }),
 
               SizedBox(height: 20),
 
@@ -85,15 +97,22 @@ class HomePage extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           Menu highLight = homeController.highlights[index];
-                          return cardDesign(
-                            width: 190.0,
-                            name: highLight.name,
-                            imageUrl: getFullImagePath(highLight.image ??
-                                "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1"),
-                            buttonName: highLight.category,
-                            ratting: highLight.rating.toString(),
-                            location: highLight.restaurentName,
-                            isleft: true,
+                          return InkWell(
+                            onTap: () {
+                              navigateToPage(FoodDetailsPage(
+                                id: highLight.id,
+                              ));
+                            },
+                            child: cardDesign(
+                              width: 190.0,
+                              name: highLight.name,
+                              imageUrl: getFullImagePath(highLight.image ??
+                                  "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1"),
+                              buttonName: highLight.category,
+                              ratting: highLight.rating.toString(),
+                              location: highLight.restaurentName,
+                              isleft: true,
+                            ),
                           );
                         },
                         separatorBuilder: (context, index) {
@@ -275,6 +294,85 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AdsCarousel extends StatefulWidget {
+  final List<String> imageUrls;
+
+  const AdsCarousel({Key? key, required this.imageUrls}) : super(key: key);
+
+  @override
+  State<AdsCarousel> createState() => _AdsCarouselState();
+}
+
+class _AdsCarouselState extends State<AdsCarousel> {
+  late PageController _pageController;
+  late int _initialPage;
+  Timer? _timer;
+
+  static const int _kInfiniteOffset = 10000;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Start from a high offset to allow infinite left/right scroll
+    _initialPage = widget.imageUrls.isNotEmpty
+        ? widget.imageUrls.length * _kInfiniteOffset
+        : 0;
+    _pageController = PageController(initialPage: _initialPage);
+
+    _startAutoScroll();
+  }
+
+  void _startAutoScroll() {
+    _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_pageController.hasClients) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.imageUrls.isEmpty) return const SizedBox();
+
+    return SizedBox(
+      height: 150,
+      child: PageView.builder(
+        controller: _pageController,
+        itemBuilder: (context, index) {
+          final imageIndex = index % widget.imageUrls.length;
+
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              widget.imageUrls[imageIndex],
+              width: double.infinity,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
+              errorBuilder: (context, error, stackTrace) => const Center(
+                child: Icon(Icons.broken_image),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

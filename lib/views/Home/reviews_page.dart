@@ -3,14 +3,9 @@ import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
-class ReviewsPage extends StatefulWidget {
+class ReviewsPage extends StatelessWidget {
   const ReviewsPage({super.key});
 
-  @override
-  State<ReviewsPage> createState() => _ReviewsPageState();
-}
-
-class _ReviewsPageState extends State<ReviewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

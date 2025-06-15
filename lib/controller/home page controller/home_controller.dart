@@ -1,20 +1,23 @@
 import 'package:get/get.dart';
 import 'package:palette/models/common_models.dart';
-import 'package:palette/repositories/home_repository.dart';
+import 'package:palette/models/home%20models/ads_monetization_model.dart';
+import 'package:palette/repositories/home%20repository/home_repository.dart';
 
 class HomeController extends GetxController {
   final HomeRepository _homeRepository = HomeRepository();
 
   var isLoading = false.obs;
-  var errorMessage = RxnString(); // Rxn<String> shorthand
+  var errorMessage = RxnString();
   var foryou = <Menu>[].obs;
   var highlights = <Menu>[].obs;
+  var ads = <AdsMonetization>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchForYou();
     fetchHighLights();
+    fetchAds();
   }
 
   Future<void> fetchForYou() async {
@@ -40,6 +43,20 @@ class HomeController extends GetxController {
       final data = await _homeRepository.getHighLights();
 
       highlights.assignAll(data.data); // Assuming data.data is List<ForYou>
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchAds() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = null;
+
+      final data = await _homeRepository.getAds();
+      ads.assignAll(data.data.attributes);
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

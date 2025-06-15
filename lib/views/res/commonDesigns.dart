@@ -3,6 +3,7 @@ import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 import 'package:palette/models/challenge_data_model.dart';
+import 'package:palette/views/res/video_helper.dart';
 
 Widget badgesCard({required String imageUrl, required String name}) {
   return Container(
@@ -290,8 +291,38 @@ Widget buildReviews(
     {required List<Map<String, dynamic>> reviews,
     bool shrinkWrap = false,
     physics}) {
+  String getTimeDifference(String dateString) {
+    try {
+      final dateTime = DateTime.parse(dateString).toLocal();
+      final now = DateTime.now();
+      final difference = now.difference(dateTime);
+
+      if (difference.inSeconds < 60) {
+        return 'just now';
+      } else if (difference.inMinutes < 60) {
+        return '${difference.inMinutes} minute${difference.inMinutes == 1 ? '' : 's'} ago';
+      } else if (difference.inHours < 24) {
+        return '${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago';
+      } else if (difference.inDays < 7) {
+        return '${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
+      } else if (difference.inDays < 30) {
+        final weeks = (difference.inDays / 7).floor();
+        return '$weeks week${weeks == 1 ? '' : 's'} ago';
+      } else if (difference.inDays < 365) {
+        final months = (difference.inDays / 30).floor();
+        return '$months month${months == 1 ? '' : 's'} ago';
+      } else {
+        final years = (difference.inDays / 365).floor();
+        return '$years year${years == 1 ? '' : 's'} ago';
+      }
+    } catch (e) {
+      return '';
+    }
+  }
+
   return ListView.builder(
     itemCount: reviews.length,
+    padding: EdgeInsets.all(0),
     shrinkWrap: shrinkWrap,
     physics: physics,
     itemBuilder: (context, index) {
@@ -309,11 +340,11 @@ Widget buildReviews(
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      "https://www.w3schools.com/w3images/avatar2.png"),
+                  backgroundImage:
+                      NetworkImage(review["profileImage"].toString()),
                 ),
                 SizedBox(width: 8),
-                commonText("Sarah", size: 16, isBold: true),
+                commonText(review["name"].toString(), size: 16, isBold: true),
                 Spacer(),
                 Icon(Icons.star, color: Colors.orange, size: 16),
                 commonText(review["rating"].toString(), size: 14, isBold: true),
@@ -322,15 +353,73 @@ Widget buildReviews(
             SizedBox(height: 8),
             commonText(review["text"].toString(),
                 size: 13, maxline: 5, softwarp: true),
-            if (index == 1 || index == 3)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Image.network(
-                    height: 100,
-                    "https://img.freepik.com/free-photo/big-sandwich-hamburger-burger-with-beef-red-onion-tomato-fried-bacon_2829-5398.jpg?t=st=1745919400~exp=1745923000~hmac=459fe6b5497f46b87ffa40d39b05ddc8cc13f31deed1f65b51305cdd3179a7b6&w=740"),
-              ),
+            Row(
+              children: [
+                if ((review["commentImage"] ?? "").toString().isNotEmpty)
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => Dialog(
+                            child: InteractiveViewer(
+                              child: Image.network(review["commentImage"]),
+                            ),
+                          ),
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          review["commentImage"],
+                          height: 100,
+                          width: 160,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                if ((review["video"] ?? "").toString().isNotEmpty &&
+                    (review["commentImage"] ?? "").toString().isNotEmpty)
+                  SizedBox(width: 16),
+                if ((review["video"] ?? "").toString().isNotEmpty)
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (_) => Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  insetPadding: EdgeInsets.zero,
+                                  child: InteractiveViewer(
+                                    child: VideoApp(
+                                        videoUrl:
+                                            "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4"),
+                                  ),
+                                ));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: SizedBox(
+                            height: 100,
+                            width: 160,
+                            child: VideoApp(
+                                videoUrl:
+                                    "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4"
+                                // review["video"]
+                                ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             SizedBox(height: 4),
-            commonText(review["time"].toString(), size: 14, isBold: true),
+            commonText(getTimeDifference(review["time"].toString()),
+                size: 14, isBold: true),
           ],
         ),
       );
