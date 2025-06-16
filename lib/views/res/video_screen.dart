@@ -1,12 +1,15 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 /// Stateful widget to fetch and then display video content.
 class VideoApp extends StatefulWidget {
   String videoUrl;
-  VideoApp({super.key, required this.videoUrl});
+  bool isLocal;
+  VideoApp({super.key, required this.videoUrl, this.isLocal = false});
 
   @override
   _VideoAppState createState() => _VideoAppState();
@@ -18,19 +21,29 @@ class _VideoAppState extends State<VideoApp> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
-      ..setLooping(true)
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.play(); // Automatically play the video once initialized
-      });
+    if (widget.isLocal) {
+      // If the video is local, use the file path
+      _controller = VideoPlayerController.file(File(widget.videoUrl))
+        ..setLooping(true)
+        ..initialize().then((_) {
+          setState(() {});
+          _controller.play(); // Automatically play the video once initialized
+        });
+    } else {
+      _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
+        ..setLooping(true)
+        ..initialize().then((_) {
+          setState(() {});
+          _controller.play(); // Automatically play the video once initialized
+        });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return _controller.value.isInitialized
         ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
+            aspectRatio: 16 / 9,
             child: Stack(
               children: [
                 VideoPlayer(_controller),

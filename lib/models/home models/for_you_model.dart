@@ -5,7 +5,7 @@ class ForYouResponse {
   final int statusCode;
   final String type;
   final String message;
-  final List<Menu> data;
+  final List<FoodMenu> data;
 
   ForYouResponse({
     required this.status,
@@ -21,7 +21,9 @@ class ForYouResponse {
       statusCode: json['statusCode'] ?? 0,
       type: json['type'] ?? '',
       message: json['message'] ?? '',
-      data: (json['data'] as List).map((item) => Menu.fromJson(item)).toList(),
+      data: (json['data'] as List)
+          .map((item) => FoodMenu.fromJson(item))
+          .toList(),
     );
   }
 

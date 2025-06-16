@@ -27,4 +27,5 @@ class ApiEndpoints {
   static const String ads = 'ads/allActive-ads';
   static String getMenuDetails(String id) => 'menu-management/get-menu/$id';
   static const String submitFeedback = 'feedback/add-menu-feedback';
+  static String getRestaurantDetails(String id) => 'my-restaurent/$id';
 }

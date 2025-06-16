@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:palette/models/home%20models/ads_monetization_model.dart';
 import 'package:palette/models/home%20models/for_you_model.dart';
 import 'package:palette/models/home%20models/hightlight_model.dart';
 import 'package:palette/models/home%20models/menu_details_model.dart';
-
+import 'package:palette/models/home%20models/restaurant_details_model.dart';
+import 'package:palette/models/home%20models/submit_feedback_model.dart';
 import 'package:palette/services/api_service.dart';
 import 'package:palette/utils/api_endpoints.dart';
 
@@ -27,5 +30,32 @@ class HomeService {
   Future<AdsMonetizationResponse> fetchAds() async {
     final jsonResponse = await apiService.get(ApiEndpoints.ads);
     return AdsMonetizationResponse.fromJson(jsonResponse);
+  }
+
+  Future<FeedbackResponse> submitFoodFeedback({
+    required String menuId,
+    required String comment,
+    required int rating,
+    File? image,
+    File? video,
+  }) async {
+    final response = await apiService.postMultipart(
+      url: ApiEndpoints.submitFeedback,
+      fields: {
+        'menu': menuId,
+        'comment': comment,
+        'rating': rating.toString(),
+      },
+      imageFile: image,
+      videoFile: video,
+    );
+    return FeedbackResponse.fromJson(response);
+  }
+
+  Future<RestaurantDetailsResponse> fetchRestaurantDetailsByid(
+      String id) async {
+    final jsonResponse =
+        await apiService.get(ApiEndpoints.getRestaurantDetails(id));
+    return RestaurantDetailsResponse.fromJson(jsonResponse);
   }
 }

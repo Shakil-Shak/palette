@@ -39,7 +39,15 @@ class _MenusScreenState extends State<MenusScreen> {
                           id: "",
                         ));
                       },
-                      child: menuCard());
+                      child: menuCard(
+                          catagory: "Pizza",
+                          name: "Pepperoni Pizza",
+                          price: "\$12.99",
+                          description:
+                              "A delicious pizza topped with pepperoni, cheese, and a blend of spices.",
+                          rating: 4.5.toString(),
+                          onTap: () {},
+                          imageUrl: "assets/images/pizza.png"));
                 },
               ),
             ),

@@ -1,4 +1,10 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/home%20page%20controller/restaurant_details_controller.dart';
+import 'package:palette/models/home%20models/restaurant_details_model.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
@@ -8,172 +14,264 @@ import 'package:palette/views/Home/food_details_page.dart';
 import 'package:palette/views/Home/menus_page.dart';
 import 'package:palette/views/home/reviews_page.dart';
 
-class RestaurantDetailsPage extends StatefulWidget {
-  @override
-  State<RestaurantDetailsPage> createState() => _RestaurantDetailsPageState();
-}
-
-class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
-    with TickerProviderStateMixin {
-  int _currentTabIndex = 0;
+class RestaurantDetailsPage extends StatelessWidget {
+  RxInt _currentTabIndex = 0.obs;
+  String id;
+  RestaurantDetailsPage({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
+    final RestaurantDetailsController controller =
+        Get.put(RestaurantDetailsController(id), tag: id);
+    controller.fetchRestaurantDetails(id);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 45.0),
-                  child: Container(
-                    height: 250,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                          "https://www.pennlive.com/resizer/v2/ZL54C3EDKFGWLJY7XRAZPDU4LQ.jpg?auth=2a7815790f3b62ed7b10ac63e852c4fc1f619bae52ea35d1a36ca5a3e8ab14c4&width=1280&quality=90",
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                    bottom: 0,
-                    left: 16,
-                    child: Container(
-                      width: 90,
-                      height: 90,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://tse1.mm.bing.net/th/id/OIP.Vbbf9wPK4tJYzKIMjrxYNAHaFN?rs=1&pid=ImgDetMain"),
-                              fit: BoxFit.cover)),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.only(left: 24.0, top: 24),
-                  child: commonBackButton(),
-                ),
-              ],
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
                 children: [
-                  commonText("Sub Urban", size: 22, isBold: true),
-                  Row(
-                    children: [
-                      Icon(Icons.star, color: Colors.amber, size: 16),
-                      SizedBox(width: 4),
-                      commonText("4.6", size: 14),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on, size: 14, color: AppColors.black),
-                      SizedBox(width: 4),
-                      commonText("123 Main St, San Francisco, CA", size: 12),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, size: 14, color: AppColors.black),
-                      SizedBox(width: 4),
-                      commonText("Open today · 11:00 AM – 10:00 PM", size: 12),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.phone, size: 14, color: AppColors.black),
-                      SizedBox(width: 4),
-                      commonText("(555) 123-4567", size: 12),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            showAddToFavoriteDialog(context);
-                          },
-                          icon: Icon(Icons.favorite_border,
-                              color: AppColors.primary),
-                          label: commonText("Add To Favorite",
-                              color: AppColors.primary, isBold: true),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: AppColors.primary),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 45.0),
+                    child: Container(
+                      height: 250,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                            getFullImagePath(
+                                controller.restaurantDetails.value!.coverImage),
                           ),
                         ),
                       ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(AppAssetsPath.share),
-                            commonText("Share", size: 14, isBold: true),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  _buildTabBar(),
-                  AnimatedSwitcher(
-                    duration: Duration(milliseconds: 300),
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
-                    child: IndexedStack(
-                      key: ValueKey<int>(_currentTabIndex),
-                      index: _currentTabIndex,
-                      children: [
-                        _buildMenuSection(),
-                        _buildPhotoSection(),
-                        Column(
-                          children: [
-                            buildReviews(
-                                reviews: [
-                                  {
-                                    "text":
-                                        "Absolutely delicious! The meat was perfectly cooked and juicy, bursting with flavor in every bite.",
-                                    "rating": 5,
-                                    "time": "2 Days Ago"
-                                  },
-                                  {
-                                    "text":
-                                        "The pasta was good, but it lacked a bit of salt. Overall, a decent meal!",
-                                    "rating": 3,
-                                    "time": "1 Day Ago"
-                                  },
-                                ],
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true),
-                            commonButton("View all reviews", onTap: () {
-                              navigateToPage(ReviewsPage());
-                            }, height: 40, width: 150, borderRadious: 8),
-                            SizedBox(height: 16),
-                          ],
-                        ),
-                      ],
                     ),
+                  ),
+                  Positioned(
+                      bottom: 0,
+                      left: 16,
+                      child: Container(
+                        width: 90,
+                        height: 90,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: NetworkImage(getFullImagePath(
+                                    controller.restaurantDetails.value!.image)),
+                                fit: BoxFit.cover)),
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24.0, top: 24),
+                    child: commonBackButton(),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    commonText(controller.restaurantDetails.value!.fullName,
+                        size: 22, isBold: true),
+                    Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber, size: 16),
+                        SizedBox(width: 4),
+                        commonText(
+                            controller
+                                .restaurantDetails.value!.restaurant.rating
+                                .toString(),
+                            size: 14),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on,
+                            size: 14, color: AppColors.black),
+                        SizedBox(width: 4),
+                        commonText(controller.restaurantDetails.value!.address,
+                            size: 12),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time,
+                            size: 14, color: AppColors.black),
+                        SizedBox(width: 4),
+                        commonText(
+                            getTodayOpenStatus(controller
+                                .restaurantDetails.value!.restaurant.openHours),
+                            size: 12),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.phone, size: 14, color: AppColors.black),
+                        SizedBox(width: 4),
+                        commonText(
+                            controller.restaurantDetails.value!.phoneNumber,
+                            size: 12),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              showAddToFavoriteDialog(context);
+                            },
+                            icon: Icon(Icons.favorite_border,
+                                color: AppColors.primary),
+                            label: commonText("Add To Favorite",
+                                color: AppColors.primary, isBold: true),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: AppColors.primary),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(AppAssetsPath.share),
+                              commonText("Share", size: 14, isBold: true),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Column(children: [
+                      _buildTabBar(),
+                      AnimatedSwitcher(
+                        duration: Duration(milliseconds: 300),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return FadeTransition(
+                              opacity: animation, child: child);
+                        },
+                        child: IndexedStack(
+                          key: ValueKey<int>(_currentTabIndex.value),
+                          index: _currentTabIndex.value,
+                          children: [
+                            _buildMenuSection(
+                                menus:
+                                    controller.restaurantDetails.value!.menus),
+                            _buildPhotoSection(
+                                photoPaths: controller
+                                    .restaurantDetails.value!.gallery
+                                    .map((photo) => getFullImagePath(photo))
+                                    .toList()),
+                            Column(
+                              children: [
+                                buildReviews(
+                                    reviews: controller.restaurantDetails.value!
+                                            .feedbacks.isNotEmpty
+                                        ? List.generate(
+                                            controller.restaurantDetails.value!
+                                                .feedbacks.length, (index) {
+                                            return {
+                                              "text": controller
+                                                  .restaurantDetails
+                                                  .value!
+                                                  .feedbacks[index]
+                                                  .comment,
+                                              "rating": controller
+                                                  .restaurantDetails
+                                                  .value!
+                                                  .feedbacks[index]
+                                                  .rating,
+                                              "time": controller
+                                                  .restaurantDetails
+                                                  .value!
+                                                  .feedbacks[index]
+                                                  .createdAt,
+                                              'profileImage': controller
+                                                      .restaurantDetails
+                                                      .value!
+                                                      .feedbacks[index]
+                                                      .reviewerImage
+                                                      .isNotEmpty
+                                                  ? getFullImagePath(controller
+                                                      .restaurantDetails
+                                                      .value!
+                                                      .feedbacks[index]
+                                                      .reviewerImage)
+                                                  : "https://www.w3schools.com/w3images/avatar2.png",
+                                              'name': controller
+                                                  .restaurantDetails
+                                                  .value!
+                                                  .feedbacks[index]
+                                                  .reviewerName,
+                                              'commentImage': (controller
+                                                              .restaurantDetails
+                                                              .value!
+                                                              .feedbacks[index]
+                                                              .image !=
+                                                          null &&
+                                                      controller
+                                                          .restaurantDetails
+                                                          .value!
+                                                          .feedbacks[index]
+                                                          .image!
+                                                          .isNotEmpty)
+                                                  ? getFullImagePath(controller
+                                                      .restaurantDetails
+                                                      .value!
+                                                      .feedbacks[index]
+                                                      .image
+                                                      .toString())
+                                                  : "",
+                                              'video': (controller
+                                                              .restaurantDetails
+                                                              .value!
+                                                              .feedbacks[index]
+                                                              .video !=
+                                                          null &&
+                                                      controller
+                                                          .restaurantDetails
+                                                          .value!
+                                                          .feedbacks[index]
+                                                          .video!
+                                                          .isNotEmpty)
+                                                  ? controller
+                                                      .restaurantDetails
+                                                      .value!
+                                                      .feedbacks[index]
+                                                      .video!
+                                                      .toString()
+                                                  : ""
+                                            };
+                                          })
+                                        : [],
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true),
+                                commonButton("View all reviews", onTap: () {
+                                  navigateToPage(ReviewsPage());
+                                }, height: 40, width: 150, borderRadious: 8),
+                                SizedBox(height: 16),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ]),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 
@@ -195,15 +293,13 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                 Expanded(
                   child: InkWell(
                     onTap: () {
-                      setState(() {
-                        _currentTabIndex = index;
-                      });
+                      _currentTabIndex.value = index;
                     },
                     child: AnimatedContainer(
                       duration: Duration(milliseconds: 300),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: _currentTabIndex == index
+                        color: _currentTabIndex.value == index
                             ? AppColors.primary
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
@@ -225,33 +321,30 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     );
   }
 
-  Widget _buildMenuSection() {
+  Widget _buildMenuSection({required List<RestaurantMenu> menus}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(height: 10),
         commonSearchBar(),
         SizedBox(height: 10),
-        menuCard(
-          onTap: () {
-            navigateToPage(FoodDetailsPage(
-              id: "",
-            ));
-          },
-        ),
-        menuCard(
-          onTap: () {
-            navigateToPage(FoodDetailsPage(
-              id: "",
-            ));
-          },
-        ),
-        menuCard(
-          onTap: () {
-            navigateToPage(FoodDetailsPage(
-              id: "",
-            ));
-          },
+        Column(
+          children: List.generate(
+            menus.length,
+            (index) => menuCard(
+              catagory: (menus[index].category != null)
+                  ? menus[index].category!.name
+                  : "General",
+              description: menus[index].description,
+              imageUrl: getFullImagePath(menus[index].image),
+              name: menus[index].name,
+              price: menus[index].price.toString(),
+              rating: menus[index].rating.toString(),
+              onTap: () {
+                navigateToPage(FoodDetailsPage(id: ""));
+              },
+            ),
+          ),
         ),
         SizedBox(
           height: 16,
@@ -280,13 +373,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     );
   }
 
-  Widget _buildPhotoSection() {
-    final List<String> photoPaths = [
-      'https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996',
-      "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-      "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-      "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    ];
+  Widget _buildPhotoSection({required List<String> photoPaths}) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(

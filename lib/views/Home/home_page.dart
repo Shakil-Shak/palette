@@ -58,120 +58,124 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      bottomSheet: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Promo Banner
-              Obx(() {
-                if (homeController.isLoading.value &&
-                    homeController.ads.isEmpty) {
-                  return SizedBox(
-                    height: 150,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                if (homeController.ads.isEmpty) {
-                  return SizedBox(); // or show "No Ads"
-                }
-
-                List<String> imageUrls = homeController.ads
-                    .map((ad) => getFullImagePath("/${ad.image}"))
-                    .toList();
-
-                return AdsCarousel(imageUrls: imageUrls);
-              }),
-
-              SizedBox(height: 20),
-
-              // Highlights of the Week
-              commonText("Highlights of the Week", size: 16, isBold: true),
-              SizedBox(height: 12),
-              Obx(() {
-                return SizedBox(
-                    height: 200,
-                    child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          Menu highLight = homeController.highlights[index];
-                          return InkWell(
-                            onTap: () {
-                              navigateToPage(FoodDetailsPage(
-                                id: highLight.id,
-                              ));
-                            },
-                            child: cardDesign(
-                              width: 190.0,
-                              name: highLight.name,
-                              imageUrl: getFullImagePath(highLight.image ??
-                                  "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1"),
-                              buttonName: highLight.category,
-                              ratting: highLight.rating.toString(),
-                              location: highLight.restaurentName,
-                              isleft: true,
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return SizedBox(
-                            width: 16,
-                          );
-                        },
-                        itemCount: homeController.highlights.length));
-              }),
-
-              SizedBox(height: 20),
-
-              // Stats Section
-              commonText("Your Stats", size: 16, isBold: true),
-              SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildStatCard("Logs This Week", "12"),
-                  _buildStatCard("Favorite", "12"),
-                  _buildStatCard(
-                    "Most Visited",
-                    "Urban Grill",
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 20),
-
-              // For You
-              commonText("For You", size: 16, isBold: true),
-              SizedBox(height: 12),
-              Obx(() {
-                if (homeController.isLoading.value) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if (homeController.foryou.isEmpty) {
-                  return commonText("No Recommandation Found");
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: homeController.foryou.length,
-                  itemBuilder: (context, index) {
-                    return _buildLogsCardDesign(
-                      card: homeController.foryou[index],
-                      ontap: () {
-                        navigateToPage(FoodDetailsPage(
-                          id: homeController.foryou[index].id,
-                        ));
-                      },
+      bottomSheet: SizedBox(
+        height: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Promo Banner
+                Obx(() {
+                  if (homeController.isLoading.value &&
+                      homeController.ads.isEmpty) {
+                    return SizedBox(
+                      height: 150,
+                      child: Center(child: CircularProgressIndicator()),
                     );
-                  },
-                );
-              })
-              // Chicken Burger again
-            ],
+                  }
+
+                  if (homeController.ads.isEmpty) {
+                    return SizedBox(); // or show "No Ads"
+                  }
+
+                  List<String> imageUrls = homeController.ads
+                      .map((ad) => getFullImagePath("/${ad.image}"))
+                      .toList();
+
+                  return AdsCarousel(imageUrls: imageUrls);
+                }),
+
+                SizedBox(height: 20),
+
+                // Highlights of the Week
+                commonText("Highlights of the Week", size: 16, isBold: true),
+                SizedBox(height: 12),
+                Obx(() {
+                  return SizedBox(
+                      height: 200,
+                      child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            FoodMenu highLight =
+                                homeController.highlights[index];
+                            return InkWell(
+                              onTap: () {
+                                navigateToPage(FoodDetailsPage(
+                                  id: highLight.id,
+                                ));
+                              },
+                              child: cardDesign(
+                                width: 190.0,
+                                name: highLight.name,
+                                imageUrl: getFullImagePath(highLight.image ??
+                                    "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1"),
+                                buttonName: highLight.category,
+                                ratting: highLight.rating.toString(),
+                                location: highLight.restaurentName,
+                                isleft: true,
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(
+                              width: 16,
+                            );
+                          },
+                          itemCount: homeController.highlights.length));
+                }),
+
+                SizedBox(height: 20),
+
+                // Stats Section
+                commonText("Your Stats", size: 16, isBold: true),
+                SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildStatCard("Logs This Week", "12"),
+                    _buildStatCard("Favorite", "12"),
+                    _buildStatCard(
+                      "Most Visited",
+                      "Urban Grill",
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 20),
+
+                // For You
+                commonText("For You", size: 16, isBold: true),
+                SizedBox(height: 12),
+                Obx(() {
+                  if (homeController.isLoading.value) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (homeController.foryou.isEmpty) {
+                    return commonText("No Recommandation Found");
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: homeController.foryou.length,
+                    itemBuilder: (context, index) {
+                      return _buildLogsCardDesign(
+                        card: homeController.foryou[index],
+                        ontap: () {
+                          navigateToPage(FoodDetailsPage(
+                            id: homeController.foryou[index].id,
+                          ));
+                        },
+                      );
+                    },
+                  );
+                })
+                // Chicken Burger again
+              ],
+            ),
           ),
         ),
       ),
@@ -203,7 +207,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildLogsCardDesign({
-    required Menu card,
+    required FoodMenu card,
     required Function() ontap,
   }) {
     return InkWell(

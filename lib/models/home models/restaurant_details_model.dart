@@ -1,3 +1,5 @@
+import 'package:palette/models/common_models.dart';
+
 class RestaurantDetailsResponse {
   final int status;
   final int statusCode;
@@ -23,7 +25,7 @@ class RestaurantDetailsResponse {
 
 class RestaurantData {
   final String type;
-  final List<RestaurantAttributes> attributes;
+  final RestaurantAttributes attributes;
 
   RestaurantData({
     required this.type,
@@ -33,9 +35,7 @@ class RestaurantData {
   factory RestaurantData.fromJson(Map<String, dynamic> json) {
     return RestaurantData(
       type: json['type'],
-      attributes: List<RestaurantAttributes>.from(
-        json['attributes'].map((x) => RestaurantAttributes.fromJson(x)),
-      ),
+      attributes: RestaurantAttributes.fromJson(json['attributes']),
     );
   }
 }
@@ -43,40 +43,22 @@ class RestaurantData {
 class RestaurantAttributes {
   final String id;
   final String fullName;
-  final String email;
   final String image;
   final String coverImage;
-  final bool isComplete;
-  final bool isBan;
-  final String role;
-  final String createdAt;
-  final String updatedAt;
-  final List<String> followers;
-  final List<String> following;
   final String address;
-  final List<dynamic> badges;
-  final int logsCount;
-  final List<RestaurantInfo> restaurant;
-  final List<dynamic> feedbacks;
-  final List<RestaurantGallery> gallery;
+  final String phoneNumber;
+  final Restaurant restaurant;
+  final List<RestaurantFeedback> feedbacks;
+  final List<String> gallery;
   final List<RestaurantMenu> menus;
 
   RestaurantAttributes({
     required this.id,
     required this.fullName,
-    required this.email,
     required this.image,
     required this.coverImage,
-    required this.isComplete,
-    required this.isBan,
-    required this.role,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.followers,
-    required this.following,
     required this.address,
-    required this.badges,
-    required this.logsCount,
+    required this.phoneNumber,
     required this.restaurant,
     required this.feedbacks,
     required this.gallery,
@@ -87,44 +69,33 @@ class RestaurantAttributes {
     return RestaurantAttributes(
       id: json['_id'],
       fullName: json['fullName'],
-      email: json['email'],
       image: json['image'],
       coverImage: json['coverImage'],
-      isComplete: json['isComplete'],
-      isBan: json['isBan'],
-      role: json['role'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      followers: List<String>.from(json['followers']),
-      following: List<String>.from(json['following']),
       address: json['address'],
-      badges: json['badges'],
-      logsCount: json['logsCount'],
-      restaurant: List<RestaurantInfo>.from(
-        json['restaurant'].map((x) => RestaurantInfo.fromJson(x)),
-      ),
-      feedbacks: json['feedbacks'],
-      gallery: List<RestaurantGallery>.from(
-        json['gallery'].map((x) => RestaurantGallery.fromJson(x)),
-      ),
-      menus: List<RestaurantMenu>.from(
-        json['menus'].map((x) => RestaurantMenu.fromJson(x)),
-      ),
+      phoneNumber: json["phoneNumber"],
+      restaurant: Restaurant.fromJson(json['restaurant']),
+      feedbacks: (json['feedbacks'] as List)
+          .map((f) => RestaurantFeedback.fromJson(f))
+          .toList(),
+      gallery: List<String>.from(json['gallery']),
+      menus: (json['menus'] as List)
+          .map((m) => RestaurantMenu.fromJson(m))
+          .toList(),
     );
   }
 }
 
-class RestaurantInfo {
+class Restaurant {
   final String id;
   final String user;
   final List<String> cuisines;
-  final List<RestaurantOpenHour> openHours;
+  final List<OpenHour> openHours;
   final String createdAt;
   final String updatedAt;
-  final int rating;
+  final double rating;
   final int totalFeedback;
 
-  RestaurantInfo({
+  Restaurant({
     required this.id,
     required this.user,
     required this.cuisines,
@@ -135,70 +106,81 @@ class RestaurantInfo {
     required this.totalFeedback,
   });
 
-  factory RestaurantInfo.fromJson(Map<String, dynamic> json) {
-    return RestaurantInfo(
+  factory Restaurant.fromJson(Map<String, dynamic> json) {
+    return Restaurant(
       id: json['_id'],
       user: json['user'],
       cuisines: List<String>.from(json['cuisines']),
-      openHours: List<RestaurantOpenHour>.from(
-        json['openHours'].map((x) => RestaurantOpenHour.fromJson(x)),
-      ),
+      openHours:
+          (json['openHours'] as List).map((o) => OpenHour.fromJson(o)).toList(),
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
-      rating: json['rating'],
+      rating: (json['rating'] as num).toDouble(),
       totalFeedback: json['totalfeedback'],
     );
   }
 }
 
-class RestaurantOpenHour {
+class OpenHour {
   final String day;
   final bool isOpen;
   final String openingTime;
   final String closingTime;
-  final String id;
 
-  RestaurantOpenHour({
+  OpenHour({
     required this.day,
     required this.isOpen,
     required this.openingTime,
     required this.closingTime,
-    required this.id,
   });
 
-  factory RestaurantOpenHour.fromJson(Map<String, dynamic> json) {
-    return RestaurantOpenHour(
+  factory OpenHour.fromJson(Map<String, dynamic> json) {
+    return OpenHour(
       day: json['day'],
       isOpen: json['isOpen'],
       openingTime: json['openingTime'],
       closingTime: json['closingTime'],
-      id: json['_id'],
     );
   }
 }
 
-class RestaurantGallery {
+class RestaurantFeedback {
   final String id;
-  final String user;
-  final List<dynamic> images;
+  final int rating;
+  final String comment;
   final String createdAt;
-  final String updatedAt;
+  final String sender;
+  final String reviewerId;
+  final String reviewerName;
+  final String reviewerImage;
+  final String? image;
+  final String? video;
 
-  RestaurantGallery({
+  RestaurantFeedback({
     required this.id,
-    required this.user,
-    required this.images,
+    required this.rating,
+    required this.comment,
     required this.createdAt,
-    required this.updatedAt,
+    required this.sender,
+    required this.reviewerId,
+    required this.reviewerName,
+    required this.reviewerImage,
+    this.image,
+    this.video,
   });
 
-  factory RestaurantGallery.fromJson(Map<String, dynamic> json) {
-    return RestaurantGallery(
+  factory RestaurantFeedback.fromJson(Map<String, dynamic> json) {
+    return RestaurantFeedback(
       id: json['_id'],
-      user: json['user'],
-      images: json['images'],
+      rating: json['rating'],
+      comment: json['comment'],
       createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
+      sender: json['sender'],
+      reviewerId: json['reviewerId'],
+      reviewerName: json['reviewerName'],
+      reviewerImage: json['reviewerImage'],
+      image: json['image'],
+      video: json['video'],
     );
   }
 }
@@ -209,12 +191,12 @@ class RestaurantMenu {
   final String image;
   final String description;
   final double price;
-  final List<String> category;
   final double rating;
+  final int totalFeedback;
   final String user;
   final String createdAt;
   final String updatedAt;
-  final int totalFeedback;
+  final Category? category;
 
   RestaurantMenu({
     required this.id,
@@ -222,12 +204,12 @@ class RestaurantMenu {
     required this.image,
     required this.description,
     required this.price,
-    required this.category,
     required this.rating,
+    required this.totalFeedback,
     required this.user,
     required this.createdAt,
     required this.updatedAt,
-    required this.totalFeedback,
+    this.category,
   });
 
   factory RestaurantMenu.fromJson(Map<String, dynamic> json) {
@@ -237,12 +219,13 @@ class RestaurantMenu {
       image: json['image'],
       description: json['description'],
       price: (json['price'] as num).toDouble(),
-      category: List<String>.from(json['category']),
       rating: (json['rating'] as num).toDouble(),
+      totalFeedback: json['totalfeedback'],
       user: json['user'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
-      totalFeedback: json['totalfeedback'],
+      category:
+          json['category'] != null ? Category.fromJson(json['category']) : null,
     );
   }
 }

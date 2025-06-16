@@ -2,7 +2,7 @@ class FoodMenuDetailsResponse {
   String status;
   int statusCode;
   String message;
-  MenuData data;
+  FoodMenuData data;
 
   FoodMenuDetailsResponse({
     required this.status,
@@ -16,19 +16,22 @@ class FoodMenuDetailsResponse {
       status: json['status'],
       statusCode: json['statusCode'],
       message: json['message'],
-      data: MenuData.fromJson(json['data']),
+      data: FoodMenuData.fromJson(json['data']),
     );
   }
 }
 
-class MenuData {
+class FoodMenuData {
   String type;
   List<FoodMenuAttributes> attributes;
 
-  MenuData({required this.type, required this.attributes});
+  FoodMenuData({
+    required this.type,
+    required this.attributes,
+  });
 
-  factory MenuData.fromJson(Map<String, dynamic> json) {
-    return MenuData(
+  factory FoodMenuData.fromJson(Map<String, dynamic> json) {
+    return FoodMenuData(
       type: json['type'],
       attributes: List<FoodMenuAttributes>.from(
         json['attributes'].map((x) => FoodMenuAttributes.fromJson(x)),
@@ -43,9 +46,9 @@ class FoodMenuAttributes {
   String image;
   String description;
   double price;
-  List<String> category;
+  String category; // <- changed from List<String> to String
   double rating;
-  List<FeedbackModel> feedbacks;
+  List<FoodFeedbackModel> feedbacks;
   String restaurentName;
   String restaurentId;
 
@@ -69,12 +72,11 @@ class FoodMenuAttributes {
       image: json['image'],
       description: json['description'],
       price: (json['price'] as num).toDouble(),
-      category: List<String>.from(json['category']),
+      category: json['category'], // <- now a String
       rating: (json['rating'] as num).toDouble(),
       feedbacks: json['feedbacks'] != null
-          ? List<FeedbackModel>.from(
-              json['feedbacks'].map((x) => FeedbackModel.fromJson(x)),
-            )
+          ? List<FoodFeedbackModel>.from(
+              json['feedbacks'].map((x) => FoodFeedbackModel.fromJson(x)))
           : [],
       restaurentName: json['restaurentName'],
       restaurentId: json['restaurentId'],
@@ -82,7 +84,7 @@ class FoodMenuAttributes {
   }
 }
 
-class FeedbackModel {
+class FoodFeedbackModel {
   String id;
   String sender;
   double rating;
@@ -95,7 +97,7 @@ class FeedbackModel {
   String reviewerImage;
   String reviewerId;
 
-  FeedbackModel({
+  FoodFeedbackModel({
     required this.id,
     required this.sender,
     required this.rating,
@@ -109,8 +111,8 @@ class FeedbackModel {
     required this.reviewerId,
   });
 
-  factory FeedbackModel.fromJson(Map<String, dynamic> json) {
-    return FeedbackModel(
+  factory FoodFeedbackModel.fromJson(Map<String, dynamic> json) {
+    return FoodFeedbackModel(
       id: json['_id'],
       sender: json['sender'],
       rating: (json['rating'] as num).toDouble(),

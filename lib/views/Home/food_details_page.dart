@@ -68,7 +68,9 @@ class FoodDetailsPage extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
-                            navigateToPage(RestaurantDetailsPage());
+                            navigateToPage(RestaurantDetailsPage(
+                                id: controller
+                                    .menuDetails.value!.restaurentId));
                           },
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -154,10 +156,8 @@ class FoodDetailsPage extends StatelessWidget {
                               reviews: controller
                                       .menuDetails.value!.feedbacks.isNotEmpty
                                   ? List.generate(
-                                      min(
-                                          controller.menuDetails.value!
-                                              .feedbacks.length,
-                                          5), (index) {
+                                      controller.menuDetails.value!.feedbacks
+                                          .length, (index) {
                                       return {
                                         "text": controller.menuDetails.value!
                                             .feedbacks[index].comment,
@@ -296,9 +296,12 @@ class FoodDetailsPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: commonButton("Give Review", onTap: () {
-                  navigateToPage(GiveFoodReviewPage(
-                    menuId: controller.id,
-                  ));
+                  navigateToPage(
+                      GiveFoodReviewPage(
+                        menuId: controller.id,
+                      ), onPop: (value) {
+                    controller.fetchMenu(id);
+                  });
                 }),
               ),
               SizedBox(

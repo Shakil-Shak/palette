@@ -8,8 +8,8 @@ class HomeController extends GetxController {
 
   var isLoading = false.obs;
   var errorMessage = RxnString();
-  var foryou = <Menu>[].obs;
-  var highlights = <Menu>[].obs;
+  var foryou = <FoodMenu>[].obs;
+  var highlights = <FoodMenu>[].obs;
   var ads = <AdsMonetization>[].obs;
 
   @override

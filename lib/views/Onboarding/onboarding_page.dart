@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:palette/views/Authuntication/select_role.dart';
 import 'package:palette/views/res/image_path.dart';
-import 'package:palette/views/Authuntication/sign_in_page.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
@@ -74,7 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             right: 20,
                             child: GestureDetector(
                               onTap: () {
-                                navigateToPage(SignInPage());
+                                navigateToPage(SelectRolePage());
                               },
                               child: commonText(
                                 "Skip",
@@ -117,7 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     curve: Curves.easeInOut,
                                   );
                                 } else {
-                                  navigateToPage(SignInPage());
+                                  navigateToPage(SelectRolePage());
                                 }
                               },
                             ),

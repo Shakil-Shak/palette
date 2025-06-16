@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:palette/repositories/home%20repository/submit_feedback_repository.dart';
+import 'package:palette/repositories/home%20repository/home_repository.dart';
 
 class SubmitFeedbackController extends GetxController {
-  final SubmitFeedbackRepository _repo = SubmitFeedbackRepository();
+  final HomeRepository _repo = HomeRepository();
 
   // State variables
   final reviewController = TextEditingController();

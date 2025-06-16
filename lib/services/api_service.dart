@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:palette/utils/api_endpoints.dart';
+import 'package:palette/utils/helper.dart';
 import 'local_storage_service.dart';
 
 class ApiService {
@@ -108,21 +110,33 @@ class ApiService {
     request.fields.addAll(fields);
 
     if (imageFile != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath('image', imageFile.path));
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          imageFile.path,
+          contentType: MediaType('image', getMimeSubtype(imageFile.path)),
+        ),
+      );
     }
 
     if (videoFile != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath('video', videoFile.path));
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'video',
+          videoFile.path,
+          contentType: MediaType('video', getMimeSubtype(videoFile.path)),
+        ),
+      );
     }
+
     request.headers.addAll(headers);
 
     var response = await request.send();
     final resBody = await response.stream.bytesToString();
 
     log(resBody);
-    if (response.statusCode == 200) {
+    final statusCode = response.statusCode;
+    if (statusCode >= 200 && statusCode < 300) {
       return json.decode(resBody);
     } else {
       log(response.stream.toString());

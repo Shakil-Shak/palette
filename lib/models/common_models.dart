@@ -48,7 +48,7 @@ class UserAttributes {
   }
 }
 
-class Menu {
+class FoodMenu {
   final String id;
   final String name;
   final String? image;
@@ -59,7 +59,7 @@ class Menu {
   final String category;
   final String categoryId;
 
-  Menu({
+  FoodMenu({
     required this.id,
     required this.name,
     this.image,
@@ -71,8 +71,8 @@ class Menu {
     required this.categoryId,
   });
 
-  factory Menu.fromJson(Map<String, dynamic> json) {
-    return Menu(
+  factory FoodMenu.fromJson(Map<String, dynamic> json) {
+    return FoodMenu(
       id: json['_id'] ?? '',
       name: json['name'] ?? '',
       image: json['image'],
@@ -97,5 +97,22 @@ class Menu {
       'category': category,
       'categoryId': categoryId,
     };
+  }
+}
+
+class Category {
+  final String id;
+  final String name;
+
+  Category({
+    required this.id,
+    required this.name,
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      id: json['_id'],
+      name: json['name'],
+    );
   }
 }

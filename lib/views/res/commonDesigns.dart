@@ -3,7 +3,7 @@ import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 import 'package:palette/models/challenge_data_model.dart';
-import 'package:palette/views/res/video_helper.dart';
+import 'package:palette/views/res/video_screen.dart';
 
 Widget badgesCard({required String imageUrl, required String name}) {
   return Container(
@@ -353,11 +353,12 @@ Widget buildReviews(
             SizedBox(height: 8),
             commonText(review["text"].toString(),
                 size: 13, maxline: 5, softwarp: true),
-            Row(
-              children: [
-                if ((review["commentImage"] ?? "").toString().isNotEmpty)
-                  Expanded(
-                    child: GestureDetector(
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  if ((review["commentImage"] ?? "").toString().isNotEmpty)
+                    GestureDetector(
                       onTap: () {
                         showDialog(
                           context: context,
@@ -378,13 +379,11 @@ Widget buildReviews(
                         ),
                       ),
                     ),
-                  ),
-                if ((review["video"] ?? "").toString().isNotEmpty &&
-                    (review["commentImage"] ?? "").toString().isNotEmpty)
-                  SizedBox(width: 16),
-                if ((review["video"] ?? "").toString().isNotEmpty)
-                  Expanded(
-                    child: GestureDetector(
+                  if ((review["video"] ?? "").toString().isNotEmpty &&
+                      (review["commentImage"] ?? "").toString().isNotEmpty)
+                    SizedBox(width: 16),
+                  if ((review["video"] ?? "").toString().isNotEmpty)
+                    GestureDetector(
                       onTap: () {
                         showDialog(
                             context: context,
@@ -414,8 +413,8 @@ Widget buildReviews(
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
             SizedBox(height: 4),
             commonText(getTimeDifference(review["time"].toString()),
@@ -427,7 +426,14 @@ Widget buildReviews(
   );
 }
 
-Widget menuCard({Function()? onTap}) {
+Widget menuCard(
+    {Function()? onTap,
+    required String imageUrl,
+    required String name,
+    required String description,
+    required String price,
+    required String rating,
+    required String catagory}) {
   return InkWell(
     onTap: onTap,
     child: Card(
@@ -442,9 +448,7 @@ Widget menuCard({Function()? onTap}) {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746353741~exp=1746357341~hmac=3f256e35fbd8df75e123da5537030b1f939ade3d9d0999f5f0e217e0c3bfbfc3&w=996")))),
+                        fit: BoxFit.cover, image: NetworkImage(imageUrl)))),
             SizedBox(
               width: 8,
             ),
@@ -456,12 +460,12 @@ Widget menuCard({Function()? onTap}) {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
-                          child: commonText('Butter Chicken',
-                              size: 16.0, isBold: true)),
+                          child: commonText(name, size: 16.0, isBold: true)),
                       Row(
                         children: [
                           Icon(Icons.star, color: Colors.amber, size: 16),
-                          commonText('5.0', size: 14.0, color: AppColors.black),
+                          commonText(rating,
+                              size: 14.0, color: AppColors.black),
                         ],
                       )
                     ],
@@ -474,15 +478,15 @@ Widget menuCard({Function()? onTap}) {
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: commonText("Signature",
+                    child: commonText(catagory,
                         color: AppColors.white, isBold: true),
                   ),
                   commonText(
-                    "Grilled chicken marinated in spices, yogurt, smoky, tender, flavorful.",
+                    description,
                     color: AppColors.black,
                   ),
                   SizedBox(height: 4),
-                  commonText("\$4.79",
+                  commonText("\$$price",
                       size: 14, color: AppColors.primary, isBold: true),
                 ],
               ),
