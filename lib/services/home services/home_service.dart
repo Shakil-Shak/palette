@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:palette/models/home%20models/ads_monetization_model.dart';
+import 'package:palette/models/home%20models/feedback_by_restaurent_id.dart';
 import 'package:palette/models/home%20models/for_you_model.dart';
+import 'package:palette/models/home%20models/gallery_by_restaurant_id.dart';
 import 'package:palette/models/home%20models/hightlight_model.dart';
+import 'package:palette/models/home%20models/menu_by_restaurent_id_model.dart';
 import 'package:palette/models/home%20models/menu_details_model.dart';
 import 'package:palette/models/home%20models/restaurant_details_model.dart';
 import 'package:palette/models/home%20models/submit_feedback_model.dart';
@@ -57,5 +60,25 @@ class HomeService {
     final jsonResponse =
         await apiService.get(ApiEndpoints.getRestaurantDetails(id));
     return RestaurantDetailsResponse.fromJson(jsonResponse);
+  }
+
+  Future<MenuByRestaurantIdResponse> fetchMenuRestaurantByid(String id) async {
+    final jsonResponse =
+        await apiService.get(ApiEndpoints.getMenuByRestaurantId(id));
+    return MenuByRestaurantIdResponse.fromJson(jsonResponse);
+  }
+
+  Future<GalleriesByRestautentIdResponse> fetchGalleryRestaurantByid(
+      String id) async {
+    final jsonResponse =
+        await apiService.get(ApiEndpoints.getGarallyByRestaurantId(id));
+    return GalleriesByRestautentIdResponse.fromJson(jsonResponse);
+  }
+
+  Future<FeedbackByRestaurantIdResponse> fetchFeedbackRestaurantByid(
+      String id) async {
+    final jsonResponse =
+        await apiService.get(ApiEndpoints.getFeedbackRestaurantId(id));
+    return FeedbackByRestaurantIdResponse.fromJson(jsonResponse);
   }
 }

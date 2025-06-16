@@ -1,32 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/home%20page%20controller/restaurant_details_controller.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
-class PhotosPage extends StatefulWidget {
-  const PhotosPage({super.key});
+class PhotosPage extends StatelessWidget {
+  final String restaurantId;
 
-  @override
-  State<PhotosPage> createState() => _PhotosPageState();
-}
-
-class _PhotosPageState extends State<PhotosPage> {
-  final List<String> photoPaths = [
-    'https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996',
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    'https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996',
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    'https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996',
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-    "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili_2829-19992.jpg?t=st=1746426205~exp=1746429805~hmac=22b620c5b6d8e6bba9a9f5363a4f080b47689f9baeecb87f2155a09fee4512ce&w=996",
-  ];
+  const PhotosPage({super.key, required this.restaurantId});
 
   @override
   Widget build(BuildContext context) {
+    final RestaurantDetailsController controller =
+        Get.put(RestaurantDetailsController(restaurantId));
+    controller.fetchGallery(restaurantId); // API call
     return Scaffold(
       appBar: AppBar(
         title: commonText("Photos",
@@ -34,33 +22,40 @@ class _PhotosPageState extends State<PhotosPage> {
         leading: commonBackButton(),
       ),
       backgroundColor: AppColors.primary,
-      bottomSheet: Padding(
-        padding: EdgeInsets.all(24),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              GridView.builder(
-                itemCount: photoPaths.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.9,
-                ),
-                itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      photoPaths[index],
-                      fit: BoxFit.cover,
-                    ),
-                  );
-                },
+      bottomSheet: SizedBox(
+        height: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Obx(() {
+            if (controller.isLoadingGallery.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (controller.galleryList.isEmpty) {
+              return Center(child: commonText("No photos available", size: 16));
+            }
+
+            return GridView.builder(
+              itemCount: controller.galleryList.length,
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
               ),
-            ],
-          ),
+              itemBuilder: (context, index) {
+                final imageUrl = controller.galleryList[index];
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    getFullImagePath(imageUrl), // helper to make full URL
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+            );
+          }),
         ),
       ),
     );

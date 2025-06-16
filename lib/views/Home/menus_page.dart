@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/home%20page%20controller/restaurant_details_controller.dart';
+import 'package:palette/utils/helper.dart';
+
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 import 'package:palette/views/Home/food_details_page.dart';
 
-class MenusScreen extends StatefulWidget {
-  const MenusScreen({super.key});
+class MenusScreen extends StatelessWidget {
+  final String restaurantId;
 
-  @override
-  State<MenusScreen> createState() => _MenusScreenState();
-}
+  const MenusScreen({super.key, required this.restaurantId});
 
-class _MenusScreenState extends State<MenusScreen> {
   @override
   Widget build(BuildContext context) {
+    final RestaurantDetailsController controller =
+        Get.put(RestaurantDetailsController(restaurantId));
+    controller.fetchMenus(restaurantId);
     return Scaffold(
       appBar: AppBar(
         title:
@@ -21,35 +25,44 @@ class _MenusScreenState extends State<MenusScreen> {
         leading: commonBackButton(),
       ),
       backgroundColor: AppColors.primary,
-      bottomSheet: Padding(
-        padding: EdgeInsets.all(16),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             commonSearchBar(),
-            SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: 20,
-                itemBuilder: (context, index) {
-                  return InkWell(
+              child: Obx(() {
+                if (controller.isLoadingMenus.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.menuList.isEmpty) {
+                  return Center(child: commonText("No menu found", size: 16));
+                }
+
+                return ListView.builder(
+                  itemCount: controller.menuList.length,
+                  itemBuilder: (context, index) {
+                    final item = controller.menuList[index];
+
+                    return InkWell(
                       onTap: () {
-                        navigateToPage(FoodDetailsPage(
-                          id: "",
-                        ));
+                        navigateToPage(FoodDetailsPage(id: item.id));
                       },
                       child: menuCard(
-                          catagory: "Pizza",
-                          name: "Pepperoni Pizza",
-                          price: "\$12.99",
-                          description:
-                              "A delicious pizza topped with pepperoni, cheese, and a blend of spices.",
-                          rating: 4.5.toString(),
-                          onTap: () {},
-                          imageUrl: "assets/images/pizza.png"));
-                },
-              ),
+                        catagory: item.category?.name ?? '',
+                        name: item.name,
+                        price: "\$${item.price.toStringAsFixed(2)}",
+                        description: item.description,
+                        rating: item.rating.toString(),
+                        imageUrl: getFullImagePath(item.image),
+                        // You may need to prepend the base URL
+                        onTap: () {},
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),

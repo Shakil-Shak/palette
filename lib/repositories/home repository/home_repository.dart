@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:palette/models/home%20models/ads_monetization_model.dart';
+import 'package:palette/models/home%20models/feedback_by_restaurent_id.dart';
 import 'package:palette/models/home%20models/for_you_model.dart';
+import 'package:palette/models/home%20models/gallery_by_restaurant_id.dart';
 import 'package:palette/models/home%20models/hightlight_model.dart';
+import 'package:palette/models/home%20models/menu_by_restaurent_id_model.dart';
 import 'package:palette/models/home%20models/menu_details_model.dart';
 import 'package:palette/models/home%20models/restaurant_details_model.dart';
 import 'package:palette/services/home%20services/home_service.dart';
@@ -45,5 +48,19 @@ class HomeRepository {
 
   Future<RestaurantDetailsResponse> getRestaurantDetailsById(String id) async {
     return await _homeService.fetchRestaurantDetailsByid(id);
+  }
+
+  Future<MenuByRestaurantIdResponse> getMenuByRestaurantId(String id) async {
+    return await _homeService.fetchMenuRestaurantByid(id);
+  }
+
+  Future<GalleriesByRestautentIdResponse> getGalleriesByRestaurantId(
+      String id) async {
+    return await _homeService.fetchGalleryRestaurantByid(id);
+  }
+
+  Future<FeedbackByRestaurantIdResponse> getFeedbackByRestaurantId(
+      String id) async {
+    return await _homeService.fetchFeedbackRestaurantByid(id);
   }
 }

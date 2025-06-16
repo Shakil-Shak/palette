@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:palette/controller/home%20page%20controller/restaurant_details_controller.dart';
-import 'package:palette/models/home%20models/restaurant_details_model.dart';
+import 'package:palette/models/common_models.dart';
 import 'package:palette/utils/helper.dart';
+import 'package:palette/views/Home/resturant_reviews_page.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
@@ -12,7 +13,6 @@ import 'package:palette/views/res/commonWidgets.dart';
 import 'package:palette/views/Home/photos_page.dart';
 import 'package:palette/views/Home/food_details_page.dart';
 import 'package:palette/views/Home/menus_page.dart';
-import 'package:palette/views/home/reviews_page.dart';
 
 class RestaurantDetailsPage extends StatelessWidget {
   RxInt _currentTabIndex = 0.obs;
@@ -24,6 +24,7 @@ class RestaurantDetailsPage extends StatelessWidget {
     final RestaurantDetailsController controller =
         Get.put(RestaurantDetailsController(id), tag: id);
     controller.fetchRestaurantDetails(id);
+
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -42,8 +43,9 @@ class RestaurantDetailsPage extends StatelessWidget {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: NetworkImage(
-                            getFullImagePath(
-                                controller.restaurantDetails.value!.coverImage),
+                            getFullImagePath(controller
+                                    .restaurantDetails.value!.coverImage ??
+                                "https://www.w3schools.com/w3images/lights.jpg"),
                           ),
                         ),
                       ),
@@ -58,8 +60,9 @@ class RestaurantDetailsPage extends StatelessWidget {
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                                image: NetworkImage(getFullImagePath(
-                                    controller.restaurantDetails.value!.image)),
+                                image: NetworkImage(getFullImagePath(controller
+                                        .restaurantDetails.value!.image ??
+                                    "https://www.w3schools.com/w3images/avatar2.png")),
                                 fit: BoxFit.cover)),
                       )),
                   Padding(
@@ -74,15 +77,17 @@ class RestaurantDetailsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    commonText(controller.restaurantDetails.value!.fullName,
-                        size: 22, isBold: true),
+                    commonText(
+                        controller.restaurantDetails.value!.fullName ?? "",
+                        size: 22,
+                        isBold: true),
                     Row(
                       children: [
                         Icon(Icons.star, color: Colors.amber, size: 16),
                         SizedBox(width: 4),
                         commonText(
                             controller
-                                .restaurantDetails.value!.restaurant.rating
+                                .restaurantDetails.value!.restaurant!.rating
                                 .toString(),
                             size: 14),
                       ],
@@ -92,7 +97,8 @@ class RestaurantDetailsPage extends StatelessWidget {
                         Icon(Icons.location_on,
                             size: 14, color: AppColors.black),
                         SizedBox(width: 4),
-                        commonText(controller.restaurantDetails.value!.address,
+                        commonText(
+                            controller.restaurantDetails.value!.address ?? "",
                             size: 12),
                       ],
                     ),
@@ -102,8 +108,8 @@ class RestaurantDetailsPage extends StatelessWidget {
                             size: 14, color: AppColors.black),
                         SizedBox(width: 4),
                         commonText(
-                            getTodayOpenStatus(controller
-                                .restaurantDetails.value!.restaurant.openHours),
+                            getTodayOpenStatus(controller.restaurantDetails
+                                .value!.restaurant!.openHours),
                             size: 12),
                       ],
                     ),
@@ -112,7 +118,8 @@ class RestaurantDetailsPage extends StatelessWidget {
                         Icon(Icons.phone, size: 14, color: AppColors.black),
                         SizedBox(width: 4),
                         commonText(
-                            controller.restaurantDetails.value!.phoneNumber,
+                            controller.restaurantDetails.value!.phoneNumber ??
+                                "",
                             size: 12),
                       ],
                     ),
@@ -256,7 +263,9 @@ class RestaurantDetailsPage extends StatelessWidget {
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true),
                                 commonButton("View all reviews", onTap: () {
-                                  navigateToPage(ReviewsPage());
+                                  navigateToPage(RestautentReviewsPage(
+                                    restaurantId: id,
+                                  ));
                                 }, height: 40, width: 150, borderRadious: 8),
                                 SizedBox(height: 16),
                               ],
@@ -350,7 +359,9 @@ class RestaurantDetailsPage extends StatelessWidget {
           height: 16,
         ),
         commonButton("View all menus", onTap: () {
-          navigateToPage(MenusScreen());
+          navigateToPage(MenusScreen(
+            restaurantId: id,
+          ));
         }, height: 40, width: 150, borderRadious: 8),
         SizedBox(height: 16),
         Container(
@@ -402,7 +413,9 @@ class RestaurantDetailsPage extends StatelessWidget {
             height: 16,
           ),
           commonButton("View all photos", onTap: () {
-            navigateToPage(PhotosPage());
+            navigateToPage(PhotosPage(
+              restaurantId: id,
+            ));
           }, height: 40, width: 150, borderRadious: 8),
           SizedBox(height: 16),
         ],

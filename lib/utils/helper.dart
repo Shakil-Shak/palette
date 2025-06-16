@@ -57,8 +57,8 @@ String getTodayOpenStatus(List<OpenHour> openHours) {
     return "Closed today";
   }
 
-  final openTime = _formatTime(todayHour.openingTime);
-  final closeTime = _formatTime(todayHour.closingTime);
+  final openTime = _formatTime(todayHour.openingTime ?? "");
+  final closeTime = _formatTime(todayHour.closingTime ?? "");
 
   return "Open today · $openTime – $closeTime";
 }

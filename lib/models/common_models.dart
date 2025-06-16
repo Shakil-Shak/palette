@@ -100,6 +100,92 @@ class FoodMenu {
   }
 }
 
+class RestaurantMenu {
+  final String id;
+  final String name;
+  final String image;
+  final String description;
+  final double price;
+  final double rating;
+  final int totalFeedback;
+  final String user;
+  final String createdAt;
+  final String updatedAt;
+  final Category? category;
+
+  RestaurantMenu({
+    required this.id,
+    required this.name,
+    required this.image,
+    required this.description,
+    required this.price,
+    required this.rating,
+    required this.totalFeedback,
+    required this.user,
+    required this.createdAt,
+    required this.updatedAt,
+    this.category,
+  });
+
+  factory RestaurantMenu.fromJson(Map<String, dynamic> json) {
+    return RestaurantMenu(
+      id: json['_id'],
+      name: json['name'],
+      image: json['image'],
+      description: json['description'],
+      price: (json['price'] as num).toDouble(),
+      rating: (json['rating'] as num).toDouble(),
+      totalFeedback: json['totalfeedback'],
+      user: json['user'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+      category:
+          json['category'] != null ? Category.fromJson(json['category']) : null,
+    );
+  }
+}
+
+class RestaurantFeedback {
+  final String id;
+  final int rating;
+  final String comment;
+  final String createdAt;
+  final String sender;
+  final String reviewerId;
+  final String reviewerName;
+  final String reviewerImage;
+  final String? image;
+  final String? video;
+
+  RestaurantFeedback({
+    required this.id,
+    required this.rating,
+    required this.comment,
+    required this.createdAt,
+    required this.sender,
+    required this.reviewerId,
+    required this.reviewerName,
+    required this.reviewerImage,
+    this.image,
+    this.video,
+  });
+
+  factory RestaurantFeedback.fromJson(Map<String, dynamic> json) {
+    return RestaurantFeedback(
+      id: json['_id'],
+      rating: json['rating'],
+      comment: json['comment'],
+      createdAt: json['createdAt'],
+      sender: json['sender'],
+      reviewerId: json['reviewerId'],
+      reviewerName: json['reviewerName'],
+      reviewerImage: json['reviewerImage'],
+      image: json['image'],
+      video: json['video'],
+    );
+  }
+}
+
 class Category {
   final String id;
   final String name;

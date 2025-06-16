@@ -28,4 +28,8 @@ class ApiEndpoints {
   static String getMenuDetails(String id) => 'menu-management/get-menu/$id';
   static const String submitFeedback = 'feedback/add-menu-feedback';
   static String getRestaurantDetails(String id) => 'my-restaurent/$id';
+  static String getMenuByRestaurantId(String id) => 'menu-management/$id';
+  static String getGarallyByRestaurantId(String id) =>
+      'gallery/galleryById/$id';
+  static String getFeedbackRestaurantId(String id) => 'feedback/restaurant/$id';
 }
