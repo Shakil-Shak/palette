@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:palette/views/Authuntication/sign_in_page.dart';
-import 'package:palette/views/Intro/splash_page.dart';
 import 'package:palette/views/res/colors.dart';
 
 void main() {
@@ -12,7 +11,8 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // This widget is the root of your applicati
+  // on.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

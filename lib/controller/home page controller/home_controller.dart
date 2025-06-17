@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:palette/models/common_models.dart';
 import 'package:palette/models/home%20models/ads_monetization_model.dart';
+import 'package:palette/models/home%20models/personal_status_model.dart';
+
 import 'package:palette/repositories/home%20repository/home_repository.dart';
 
 class HomeController extends GetxController {
@@ -11,6 +13,7 @@ class HomeController extends GetxController {
   var foryou = <FoodMenu>[].obs;
   var highlights = <FoodMenu>[].obs;
   var ads = <AdsMonetization>[].obs;
+  var userStatus = Rxn<UserStatusResponse>();
 
   @override
   void onInit() {
@@ -18,6 +21,7 @@ class HomeController extends GetxController {
     fetchForYou();
     fetchHighLights();
     fetchAds();
+    fetchUserStatus();
   }
 
   Future<void> fetchForYou() async {
@@ -57,6 +61,20 @@ class HomeController extends GetxController {
 
       final data = await _homeRepository.getAds();
       ads.assignAll(data.data.attributes);
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchUserStatus() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = null;
+
+      final response = await _homeRepository.getUserStatus();
+      userStatus.value = response;
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

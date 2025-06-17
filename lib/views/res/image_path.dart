@@ -32,6 +32,7 @@ class AppAssetsPath {
   static const locationIcon = "assets/images/profile_icons/location.png";
   static const upload = "assets/images/profile_icons/upload.png";
   static const pin = "assets/images/profile_icons/pin.png";
+  static const checkhin = "assets/images/homeIcons/checkin.png";
 
   //home
   static const notifications = "assets/images/homeIcons/notifications.png";

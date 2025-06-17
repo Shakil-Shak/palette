@@ -27,7 +27,8 @@ class RestaurantDetailsPage extends StatelessWidget {
 
     return Scaffold(
       body: Obx(() {
-        if (controller.isLoading.value) {
+        if (controller.isLoading.value ||
+            controller.restaurantDetails.value == null) {
           return Center(child: CircularProgressIndicator());
         }
         return SingleChildScrollView(
@@ -129,7 +130,17 @@ class RestaurantDetailsPage extends StatelessWidget {
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () {
-                              showAddToFavoriteDialog(context);
+                              controller.fetchFolders().then(
+                                (value) {
+                                  showAddToFavoriteDialog(
+                                    context,
+                                    favorites: controller.folderNames,
+                                    postFolder: (value) {
+                                      controller.createNewFolder(value);
+                                    },
+                                  );
+                                },
+                              );
                             },
                             icon: Icon(Icons.favorite_border,
                                 color: AppColors.primary),
@@ -171,8 +182,29 @@ class RestaurantDetailsPage extends StatelessWidget {
                           index: _currentTabIndex.value,
                           children: [
                             _buildMenuSection(
-                                menus:
-                                    controller.restaurantDetails.value!.menus),
+                              menus: controller.restaurantDetails.value!.menus,
+                              isCheckIn: (controller.restaurantDetails.value!
+                                          .restaurant !=
+                                      null)
+                                  ? controller.restaurantDetails.value!
+                                          .restaurant!.checkin ??
+                                      false
+                                  : false,
+                              onCheckIn: () {
+                                if (controller.restaurantDetails.value!
+                                            .restaurant !=
+                                        null &&
+                                    !controller.restaurantDetails.value!
+                                        .restaurant!.checkin!) {
+                                  controller.checkInToRestaurant(id).then(
+                                      (value) => controller
+                                          .fetchRestaurantDetails(id));
+                                } else {
+                                  Get.snackbar("Check In",
+                                      "You have already checked in");
+                                }
+                              },
+                            ),
                             _buildPhotoSection(
                                 photoPaths: controller
                                     .restaurantDetails.value!.gallery
@@ -206,13 +238,14 @@ class RestaurantDetailsPage extends StatelessWidget {
                                                       .restaurantDetails
                                                       .value!
                                                       .feedbacks[index]
-                                                      .reviewerImage
+                                                      .reviewerImage!
                                                       .isNotEmpty
                                                   ? getFullImagePath(controller
-                                                      .restaurantDetails
-                                                      .value!
-                                                      .feedbacks[index]
-                                                      .reviewerImage)
+                                                          .restaurantDetails
+                                                          .value!
+                                                          .feedbacks[index]
+                                                          .reviewerImage ??
+                                                      "https://www.w3schools.com/w3images/avatar2.png")
                                                   : "https://www.w3schools.com/w3images/avatar2.png",
                                               'name': controller
                                                   .restaurantDetails
@@ -330,7 +363,10 @@ class RestaurantDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuSection({required List<RestaurantMenu> menus}) {
+  Widget _buildMenuSection(
+      {required List<RestaurantMenu> menus,
+      required bool isCheckIn,
+      required Function() onCheckIn}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -342,15 +378,16 @@ class RestaurantDetailsPage extends StatelessWidget {
             menus.length,
             (index) => menuCard(
               catagory: (menus[index].category != null)
-                  ? menus[index].category!.name
+                  ? menus[index].category!.name ?? "General"
                   : "General",
-              description: menus[index].description,
-              imageUrl: getFullImagePath(menus[index].image),
-              name: menus[index].name,
+              description:
+                  menus[index].description ?? "No description available",
+              imageUrl: getFullImagePath(menus[index].image ?? ""),
+              name: menus[index].name ?? "",
               price: menus[index].price.toString(),
               rating: menus[index].rating.toString(),
               onTap: () {
-                navigateToPage(FoodDetailsPage(id: ""));
+                navigateToPage(FoodDetailsPage(id: menus[index].id!));
               },
             ),
           ),
@@ -364,19 +401,24 @@ class RestaurantDetailsPage extends StatelessWidget {
           ));
         }, height: 40, width: 150, borderRadious: 8),
         SizedBox(height: 16),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          decoration: BoxDecoration(
-            border: Border.all(width: 2, color: AppColors.primary),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(AppAssetsPath.locationIcon),
-              SizedBox(width: 16),
-              commonText("Check In"),
-            ],
+        InkWell(
+          onTap: onCheckIn,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            decoration: BoxDecoration(
+              border: Border.all(width: 2, color: AppColors.primary),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset((isCheckIn)
+                    ? AppAssetsPath.checkhin
+                    : AppAssetsPath.locationIcon),
+                SizedBox(width: 16),
+                commonText("Check In"),
+              ],
+            ),
           ),
         ),
         SizedBox(height: 24),

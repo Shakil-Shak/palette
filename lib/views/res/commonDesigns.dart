@@ -498,10 +498,9 @@ Widget menuCard(
   );
 }
 
-void showAddToFavoriteDialog(BuildContext context) {
+void showAddToFavoriteDialog(BuildContext context,
+    {required List<String> favorites, required Function(String) postFolder}) {
   final TextEditingController _controller = TextEditingController();
-  final List<String> favorites = ['Burgers', 'Ramens'];
-
   showDialog(
     context: context,
     builder: (context) {
@@ -542,6 +541,7 @@ void showAddToFavoriteDialog(BuildContext context) {
                           if (_controller.text.trim().isNotEmpty) {
                             setState(() {
                               favorites.add(_controller.text.trim());
+                              postFolder(_controller.text);
                               _controller.clear();
                             });
                           }

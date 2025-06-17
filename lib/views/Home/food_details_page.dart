@@ -116,7 +116,17 @@ class FoodDetailsPage extends StatelessWidget {
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () {
-                              showAddToFavoriteDialog(context);
+                              controller.fetchFolders().then(
+                                (value) {
+                                  showAddToFavoriteDialog(
+                                    context,
+                                    favorites: controller.folderNames,
+                                    postFolder: (value) {
+                                      controller.createNewFolder(value);
+                                    },
+                                  );
+                                },
+                              );
                             },
                             icon: Icon(Icons.favorite_border,
                                 color: AppColors.primary),

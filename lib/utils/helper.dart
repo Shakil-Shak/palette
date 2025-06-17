@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,12 +5,9 @@ import 'package:palette/models/home%20models/restaurant_details_model.dart';
 import 'package:palette/utils/api_endpoints.dart';
 
 String getFullImagePath(String imagePath) {
-  log(imagePath);
-
   if (imagePath.startsWith('http')) {
     return imagePath;
   }
-  log('${ApiEndpoints.imageUrl}$imagePath');
   if (imagePath.startsWith('/')) {
     return '${ApiEndpoints.imageUrl}$imagePath';
   }

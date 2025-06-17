@@ -69,7 +69,7 @@ class FoodMenuAttributes {
     return FoodMenuAttributes(
       id: json['_id'],
       name: json['name'],
-      image: json['image'],
+      image: json['image'] ?? "",
       description: json['description'],
       price: (json['price'] as num).toDouble(),
       category: json['category'], // <- now a String

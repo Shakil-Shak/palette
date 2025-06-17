@@ -101,16 +101,16 @@ class FoodMenu {
 }
 
 class RestaurantMenu {
-  final String id;
-  final String name;
-  final String image;
-  final String description;
+  final String? id;
+  final String? name;
+  final String? image;
+  final String? description;
   final double price;
   final double rating;
   final int totalFeedback;
-  final String user;
-  final String createdAt;
-  final String updatedAt;
+  final String? user;
+  final String? createdAt;
+  final String? updatedAt;
   final Category? category;
 
   RestaurantMenu({
@@ -146,14 +146,14 @@ class RestaurantMenu {
 }
 
 class RestaurantFeedback {
-  final String id;
-  final int rating;
-  final String comment;
-  final String createdAt;
-  final String sender;
-  final String reviewerId;
-  final String reviewerName;
-  final String reviewerImage;
+  final String? id;
+  final double rating;
+  final String? comment;
+  final String? createdAt;
+  final String? sender;
+  final String? reviewerId;
+  final String? reviewerName;
+  final String? reviewerImage;
   final String? image;
   final String? video;
 
@@ -173,7 +173,7 @@ class RestaurantFeedback {
   factory RestaurantFeedback.fromJson(Map<String, dynamic> json) {
     return RestaurantFeedback(
       id: json['_id'],
-      rating: json['rating'],
+      rating: (json['rating'] as num).toDouble(),
       comment: json['comment'],
       createdAt: json['createdAt'],
       sender: json['sender'],
@@ -187,8 +187,8 @@ class RestaurantFeedback {
 }
 
 class Category {
-  final String id;
-  final String name;
+  final String? id;
+  final String? name;
 
   Category({
     required this.id,

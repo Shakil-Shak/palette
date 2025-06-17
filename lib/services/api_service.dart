@@ -14,7 +14,6 @@ class ApiService {
 
   Future<Map<String, String>> _getHeaders() async {
     final token = await _localStorageService.getToken();
-    log(token.toString());
 
     return {
       'Content-Type': 'application/json',
@@ -42,8 +41,6 @@ class ApiService {
 
   Future<dynamic> post(String endpoint, Map<String, dynamic> body) async {
     final url = Uri.parse('${ApiEndpoints.baseUrl}$endpoint');
-    log('${ApiEndpoints.baseUrl}$endpoint');
-    log(body.toString());
 
     final headers = await _getHeaders();
 
@@ -52,14 +49,11 @@ class ApiService {
       headers: headers,
       body: jsonEncode(body),
     );
-    log(response.body);
     return _processResponse(response);
   }
 
   Future<dynamic> patch(String endpoint, Map<String, dynamic> body) async {
     final url = Uri.parse('${ApiEndpoints.baseUrl}$endpoint');
-    log('PATCH Request URL: ${ApiEndpoints.baseUrl}$endpoint');
-    log('PATCH Request Body: ${body.toString()}');
 
     final headers = await _getHeaders();
 
@@ -68,8 +62,6 @@ class ApiService {
       headers: headers,
       body: jsonEncode(body),
     );
-
-    log('PATCH Response: ${response.body}');
 
     return _processResponse(response);
   }
@@ -134,12 +126,10 @@ class ApiService {
     var response = await request.send();
     final resBody = await response.stream.bytesToString();
 
-    log(resBody);
     final statusCode = response.statusCode;
     if (statusCode >= 200 && statusCode < 300) {
       return json.decode(resBody);
     } else {
-      log(response.stream.toString());
       throw Exception('Failed to post feedback: ${response.statusCode}');
     }
   }

@@ -92,39 +92,43 @@ class RestaurantAttributes {
 }
 
 class Restaurant {
-  final String? id;
-  final String? user;
+  final String id;
+  final String user;
   final List<String> cuisines;
   final List<OpenHour> openHours;
   final String? createdAt;
   final String? updatedAt;
   final double rating;
   final int totalFeedback;
+  final bool? checkin;
 
-  Restaurant({
-    this.id,
-    this.user,
-    required this.cuisines,
-    required this.openHours,
-    this.createdAt,
-    this.updatedAt,
-    required this.rating,
-    required this.totalFeedback,
-  });
+  Restaurant(
+      {required this.id,
+      required this.user,
+      required this.cuisines,
+      required this.openHours,
+      this.createdAt,
+      this.updatedAt,
+      required this.rating,
+      required this.totalFeedback,
+      this.checkin});
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(
-      id: json['_id'],
-      user: json['user'],
+      id: json['_id'] ?? "",
+      user: json['user'] ?? "",
       cuisines: (json['cuisines'] as List?)?.cast<String>() ?? [],
-      openHours: (json['openHours'] as List?)
-              ?.map((o) => OpenHour.fromJson(o))
-              .toList() ??
-          [],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
+      openHours: (json['openHours'] == null)
+          ? []
+          : (json['openHours'] as List?)
+                  ?.map((o) => OpenHour.fromJson(o))
+                  .toList() ??
+              [],
+      createdAt: json['createdAt'] ?? "",
+      updatedAt: json['updatedAt'] ?? "",
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
       totalFeedback: json['totalfeedback'] ?? 0,
+      checkin: json['checkin'] ?? false,
     );
   }
 }

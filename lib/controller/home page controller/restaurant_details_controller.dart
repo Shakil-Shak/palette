@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:palette/models/common_models.dart';
 import 'package:palette/models/home%20models/feedback_by_restaurent_id.dart';
@@ -17,7 +19,7 @@ class RestaurantDetailsController extends GetxController {
   var menuList = <RestaurantMenu>[].obs;
   var galleryList = <String>[].obs;
   var feedbackList = <RestaurentFeedbackItem>[].obs;
-
+  var folderNames = <String>[].obs;
   var errorMessage = ''.obs;
 
   final String id;
@@ -27,8 +29,10 @@ class RestaurantDetailsController extends GetxController {
     try {
       isLoading.value = true;
       final response = await _homeRepository.getRestaurantDetailsById(id);
+
       restaurantDetails.value = response.data!.attributes;
     } catch (e) {
+      log(e.toString());
       Get.snackbar("Error", "Failed to fetch restaurant details");
     } finally {
       isLoading.value = false;
@@ -71,6 +75,56 @@ class RestaurantDetailsController extends GetxController {
       errorMessage.value = 'Failed to fetch feedback: $e';
     } finally {
       isLoadingFeedback.value = false;
+    }
+  }
+
+  Future<void> checkInToRestaurant(String restaurantId) async {
+    try {
+      final response = await _homeRepository.checkInToRestaurant(restaurantId);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        Get.snackbar(
+          "Check-In Successful",
+          "You've checked in at ${response.data.attributes.restaurantName}",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar("Check-In Failed", "Unable to check in right now.");
+        return;
+      }
+    } catch (e) {
+      log(e.toString());
+      Get.snackbar("Check-In Failed", "Unable to check in right now.");
+    }
+  }
+
+  Future<void> fetchFolders() async {
+    try {
+      errorMessage.value = '';
+
+      final response = await _homeRepository.getMyFolders();
+
+      // Extract just the folder names
+      folderNames.assignAll(
+        response.data.attributes.map((e) => e.foldername).toList(),
+      );
+    } catch (e) {
+      log("Folder Fetch Error: $e");
+      errorMessage.value = 'Failed to load folders';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> createNewFolder(String name) async {
+    try {
+      final response = await _homeRepository.createFolder(name);
+      folderNames.add(response.data.attributes.foldername);
+      Get.snackbar("Success", response.message);
+    } catch (e) {
+      log(e.toString());
+      Get.snackbar("Error", "Failed to create folder: $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 }

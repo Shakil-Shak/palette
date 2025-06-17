@@ -1,6 +1,5 @@
 // lib/data/services/user_service.dart
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:palette/models/user%20models/change_password_model.dart';
@@ -41,7 +40,7 @@ class UserService {
   }) async {
     final uri =
         Uri.parse('${ApiEndpoints.baseUrl}${ApiEndpoints.updateProfile}');
-    log('${ApiEndpoints.baseUrl}${ApiEndpoints.updateProfile}');
+
     final request = http.MultipartRequest('PUT', uri);
 
     LocalStorageService _localStorage = LocalStorageService();
@@ -76,7 +75,6 @@ class UserService {
         profileImage.path,
         contentType: mimeType,
       ));
-      log('Uploading profile image: ${profileImage.path} with MIME type: $mimeType');
     }
 
     if (coverImage != null) {
@@ -86,13 +84,11 @@ class UserService {
         coverImage.path,
         contentType: mimeType,
       ));
-      log('Uploading cover image: ${coverImage.path} with MIME type: $mimeType');
     }
 
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
 
-    log(response.body);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final json = jsonDecode(response.body);
       return UserUpdateResponse.fromJson(json);

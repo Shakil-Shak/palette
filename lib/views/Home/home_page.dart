@@ -131,17 +131,31 @@ class HomePage extends StatelessWidget {
                 // Stats Section
                 commonText("Your Stats", size: 16, isBold: true),
                 SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildStatCard("Logs This Week", "12"),
-                    _buildStatCard("Favorite", "12"),
-                    _buildStatCard(
-                      "Most Visited",
-                      "Urban Grill",
-                    ),
-                  ],
-                ),
+                Obx(() {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildStatCard(
+                          "Logs This Week",
+                          (homeController.userStatus.value != null)
+                              ? homeController.userStatus.value!.logThisWeek
+                                  .toString()
+                              : "0"),
+                      _buildStatCard(
+                          "Favorite",
+                          (homeController.userStatus.value != null)
+                              ? homeController.userStatus.value!.favourites
+                                  .toString()
+                              : "0"),
+                      _buildStatCard(
+                        "Most Visited",
+                        (homeController.userStatus.value != null)
+                            ? homeController.userStatus.value!.mostVisited
+                            : "Unnamed",
+                      ),
+                    ],
+                  );
+                }),
 
                 SizedBox(height: 20),
 
@@ -199,7 +213,12 @@ class HomePage extends StatelessWidget {
           children: [
             commonText(title, size: 12, isBold: true, color: AppColors.gray),
             SizedBox(height: 4),
-            commonText(value, size: 14, isBold: true, color: AppColors.primary),
+            commonText(
+              value,
+              size: 12,
+              isBold: true,
+              color: AppColors.primary,
+            ),
           ],
         ),
       ),

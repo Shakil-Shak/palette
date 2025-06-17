@@ -1,16 +1,21 @@
 import 'dart:io';
 
+import 'package:palette/models/home%20models/AddFavouriteResponse.dart';
 import 'package:palette/models/home%20models/ads_monetization_model.dart';
+import 'package:palette/models/home%20models/create_folder_response.dart';
 import 'package:palette/models/home%20models/feedback_by_restaurent_id.dart';
 import 'package:palette/models/home%20models/for_you_model.dart';
 import 'package:palette/models/home%20models/gallery_by_restaurant_id.dart';
 import 'package:palette/models/home%20models/hightlight_model.dart';
 import 'package:palette/models/home%20models/menu_by_restaurent_id_model.dart';
 import 'package:palette/models/home%20models/menu_details_model.dart';
+import 'package:palette/models/home%20models/my_folders_model.dart';
+import 'package:palette/models/home%20models/personal_status_model.dart';
 import 'package:palette/models/home%20models/restaurant_details_model.dart';
 import 'package:palette/models/home%20models/submit_feedback_model.dart';
 import 'package:palette/services/api_service.dart';
 import 'package:palette/utils/api_endpoints.dart';
+import 'package:palette/views/Home/checkin_model.dart';
 
 class HomeService {
   final ApiService apiService = ApiService();
@@ -55,6 +60,11 @@ class HomeService {
     return FeedbackResponse.fromJson(response);
   }
 
+  Future<UserStatusResponse> fetchUserStatus() async {
+    final jsonResponse = await apiService.get(ApiEndpoints.userStatus);
+    return UserStatusResponse.fromJson(jsonResponse);
+  }
+
   Future<RestaurantDetailsResponse> fetchRestaurantDetailsByid(
       String id) async {
     final jsonResponse =
@@ -81,4 +91,38 @@ class HomeService {
         await apiService.get(ApiEndpoints.getFeedbackRestaurantId(id));
     return FeedbackByRestaurantIdResponse.fromJson(jsonResponse);
   }
+
+  Future<CheckInResponse> postCheckIn(String restaurantId) async {
+    final response = await apiService.post(
+      ApiEndpoints.checkIn,
+      {"restaurent": restaurantId},
+    );
+    return CheckInResponse.fromJson(response);
+  }
+
+  Future<FoldersResponse> fetchMyFolder() async {
+    final jsonResponse = await apiService.get(ApiEndpoints.getMyFolder);
+    return FoldersResponse.fromJson(jsonResponse);
+  }
+
+  Future<CreateFolderResponse> createFolder(String folderName) async {
+    final response = await apiService.post(
+      ApiEndpoints.postMyFolder,
+      {'foldername': folderName},
+    );
+
+    return CreateFolderResponse.fromJson(response);
+  }
+
+  // Future<AddFavouriteResponse> addFavourite({
+  //   required String restaurantId,
+  //   required String folderId,
+  // }) async {
+  //   final response = apiService.post('/api/v1/favourite/', {
+  //     "folder": folderId,
+  //     "restaurant": restaurantId,
+  //   });
+
+  //   return AddFavouriteResponse.fromJson(response);
+  // }
 }

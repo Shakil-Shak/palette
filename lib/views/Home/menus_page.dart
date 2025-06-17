@@ -47,15 +47,15 @@ class MenusScreen extends StatelessWidget {
 
                     return InkWell(
                       onTap: () {
-                        navigateToPage(FoodDetailsPage(id: item.id));
+                        navigateToPage(FoodDetailsPage(id: item.id ?? ""));
                       },
                       child: menuCard(
                         catagory: item.category?.name ?? '',
-                        name: item.name,
+                        name: item.name ?? "",
                         price: "\$${item.price.toStringAsFixed(2)}",
-                        description: item.description,
+                        description: item.description ?? "",
                         rating: item.rating.toString(),
-                        imageUrl: getFullImagePath(item.image),
+                        imageUrl: getFullImagePath(item.image ?? ""),
                         // You may need to prepend the base URL
                         onTap: () {},
                       ),
