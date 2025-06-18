@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:palette/models/home%20models/AddFavouriteResponse.dart';
 import 'package:palette/models/home%20models/ads_monetization_model.dart';
 import 'package:palette/models/home%20models/create_folder_response.dart';
 import 'package:palette/models/home%20models/feedback_by_restaurent_id.dart';
@@ -82,5 +83,15 @@ class HomeRepository {
 
   Future<CreateFolderResponse> createFolder(String folderName) {
     return _homeService.createFolder(folderName);
+  }
+
+  Future<AddFavouriteResponse> addFavourite({
+    required String restaurantId,
+    required String folderId,
+  }) {
+    return _homeService.addFavourite(
+      restaurantId: restaurantId,
+      folderId: folderId,
+    );
   }
 }

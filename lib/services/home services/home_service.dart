@@ -114,15 +114,15 @@ class HomeService {
     return CreateFolderResponse.fromJson(response);
   }
 
-  // Future<AddFavouriteResponse> addFavourite({
-  //   required String restaurantId,
-  //   required String folderId,
-  // }) async {
-  //   final response = apiService.post('/api/v1/favourite/', {
-  //     "folder": folderId,
-  //     "restaurant": restaurantId,
-  //   });
+  Future<AddFavouriteResponse> addFavourite({
+    required String restaurantId,
+    required String folderId,
+  }) async {
+    final response = await apiService.post(ApiEndpoints.addFavorite, {
+      "folder": folderId,
+      "restaurant": restaurantId,
+    });
 
-  //   return AddFavouriteResponse.fromJson(response);
-  // }
+    return AddFavouriteResponse.fromJson(response);
+  }
 }

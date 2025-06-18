@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
@@ -499,7 +500,9 @@ Widget menuCard(
 }
 
 void showAddToFavoriteDialog(BuildContext context,
-    {required List<String> favorites, required Function(String) postFolder}) {
+    {required List<Map<String, String>> favorites,
+    required Function(String) postFolder,
+    required Function(String id) onFolderTap}) {
   final TextEditingController _controller = TextEditingController();
   showDialog(
     context: context,
@@ -507,85 +510,105 @@ void showAddToFavoriteDialog(BuildContext context,
       return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         backgroundColor: Color(0xFFFDFBFA),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  commonText('Add to Favorite',
-                      size: 18, isBold: true, color: AppColors.black),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          decoration: InputDecoration(
-                            hintText: 'Type',
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 16),
-                            filled: true,
-                            fillColor: Color(0xFFFFEAE6),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(color: Colors.transparent),
+        child: StatefulBuilder(builder: (context, setState) {
+          return Padding(
+            padding: const EdgeInsets.all(24),
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    commonText('Add to Favorite',
+                        size: 18, isBold: true, color: AppColors.black),
+                    SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              hintText: 'Type',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 16),
+                              filled: true,
+                              fillColor: Color(0xFFFFEAE6),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () {
-                          if (_controller.text.trim().isNotEmpty) {
-                            setState(() {
-                              favorites.add(_controller.text.trim());
-                              postFolder(_controller.text);
-                              _controller.clear();
-                            });
-                          }
-                        },
-                        child: Container(
-                          height: 44,
-                          width: 44,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFFFA9A2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(Icons.add, color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  ...favorites.map(
-                    (item) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          border:
-                              Border.all(color: Color(0xFFFFA9A2), width: 2),
-                        ),
-                        child: Text(
-                          item,
-                          style: TextStyle(
-                            color: Color(0xFFBA5D4D),
-                            fontWeight: FontWeight.bold,
+                        SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () async {
+                            if (_controller.text.trim().isNotEmpty) {
+                              final folderName = _controller.text.trim();
+                              final id = await postFolder(folderName);
+                              if (id != null && id.isNotEmpty) {
+                                setState(() {
+                                  favorites.add({
+                                    'foldername': folderName,
+                                    'id': id,
+                                  });
+                                  _controller.clear();
+                                });
+                              }
+                            }
+                          },
+                          child: Container(
+                            height: 44,
+                            width: 44,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFFFA9A2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.add, color: Colors.white),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
+                    SizedBox(height: 20),
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...favorites.reversed.map(
+                            (item) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              child: InkWell(
+                                onTap: () {
+                                  onFolderTap(item['id']!);
+                                  Get.back();
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(
+                                        color: Color(0xFFFFA9A2), width: 2),
+                                  ),
+                                  child: commonText(
+                                    item['foldername']!,
+                                    color: Color(0xFFBA5D4D),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ))
+                  ],
+                );
+              },
+            ),
+          );
+        }),
       );
     },
   );

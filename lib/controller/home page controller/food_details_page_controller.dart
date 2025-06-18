@@ -11,7 +11,7 @@ class MenuDetailsController extends GetxController {
   var errorMessage = RxnString(); // Rxn<String> shorthand
   var menuDetails = Rxn<FoodMenuAttributes>();
   final String id;
-  var folderNames = <String>[].obs;
+  var folderList = <Map<String, String>>[].obs;
   MenuDetailsController(this.id);
 
   @override
@@ -39,8 +39,13 @@ class MenuDetailsController extends GetxController {
       final response = await _homeRepository.getMyFolders();
 
       // Extract just the folder names
-      folderNames.assignAll(
-        response.data.attributes.map((e) => e.foldername).toList(),
+      folderList.assignAll(
+        response.data.attributes
+            .map((e) => {
+                  "id": e.id, // Assuming e._id was parsed as `id` in your model
+                  "foldername": e.foldername,
+                })
+            .toList(),
       );
     } catch (e) {
       log("Folder Fetch Error: $e");
@@ -50,13 +55,35 @@ class MenuDetailsController extends GetxController {
     }
   }
 
-  Future<void> createNewFolder(String name) async {
+  Future<String>? createNewFolder(String name) async {
     try {
       final response = await _homeRepository.createFolder(name);
-      folderNames.add(response.data.attributes.foldername);
+
+      Get.snackbar("Success", response.message);
+      return response.data.attributes.id;
+    } catch (e) {
+      log(e.toString());
+      Get.snackbar("Error", "Failed to create folder: $e");
+    } finally {
+      isLoading.value = false;
+    }
+    return "";
+  }
+
+  Future<void> addFavourite({
+    required String restaurantId,
+    required String folderId,
+  }) async {
+    try {
+      isLoading.value = true;
+      final response = await _homeRepository.addFavourite(
+        restaurantId: restaurantId,
+        folderId: folderId,
+      );
+
       Get.snackbar("Success", response.message);
     } catch (e) {
-      Get.snackbar("Error", "Failed to create folder: $e");
+      Get.snackbar("Error", "Failed to add to favourites: $e");
     } finally {
       isLoading.value = false;
     }

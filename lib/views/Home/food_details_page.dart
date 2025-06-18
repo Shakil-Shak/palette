@@ -120,9 +120,14 @@ class FoodDetailsPage extends StatelessWidget {
                                 (value) {
                                   showAddToFavoriteDialog(
                                     context,
-                                    favorites: controller.folderNames,
-                                    postFolder: (value) {
-                                      controller.createNewFolder(value);
+                                    favorites: controller.folderList,
+                                    postFolder: (value) async {
+                                      return await controller
+                                          .createNewFolder(value);
+                                    },
+                                    onFolderTap: (folderId) {
+                                      controller.addFavourite(
+                                          restaurantId: id, folderId: folderId);
                                     },
                                   );
                                 },

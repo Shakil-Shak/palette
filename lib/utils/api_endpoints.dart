@@ -31,6 +31,7 @@ class ApiEndpoints {
   static const String checkIn = 'checkIn';
   static const String getMyFolder = 'folder/all';
   static const String postMyFolder = 'folder/add';
+  static const String addFavorite = "favourite";
   static String getRestaurantDetails(String id) => 'my-restaurent/$id';
   static String getMenuByRestaurantId(String id) => 'menu-management/$id';
   static String getGarallyByRestaurantId(String id) =>
