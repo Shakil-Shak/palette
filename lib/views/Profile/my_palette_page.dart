@@ -142,9 +142,15 @@ class MyPalettePage extends StatelessWidget {
         return InkWell(
             onTap: () {
               // Navigate to Log Details Page
-              navigateToPage(PostDetailsPage());
+              navigateToPage(PostDetailsPage(
+                id: "",
+              ));
             },
-            child: buildLogsCardDesign());
+            child: buildLogsCardDesign(
+                iteamName: "iteamName",
+                image: "image",
+                restaurent: "restaurent",
+                ratting: "ratting"));
       },
     );
   }

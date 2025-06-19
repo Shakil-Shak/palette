@@ -37,4 +37,19 @@ class ApiEndpoints {
   static String getGarallyByRestaurantId(String id) =>
       'gallery/galleryById/$id';
   static String getFeedbackRestaurantId(String id) => 'feedback/restaurant/$id';
+
+  //explore
+  static const String exploreList = 'explore/list';
+
+  //feed
+  static const String allFeed = "logs/feed";
+
+  static const String foodiesToFollow = "users/fooodies";
+  static String personalDetails(String id) => "users/personal/$id";
+  static String getLogDetails(String id) => "logs/details/$id";
+  static String getAllFollowers(String id) => "users/all-followers/$id";
+  static String getAllFollowing(String id) => "users/all-following/$id";
+  static String getAllFeedByUSerId(String id) => "logs/logsByUserId/$id";
+  static String getAllBadgeByUSerId(String id) => "userChallenge/badges/$id";
+  static String followUnfollow(String id) => "users/follow/$id";
 }

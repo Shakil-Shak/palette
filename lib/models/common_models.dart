@@ -202,3 +202,86 @@ class Category {
     );
   }
 }
+
+class LogEntry {
+  final String id;
+  final LogUser user;
+  final String restaurent;
+  final LogItem? item;
+  final String image;
+  final String video;
+  final double rating;
+  final String notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  LogEntry({
+    required this.id,
+    required this.user,
+    required this.restaurent,
+    required this.item,
+    required this.image,
+    required this.video,
+    required this.rating,
+    required this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory LogEntry.fromJson(Map<String, dynamic> json) {
+    return LogEntry(
+      id: json['_id'] ?? '',
+      user: LogUser.fromJson(json['user'] ?? {}),
+      restaurent: json['restaurent'] ?? '',
+      item: json['item'] != null ? LogItem.fromJson(json['item']) : null,
+      image: json['image'] ?? '',
+      video: json['video'] ?? '',
+      rating: (json['rating'] is int)
+          ? (json['rating'] as int).toDouble()
+          : (json['rating'] ?? 0.0),
+      notes: json['notes'] ?? '',
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
+    );
+  }
+}
+
+class LogUser {
+  final String id;
+  final String fullName;
+  final String image;
+  final String email;
+
+  LogUser({
+    required this.id,
+    required this.fullName,
+    required this.image,
+    required this.email,
+  });
+
+  factory LogUser.fromJson(Map<String, dynamic> json) {
+    return LogUser(
+      id: json['_id'] ?? '',
+      fullName: json['fullName'] ?? '',
+      image: json['image'] ?? '', // Present in list, null in detail
+      email: json['email'] ?? '', // Present in detail, null in list
+    );
+  }
+}
+
+class LogItem {
+  final String id;
+  final String name;
+
+  LogItem({
+    required this.id,
+    required this.name,
+  });
+
+  factory LogItem.fromJson(Map<String, dynamic> json) {
+    return LogItem(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+    );
+  }
+}

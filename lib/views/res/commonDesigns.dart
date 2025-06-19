@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
@@ -26,7 +27,9 @@ Widget badgesCard({required String imageUrl, required String name}) {
         SizedBox(
           height: 8,
         ),
-        commonText(name, size: 16, isBold: true, maxline: 1)
+        FittedBox(
+            fit: BoxFit.scaleDown,
+            child: commonText(name, size: 14, isBold: true, maxline: 1))
       ],
     ),
   );
@@ -90,7 +93,12 @@ Widget challengeCard(ChallengeData data) {
   );
 }
 
-Widget buildLogsCardDesign() {
+Widget buildLogsCardDesign({
+  required String iteamName,
+  required String image,
+  required String restaurent,
+  required String ratting,
+}) {
   return Container(
     margin: EdgeInsets.only(bottom: 16),
     decoration: BoxDecoration(
@@ -109,24 +117,23 @@ Widget buildLogsCardDesign() {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   image: DecorationImage(
-                    image: NetworkImage(
-                        "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1"),
+                    image: NetworkImage(getFullImagePath(image)),
                     fit: BoxFit.cover,
                   ))),
         ),
         ListTile(
-          title: commonText("Miso Ramen", size: 16, isBold: true),
+          title: commonText(iteamName, size: 16, isBold: true),
           subtitle: Row(
             children: [
               Image.asset(AppAssetsPath.locationIcon),
-              commonText("Ichiran", size: 12, isBold: true),
+              commonText(restaurent, size: 12, isBold: true),
             ],
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.star, color: Colors.orange, size: 14),
-              commonText("5.0", size: 12),
+              commonText(ratting, size: 12),
             ],
           ),
         ),
@@ -135,7 +142,14 @@ Widget buildLogsCardDesign() {
   );
 }
 
-Widget buildPostCardDesign() {
+Widget buildPostCardDesign(
+    {required String profileImage,
+    required String profileName,
+    required String menuImagePath,
+    required String name,
+    required String time,
+    required String resturant,
+    required String ratting}) {
   return Container(
     margin: EdgeInsets.only(bottom: 16),
     padding: EdgeInsets.symmetric(horizontal: 2),
@@ -149,15 +163,14 @@ Widget buildPostCardDesign() {
       child: Column(
         children: [
           ListTile(
-            contentPadding: EdgeInsets.zero,
+            contentPadding: EdgeInsets.symmetric(horizontal: 8),
             leading: CircleAvatar(
               radius: 24,
-              backgroundImage: NetworkImage(
-                  "https://www.w3schools.com/w3images/avatar2.png"),
+              backgroundImage: NetworkImage(getFullImagePath(profileImage)),
             ),
-            title: commonText("Sophie Bennett", size: 16, isBold: true),
+            title: commonText(profileName, size: 16, isBold: true),
             subtitle: commonText(
-              "1 Hr Ago",
+              time,
             ),
           ),
           Container(
@@ -168,25 +181,24 @@ Widget buildPostCardDesign() {
                 height: 150,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                  image: NetworkImage(
-                      "https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1"),
+                  image: NetworkImage(getFullImagePath(menuImagePath)),
                   fit: BoxFit.cover,
                 ))),
           ),
           ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: commonText("Miso Ramen", size: 16, isBold: true),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8),
+            title: commonText(name, size: 16, isBold: true),
             subtitle: Row(
               children: [
                 Image.asset(AppAssetsPath.locationIcon),
-                commonText("Ichiran", size: 12, isBold: true),
+                commonText(resturant, size: 12, isBold: true),
               ],
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.star, color: Colors.orange, size: 14),
-                commonText("5.0", size: 12),
+                commonText(ratting, size: 12),
               ],
             ),
           ),
@@ -292,35 +304,6 @@ Widget buildReviews(
     {required List<Map<String, dynamic>> reviews,
     bool shrinkWrap = false,
     physics}) {
-  String getTimeDifference(String dateString) {
-    try {
-      final dateTime = DateTime.parse(dateString).toLocal();
-      final now = DateTime.now();
-      final difference = now.difference(dateTime);
-
-      if (difference.inSeconds < 60) {
-        return 'just now';
-      } else if (difference.inMinutes < 60) {
-        return '${difference.inMinutes} minute${difference.inMinutes == 1 ? '' : 's'} ago';
-      } else if (difference.inHours < 24) {
-        return '${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago';
-      } else if (difference.inDays < 7) {
-        return '${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
-      } else if (difference.inDays < 30) {
-        final weeks = (difference.inDays / 7).floor();
-        return '$weeks week${weeks == 1 ? '' : 's'} ago';
-      } else if (difference.inDays < 365) {
-        final months = (difference.inDays / 30).floor();
-        return '$months month${months == 1 ? '' : 's'} ago';
-      } else {
-        final years = (difference.inDays / 365).floor();
-        return '$years year${years == 1 ? '' : 's'} ago';
-      }
-    } catch (e) {
-      return '';
-    }
-  }
-
   return ListView.builder(
     itemCount: reviews.length,
     padding: EdgeInsets.all(0),

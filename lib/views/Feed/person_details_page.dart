@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/personal_details_controller.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
 import 'package:palette/views/res/commonWidgets.dart';
@@ -6,82 +9,60 @@ import 'package:palette/views/Profile/badges_page.dart';
 import 'package:palette/views/Feed/followers_page.dart';
 import 'package:palette/views/Feed/following_page.dart';
 import 'package:palette/views/Feed/logs_page.dart';
-import 'package:palette/views/Feed/post_details_page.dart';
 
-class PersonDetailsPage extends StatefulWidget {
-  const PersonDetailsPage({super.key});
-
-  @override
-  State<PersonDetailsPage> createState() => _PersonDetailsPageState();
-}
-
-class _PersonDetailsPageState extends State<PersonDetailsPage> {
-  final List badges = [
-    {
-      "image":
-          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-      "name": "Mixologist"
-    },
-    {
-      "image":
-          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-      "name": "Sweet Tooth"
-    },
-    {
-      "image":
-          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-      "name": "Taco Titan"
-    },
-    {
-      "image":
-          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-      "name": "Pizza Pro"
-    },
-  ];
+class PersonDetailsPage extends StatelessWidget {
+  final String id;
+  const PersonDetailsPage({super.key, required, required this.id});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 50),
-                  height: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                          "https://thumbs.dreamstime.com/z/autumn-nature-landscape-colorful-forest-autumn-nature-landscape-colorful-forest-morning-sunlight-131400332.jpg?ct=jpeg"),
-                      fit: BoxFit.cover,
+    final controller = Get.put(PersonDetailsController(userId: id));
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      final data = controller.userDetails.value;
+      if (data == null)
+        return Scaffold(
+            body: Center(
+                child: commonText("No Data Found", size: 18, isBold: true)));
+
+      return Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header with cover and profile image
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 50),
+                    height: 200,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(getFullImagePath(data.coverImage)),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(
-                      "https://www.w3schools.com/w3images/avatar2.png"),
-                ),
-                Positioned(top: 24, left: 16, child: commonBackButton())
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  commonText("Sophie Bennett", size: 18, isBold: true),
-                  commonText("@foodie_sophie", size: 14, isBold: true),
-                  commonText(
-                      "Food enthusiast and coffee addict.\nAlways on the hunt for the next great\nmeal!",
-                      size: 16,
-                      isBold: true,
-                      textAlign: TextAlign.center),
-                  SizedBox(
-                    height: 4,
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(getFullImagePath(data.image)),
                   ),
-                  commonSmallButton(
+                  Positioned(top: 24, left: 16, child: commonBackButton())
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    commonText(data.fullName, size: 18, isBold: true),
+                    const SizedBox(height: 4),
+                    commonText(data.aboutme,
+                        size: 16, isBold: true, textAlign: TextAlign.center),
+                    const SizedBox(height: 4),
+                    commonSmallButton(
                       text: "Follow",
                       verticalPadding: 10,
                       color: AppColors.primary,
@@ -90,119 +71,119 @@ class _PersonDetailsPageState extends State<PersonDetailsPage> {
                       fontSize: 16,
                       textColor: AppColors.white,
                       borderWidth: 0,
-                      icon: Icon(
-                        Icons.add,
-                        color: AppColors.white,
-                      )),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            navigateToPage(FollowersPage());
-                          },
-                          child: profileStat("450", "Followers")),
-                      Container(
-                        color: AppColors.black.withOpacity(0.3),
-                        height: 40,
-                        width: 1,
+                      icon: Icon(Icons.add, color: AppColors.white),
+                    ),
+                    const SizedBox(height: 16),
+                    // Followers, Following, Logs
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        InkWell(
+                            onTap: () => navigateToPage(FollowersPage(
+                                  id: id,
+                                )),
+                            child: profileStat(
+                                data.followers.toString(), "Followers")),
+                        Container(
+                          color: AppColors.black.withOpacity(0.3),
+                          height: 40,
+                          width: 1,
+                        ),
+                        InkWell(
+                            onTap: () => navigateToPage(FollowingPage(
+                                  id: id,
+                                )),
+                            child: profileStat(
+                                data.following.toString(), "Following")),
+                        Container(
+                          color: AppColors.black.withOpacity(0.3),
+                          height: 40,
+                          width: 1,
+                        ),
+                        InkWell(
+                            onTap: () => navigateToPage(LogsPage(
+                                  id: id,
+                                )),
+                            child:
+                                profileStat(data.logsCount.toString(), "Logs")),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    // Badges
+                    sectionHeader("Badges", ontap: () {
+                      navigateToPage(BadgesPage(
+                        id: id,
+                      ));
+                    }),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 100,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: data.badgeImage.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          return badgesCard(
+                            imageUrl:
+                                getFullImagePath("/" + data.badgeImage[index]),
+                            name: "Badge ${index + 1}",
+                          );
+                        },
                       ),
-                      InkWell(
-                          onTap: () {
-                            navigateToPage(FollowingPage());
-                          },
-                          child: profileStat("287", "Following")),
-                      Container(
-                        color: AppColors.black.withOpacity(0.3),
-                        height: 40,
-                        width: 1,
-                      ),
-                      InkWell(
-                          onTap: () {
-                            navigateToPage(LogsPage());
-                          },
-                          child: profileStat("30", "Logs")),
-                    ],
-                  ),
-
-                  SizedBox(height: 24),
-
-                  // Badges Section
-                  sectionHeader(
-                    "Badges",
-                    ontap: () {
-                      navigateToPage(BadgesPage());
-                    },
-                  ),
-                  SizedBox(height: 12),
-                  SizedBox(
-                    height: 100,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: badges.length,
-                      separatorBuilder: (_, __) => SizedBox(width: 12),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        commonText("Stats", size: 18, isBold: true),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        statsCard(
+                            "Logs This Week", data.logThisWeek.toString()),
+                        const SizedBox(width: 16),
+                        statsCard("Favorite", data.favourites.toString()),
+                        const SizedBox(width: 16),
+                        statsCard("Most Visited", data.mostVisited),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        commonText("Food Logs", size: 18, isBold: true),
+                      ],
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: data.logs.length,
+                      padding: const EdgeInsets.only(top: 16),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return badgesCard(
-                          imageUrl: badges[index]['image'],
-                          name: badges[index]['name'],
+                        final log = data.logs[index];
+                        return InkWell(
+                          onTap: () {
+                            // navigateToPage(PostDetailsPage(id: log.id));
+                          },
+                          child: buildPostCardDesign(
+                            profileImage: data.image,
+                            profileName: data.fullName,
+                            menuImagePath: log.image,
+                            name: log.itemName ?? "",
+                            time: getTimeDifference(log.createdAt.toString()),
+                            resturant: log.restaurent,
+                            ratting: log.rating.toString(),
+                          ),
                         );
                       },
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 16,
-                  ),
-
-                  Row(
-                    children: [
-                      commonText("Stats", size: 18, isBold: true),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      statsCard("Logs This Week", "12"),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      statsCard("Favorite", "12"),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      statsCard("Most Visited", "Urban Grill"),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    children: [
-                      commonText("Food Logs", size: 18, isBold: true),
-                    ],
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 4,
-                    padding: EdgeInsets.only(top: 16),
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                          onTap: () {
-                            navigateToPage(PostDetailsPage());
-                          },
-                          child: buildPostCardDesign());
-                    },
-                  )
-                ],
-              ),
-            )
-          ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget profileStat(String count, String label) {

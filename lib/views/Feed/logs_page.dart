@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/feed%20controller/feeds_by_user_id_controller.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
 import 'package:palette/views/Feed/post_details_page.dart';
@@ -6,8 +8,12 @@ import 'package:palette/views/Feed/post_details_page.dart';
 import '../res/commonWidgets.dart';
 
 class LogsPage extends StatelessWidget {
+  final String id;
+  LogsPage({required this.id});
   @override
   Widget build(BuildContext context) {
+    FeedsByUserIdController controller =
+        Get.put(FeedsByUserIdController(id: id));
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -22,16 +28,34 @@ class LogsPage extends StatelessWidget {
           ),
           bottomSheet: Container(
             padding: EdgeInsets.all(16),
-            child: ListView.builder(
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return InkWell(
-                    onTap: () {
-                      navigateToPage(PostDetailsPage());
-                    },
-                    child: buildLogsCardDesign());
-              },
-            ),
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (controller.logs.isEmpty) {
+                return Center(
+                  child: commonText("No logs found", size: 18, isBold: true),
+                );
+              }
+              return ListView.builder(
+                itemCount: controller.logs.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                      onTap: () {
+                        navigateToPage(PostDetailsPage(
+                          id: controller.logs[index].id,
+                        ));
+                      },
+                      child: buildLogsCardDesign(
+                          image: controller.logs[index].image,
+                          iteamName: controller.logs[index].item!.name,
+                          ratting: controller.logs[index].rating.toString(),
+                          restaurent: controller.logs[index].restaurent));
+                },
+              );
+            }),
           )),
     );
   }

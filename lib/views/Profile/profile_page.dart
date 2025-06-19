@@ -116,7 +116,9 @@ class ProfilePage extends StatelessWidget {
                   InkWell(
                       onTap: () {
                         // Navigate to Followers Page
-                        navigateToPage(FollowersPage());
+                        navigateToPage(FollowersPage(
+                          id: "",
+                        ));
                       },
                       child: profileStat("450", "Followers")),
                   SizedBox(
@@ -131,7 +133,9 @@ class ProfilePage extends StatelessWidget {
                   ),
                   InkWell(
                       onTap: () {
-                        navigateToPage(FollowingPage());
+                        navigateToPage(FollowingPage(
+                          id: "",
+                        ));
                       },
                       child: profileStat("287", "Following")),
                 ],
@@ -142,7 +146,9 @@ class ProfilePage extends StatelessWidget {
               sectionHeader(
                 "Badges",
                 ontap: () {
-                  navigateToPage(BadgesPage());
+                  navigateToPage(BadgesPage(
+                    id: "",
+                  ));
                 },
               ),
               SizedBox(height: 12),

@@ -25,7 +25,7 @@ class MenusScreen extends StatelessWidget {
         leading: commonBackButton(),
       ),
       backgroundColor: AppColors.primary,
-      body: Padding(
+      bottomSheet: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -45,20 +45,17 @@ class MenusScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = controller.menuList[index];
 
-                    return InkWell(
+                    return menuCard(
+                      catagory: item.category?.name ?? '',
+                      name: item.name ?? "",
+                      price: "\$${item.price.toStringAsFixed(2)}",
+                      description: item.description ?? "",
+                      rating: item.rating.toString(),
+                      imageUrl: getFullImagePath(item.image ?? ""),
+                      // You may need to prepend the base URL
                       onTap: () {
                         navigateToPage(FoodDetailsPage(id: item.id ?? ""));
                       },
-                      child: menuCard(
-                        catagory: item.category?.name ?? '',
-                        name: item.name ?? "",
-                        price: "\$${item.price.toStringAsFixed(2)}",
-                        description: item.description ?? "",
-                        rating: item.rating.toString(),
-                        imageUrl: getFullImagePath(item.image ?? ""),
-                        // You may need to prepend the base URL
-                        onTap: () {},
-                      ),
                     );
                   },
                 );

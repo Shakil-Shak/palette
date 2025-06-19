@@ -1,30 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/feed%20controller/all_following_controller.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
-// Assume you already have AppColors, commonSearchBar, commonSmallButton, commonText defined as you posted.
-
 class FollowingPage extends StatelessWidget {
-  FollowingPage({super.key});
-
-  final List<Map<String, dynamic>> followersList = [
-    {'name': 'Lisa', 'username': '@its_jessi', 'isFollowing': true},
-    {'name': 'John', 'username': '@johnnyboy', 'isFollowing': true},
-    {'name': 'Mia', 'username': '@miamazing', 'isFollowing': true},
-    {'name': 'Tom', 'username': '@tom_the_great', 'isFollowing': true},
-    {'name': 'Nina', 'username': '@nina_ninja', 'isFollowing': true},
-    {'name': 'Alex', 'username': '@alexander101', 'isFollowing': true},
-    {'name': 'Emma', 'username': '@emma_rocks', 'isFollowing': true},
-    {'name': 'Chris', 'username': '@chriscool', 'isFollowing': true},
-    {'name': 'Sophie', 'username': '@sophie_sparkle', 'isFollowing': true},
-    {'name': 'Jake', 'username': '@jake_the_snake', 'isFollowing': true},
-  ];
+  FollowingPage({super.key, required this.id});
+  final String id;
 
   @override
   Widget build(BuildContext context) {
+    final AllFollowingController _controller =
+        Get.put(AllFollowingController(id));
     return Scaffold(
       backgroundColor: AppColors.primary,
-      // light pinkish background
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
@@ -38,6 +28,7 @@ class FollowingPage extends StatelessWidget {
         ),
       ),
       bottomSheet: Container(
+        height: MediaQuery.of(context).size.height * 0.85,
         padding: const EdgeInsets.all(20.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -52,49 +43,59 @@ class FollowingPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                itemCount: followersList.length,
-                itemBuilder: (context, index) {
-                  final follower = followersList[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundImage: const NetworkImage(
-                              'https://www.w3schools.com/w3images/avatar2.png'),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              commonText(
-                                follower['name'],
-                                size: 14,
-                                isBold: true,
-                              ),
-                              const SizedBox(height: 4),
-                              commonText(
-                                follower['username'],
-                                size: 12,
-                              ),
-                            ],
+              child: Obx(() {
+                if (_controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (_controller.following.isEmpty) {
+                  return Center(
+                      child: commonText("No following users found.",
+                          isBold: true, size: 18));
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  itemCount: _controller.following.length,
+                  itemBuilder: (context, index) {
+                    final user = _controller.following[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 24,
+                            backgroundImage: NetworkImage(
+                              getFullImagePath(user.image),
+                            ),
                           ),
-                        ),
-                        commonSmallButton(
-                          text: follower['isFollowing'] ? 'Unfollow' : 'Follow',
-                          ontap: () {
-                            // You can implement follow/unfollow logic here
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                commonText(user.fullName,
+                                    size: 14, isBold: true),
+                                const SizedBox(height: 4),
+                                commonText(
+                                  '@${user.fullName.toLowerCase().replaceAll(' ', '_')}',
+                                  size: 12,
+                                ),
+                              ],
+                            ),
+                          ),
+                          commonSmallButton(
+                            text: user.isFollowing ? 'Unfollow' : 'Follow',
+                            ontap: () {
+                              _controller.followUnfollow(index: index);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),

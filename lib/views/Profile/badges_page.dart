@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/feed%20controller/badge_by_user_id_controller.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
-class BadgesPage extends StatefulWidget {
-  const BadgesPage({super.key});
+class BadgesPage extends StatelessWidget {
+  final String id;
+  const BadgesPage({super.key, required this.id});
 
-  @override
-  State<BadgesPage> createState() => _BadgesPageState();
-}
-
-class _BadgesPageState extends State<BadgesPage> {
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(BadgeController(id));
     return Scaffold(
       appBar: AppBar(
         title: commonText("Badges",
@@ -21,26 +21,33 @@ class _BadgesPageState extends State<BadgesPage> {
         leading: commonBackButton(),
       ),
       backgroundColor: AppColors.primary,
-      bottomSheet: Container(
-        height: double.infinity,
-        padding: EdgeInsets.all(24),
-        child: GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 1,
-          children: List.generate(
-            50,
-            (index) {
-              return badgesCard(
-                  imageUrl:
-                      "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-                  name: "Mixologist");
-            },
+      bottomSheet: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return Container(
+          height: double.infinity,
+          padding: EdgeInsets.all(24),
+          child: GridView.count(
+            crossAxisCount: 3,
+            shrinkWrap: true,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 1,
+            children: List.generate(
+              controller.badges.length,
+              (index) {
+                return badgesCard(
+                    imageUrl:
+                        getFullImagePath(controller.badges[index].badgeImage),
+                    name: controller.badges[index].challengeTitle);
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

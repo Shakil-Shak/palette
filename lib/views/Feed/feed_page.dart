@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/feed%20controller/feed_controller.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 import 'package:palette/views/Feed/person_details_page.dart';
 import 'package:palette/views/Feed/post_details_page.dart';
 
-class FeedPage extends StatefulWidget {
-  const FeedPage({super.key});
+class FeedPage extends StatelessWidget {
+  FeedPage({super.key});
+  final FeedController _controller = Get.put(FeedController());
 
-  @override
-  State<FeedPage> createState() => _FeedPageState();
-}
-
-class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,30 +33,33 @@ class _FeedPageState extends State<FeedPage> {
               SizedBox(
                 height: 16,
               ),
-              SizedBox(
-                height: 150,
-                child: ListView.separated(
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      width: 16,
-                    );
-                  },
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        navigateToPage(PersonDetailsPage());
-                      },
-                      child: profileFolllowdesign(
-                          imageUrl:
-                              "https://www.w3schools.com/w3images/avatar2.png",
-                          name: "Jessica",
-                          numberOfPost: "20"),
-                    );
-                  },
-                ),
-              ),
+              Obx(() {
+                return _controller.isLoading.value
+                    ? Center(child: CircularProgressIndicator())
+                    : SizedBox(
+                        height: 150,
+                        child: ListView.separated(
+                          separatorBuilder: (_, __) => SizedBox(width: 16),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _controller.foodieList.length,
+                          itemBuilder: (context, index) {
+                            final foodie = _controller.foodieList[index];
+                            return InkWell(
+                              onTap: () {
+                                navigateToPage(PersonDetailsPage(
+                                    id: foodie.id ??
+                                        "")); // adjust if you have ID
+                              },
+                              child: profileFolllowdesign(
+                                imageUrl: foodie.image ?? "",
+                                name: foodie.fullName ?? "User",
+                                numberOfPost: "${foodie.logsCount ?? 0}",
+                              ),
+                            );
+                          },
+                        ),
+                      );
+              }),
               SizedBox(
                 height: 16,
               ),
@@ -65,18 +67,37 @@ class _FeedPageState extends State<FeedPage> {
               SizedBox(
                 height: 16,
               ),
-              ListView.builder(
-                itemCount: 5,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return InkWell(
-                      onTap: () {
-                        navigateToPage(PostDetailsPage());
-                      },
-                      child: buildPostCardDesign());
-                },
-              ),
+              Obx(() {
+                return _controller.isLoading.value
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: _controller.logs.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              navigateToPage(PostDetailsPage(
+                                id: _controller.logs[index].id,
+                              ));
+                            },
+                            child: buildPostCardDesign(
+                                menuImagePath: _controller.logs[index].image,
+                                profileImage:
+                                    _controller.logs[index].user.image,
+                                profileName:
+                                    _controller.logs[index].user.fullName,
+                                name: _controller.logs[index].item!.name,
+                                ratting:
+                                    _controller.logs[index].rating.toString(),
+                                resturant: _controller.logs[index].restaurent,
+                                time: getTimeDifference(_controller
+                                    .logs[index].createdAt
+                                    .toString())),
+                          );
+                        },
+                      );
+              })
             ],
           ),
         ),

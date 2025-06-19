@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/feed%20controller/all_followers_controller.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
 
-// Assume you already have AppColors, commonSearchBar, commonSmallButton, commonText defined as you posted.
-
 class FollowersPage extends StatelessWidget {
-  FollowersPage({super.key});
+  const FollowersPage({super.key, required this.id});
 
-  final List<Map<String, dynamic>> followersList = [
-    {'name': 'Lisa', 'username': '@its_jessi', 'isFollowing': false},
-    {'name': 'John', 'username': '@johnnyboy', 'isFollowing': false},
-    {'name': 'Mia', 'username': '@miamazing', 'isFollowing': true},
-    {'name': 'Tom', 'username': '@tom_the_great', 'isFollowing': true},
-    {'name': 'Nina', 'username': '@nina_ninja', 'isFollowing': true},
-    {'name': 'Alex', 'username': '@alexander101', 'isFollowing': true},
-    {'name': 'Emma', 'username': '@emma_rocks', 'isFollowing': true},
-    {'name': 'Chris', 'username': '@chriscool', 'isFollowing': true},
-    {'name': 'Sophie', 'username': '@sophie_sparkle', 'isFollowing': true},
-    {'name': 'Jake', 'username': '@jake_the_snake', 'isFollowing': true},
-  ];
+  final String id;
 
   @override
   Widget build(BuildContext context) {
+    final AllFollowersController _controller =
+        Get.put(AllFollowersController(id)); // Inject the controller
     return Scaffold(
       backgroundColor: AppColors.primary,
-      // light pinkish background
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
@@ -38,6 +29,7 @@ class FollowersPage extends StatelessWidget {
         ),
       ),
       bottomSheet: Container(
+        height: MediaQuery.of(context).size.height * 0.85,
         padding: const EdgeInsets.all(20.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -52,49 +44,64 @@ class FollowersPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                itemCount: followersList.length,
-                itemBuilder: (context, index) {
-                  final follower = followersList[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundImage: const NetworkImage(
-                              'https://www.w3schools.com/w3images/avatar2.png'),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              commonText(
-                                follower['name'],
-                                size: 14,
-                                isBold: true,
-                              ),
-                              const SizedBox(height: 4),
-                              commonText(
-                                follower['username'],
-                                size: 12,
-                              ),
-                            ],
+              child: Obx(() {
+                if (_controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (_controller.followers.isEmpty) {
+                  return Center(
+                      child: commonText('No followers found.',
+                          size: 18, isBold: true));
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  itemCount: _controller.followers.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 24,
+                            backgroundImage: NetworkImage(getFullImagePath(
+                                _controller.followers[index].image)),
                           ),
-                        ),
-                        commonSmallButton(
-                          text: follower['isFollowing'] ? 'Unfollow' : 'Follow',
-                          ontap: () {
-                            // You can implement follow/unfollow logic here
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                commonText(
+                                  _controller.followers[index].fullName,
+                                  size: 14,
+                                  isBold: true,
+                                ),
+                                const SizedBox(height: 4),
+                                commonText(
+                                  '@${_controller.followers[index].fullName.toLowerCase().replaceAll(' ', '_')}',
+                                  size: 12,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Obx(() {
+                            return commonSmallButton(
+                              text: _controller.followers[index].isFollowing
+                                  ? 'Unfollow'
+                                  : 'Follow',
+                              ontap: () {
+                                _controller.followUnfollow(index: index);
+                              },
+                            );
+                          }),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),

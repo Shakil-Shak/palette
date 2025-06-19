@@ -364,6 +364,7 @@ Widget buildOTPTextField(
 Widget commonSearchBar(
     {String hintText = "Search",
     TextEditingController? controller,
+    Function(String)? onSubmitted,
     bool noshadow = false}) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -388,6 +389,7 @@ Widget commonSearchBar(
         Expanded(
           child: TextField(
             controller: controller,
+            onSubmitted: onSubmitted,
             decoration: InputDecoration(
               hintText: hintText,
               border: InputBorder.none,
