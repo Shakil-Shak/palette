@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:palette/models/user%20models/UserCurrentChallengeModel.dart';
 import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/image_path.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
-import 'package:palette/models/challenge_data_model.dart';
 import 'package:palette/views/res/video_screen.dart';
 
 Widget badgesCard({required String imageUrl, required String name}) {
@@ -35,8 +35,8 @@ Widget badgesCard({required String imageUrl, required String name}) {
   );
 }
 
-Widget challengeCard(ChallengeData data) {
-  double progress = data.completed / 10;
+Widget challengeCard(SingleChallenge data) {
+  double progress = data.completionRatio;
 
   return Container(
     decoration: BoxDecoration(
@@ -51,9 +51,9 @@ Widget challengeCard(ChallengeData data) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            commonText(data.title,
+            commonText(data.challengeTitle,
                 size: 16, isBold: true, color: AppColors.black),
-            commonText("${data.completed}/10",
+            commonText("${data.progress}/${data.requiredSteps}",
                 size: 14, isBold: true, color: AppColors.primary),
           ],
         ),
@@ -70,16 +70,23 @@ Widget challengeCard(ChallengeData data) {
         const SizedBox(height: 6),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            commonText(data.subtitle, size: 12, color: AppColors.gray),
+            Expanded(
+              child: commonText(data.challengeDescription,
+                  size: 12, color: AppColors.gray),
+            ),
+            SizedBox(
+              width: 16,
+            ),
             Row(
-              children: List.generate(10, (index) {
+              children: List.generate(data.requiredSteps, (index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 1.5),
                   child: Icon(
                     Icons.circle,
                     size: 8,
-                    color: index < data.completed
+                    color: index < data.progress
                         ? AppColors.primary
                         : AppColors.gray.withOpacity(0.2),
                   ),

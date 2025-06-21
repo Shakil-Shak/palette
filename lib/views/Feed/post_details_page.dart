@@ -33,7 +33,8 @@ class PostDetailsPage extends StatelessWidget {
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (controller.logEntry.value!.image.isNotEmpty)
+              if (controller.logEntry.value!.image != null &&
+                  controller.logEntry.value!.image!.isNotEmpty)
                 Container(
                   constraints: BoxConstraints(
                       minHeight: 350,
@@ -42,15 +43,15 @@ class PostDetailsPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
-                        image: NetworkImage(
-                            getFullImagePath(controller.logEntry.value!.image)),
+                        image: NetworkImage(getFullImagePath(
+                            controller.logEntry.value!.image ?? "|")),
                         fit: BoxFit.cover),
                   ),
                 ),
               SizedBox(
                 height: 16,
               ),
-              commonText(controller.logEntry.value!.item!.name,
+              commonText(controller.logEntry.value!.itemName ?? "",
                   size: 18, isBold: true),
               SizedBox(
                 height: 4,

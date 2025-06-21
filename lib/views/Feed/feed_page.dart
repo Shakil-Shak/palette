@@ -53,6 +53,8 @@ class FeedPage extends StatelessWidget {
                               child: profileFolllowdesign(
                                 imageUrl: foodie.image ?? "",
                                 name: foodie.fullName ?? "User",
+                                index: index,
+                                feedController: _controller,
                                 numberOfPost: "${foodie.logsCount ?? 0}",
                               ),
                             );
@@ -82,12 +84,13 @@ class FeedPage extends StatelessWidget {
                               ));
                             },
                             child: buildPostCardDesign(
-                                menuImagePath: _controller.logs[index].image,
+                                menuImagePath:
+                                    _controller.logs[index].image ?? "",
                                 profileImage:
                                     _controller.logs[index].user.image,
                                 profileName:
                                     _controller.logs[index].user.fullName,
-                                name: _controller.logs[index].item!.name,
+                                name: _controller.logs[index].itemName ?? "",
                                 ratting:
                                     _controller.logs[index].rating.toString(),
                                 resturant: _controller.logs[index].restaurent,
@@ -108,6 +111,8 @@ class FeedPage extends StatelessWidget {
   Widget profileFolllowdesign(
       {required String imageUrl,
       required String name,
+      required FeedController feedController,
+      required int index,
       required String numberOfPost}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -119,7 +124,12 @@ class FeedPage extends StatelessWidget {
         commonText(name, size: 14, isBold: true),
         commonText("$numberOfPost Posts"),
         commonSmallButton(
-            text: "Follow",
+            text: (feedController.foodieList[index].isFollow)
+                ? "Unfollow"
+                : "Follow",
+            ontap: () {
+              feedController.followUnfollow(index: index);
+            },
             borderWidth: 0,
             color: AppColors.primary,
             width: 80,

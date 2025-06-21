@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/profile%20controller/AddNewLogController.dart';
 import 'package:palette/views/Feed/post_details_page.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
@@ -115,7 +117,9 @@ class MyPalettePage extends StatelessWidget {
               ),
               onPressed: () {
                 // Navigate to Add New Log Page
-                navigateToPage(AddNewLogPage());
+                Get.to(() => AddNewLogPage(), binding: BindingsBuilder(() {
+                  Get.put(AddNewLogController());
+                }));
               },
               icon: Icon(
                 Icons.add,

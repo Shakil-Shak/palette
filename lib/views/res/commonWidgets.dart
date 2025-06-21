@@ -158,7 +158,7 @@ void commonSnackbar(BuildContext context, String message,
     {Color? backgroundColor, Duration duration = const Duration(seconds: 3)}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(message),
+      content: commonText(message),
       backgroundColor: backgroundColor ?? Colors.redAccent,
       duration: duration,
     ),

@@ -207,9 +207,10 @@ class LogEntry {
   final String id;
   final LogUser user;
   final String restaurent;
-  final LogItem? item;
-  final String image;
-  final String video;
+  final String? item;
+  final String? itemName;
+  final String? image;
+  final String? video;
   final double rating;
   final String notes;
   final DateTime createdAt;
@@ -219,9 +220,10 @@ class LogEntry {
     required this.id,
     required this.user,
     required this.restaurent,
-    required this.item,
-    required this.image,
-    required this.video,
+    this.item,
+    this.itemName,
+    this.image,
+    this.video,
     required this.rating,
     required this.notes,
     required this.createdAt,
@@ -233,12 +235,15 @@ class LogEntry {
       id: json['_id'] ?? '',
       user: LogUser.fromJson(json['user'] ?? {}),
       restaurent: json['restaurent'] ?? '',
-      item: json['item'] != null ? LogItem.fromJson(json['item']) : null,
-      image: json['image'] ?? '',
-      video: json['video'] ?? '',
+      item: json['item'],
+      itemName: json['itemName'],
+      image: json['image'],
+      video: json['video'],
       rating: (json['rating'] is int)
           ? (json['rating'] as int).toDouble()
-          : (json['rating'] ?? 0.0),
+          : (json['rating'] is double)
+              ? json['rating']
+              : 0.0,
       notes: json['notes'] ?? '',
       createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),

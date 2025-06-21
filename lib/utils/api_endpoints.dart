@@ -14,10 +14,14 @@ class ApiEndpoints {
   static const String changePassword = 'auth/change-password';
   static const String resendOtp = 'auth/resend-otp';
 
-  // User endpoints
+  // User endpoints/Profile EndPoints
   static const String updateProfile = 'users/update-profile';
   static const String userDetails = 'users/user-details';
   static String staticContents(String type) => 'static-contents?type=$type';
+  static const String topRated = "feedback/topratedItems";
+  static const String userChallenge = "userChallenge/userCurrent-challenge";
+  static const String addNewLog = "logs/add-log";
+  static const String myProfile = "users/myprofile";
 
   // static const String deleteOwnAccount = 'users/delete-own-account';
 

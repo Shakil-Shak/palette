@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:palette/models/common_models.dart';
 import 'package:palette/models/feed%20models/foodies_model.dart';
@@ -38,6 +40,19 @@ class FeedController extends GetxController {
       Get.snackbar('Error', 'Failed to fetch logs');
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> followUnfollow({required int index}) async {
+    try {
+      final result =
+          await _feedRepository.followUnfollow(foodieList[index].id!);
+      if (result.statusCode == 200) {
+        foodieList[index].isFollow = !foodieList[index].isFollow;
+        foodieList.refresh();
+      }
+    } catch (e) {
+      log('Error');
     }
   }
 }

@@ -1,8 +1,11 @@
+// ignore_for_file: use_key_in_widget_constructors, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:palette/repositories/user_repository.dart';
+import 'package:palette/repositories/profile_repository.dart';
 import 'package:palette/services/api_service.dart';
-import 'package:palette/services/user_service.dart';
+import 'package:palette/services/profile_service.dart';
+import 'package:palette/utils/helper.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonDesigns.dart';
 import 'package:palette/views/res/commonWidgets.dart';
@@ -14,47 +17,16 @@ import 'package:palette/views/Feed/following_page.dart';
 import 'package:palette/views/Profile/my_palette_page.dart';
 import 'package:palette/views/Profile/profile_settings_page.dart';
 import 'package:palette/views/Profile/top_rated_iteams_page.dart';
-import 'package:palette/models/challenge_data_model.dart';
 
-import '../../controller/user_controller.dart';
+import '../../controller/profile controller/user_controller.dart';
 
 class ProfilePage extends StatelessWidget {
-  final List badges = [
-    {
-      "image":
-          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-      "name": "Mixologist"
-    },
-    {
-      "image":
-          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-      "name": "Sweet Tooth"
-    },
-    {
-      "image":
-          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-      "name": "Taco Titan"
-    },
-    {
-      "image":
-          "https://www.nexgenus.com/images/blogs/migrated/2020/1/17/Sales_of_soft_drinks.png",
-      "name": "Pizza Pro"
-    },
-  ];
-
-  final List<ChallengeData> challenges = [
-    ChallengeData(
-        title: "Breakfast Champion",
-        subtitle: "Log 10 breakfast items",
-        completed: 7),
-    ChallengeData(
-        title: "Lunch Leader", subtitle: "Log 10 lunch items", completed: 8),
-    ChallengeData(
-        title: "Dinner Dynamo", subtitle: "Log 10 dinner items", completed: 9),
-  ];
+  UserController controller =
+      Get.put(UserController(ProfileRepository(ProfileService(ApiService()))));
 
   @override
   Widget build(BuildContext context) {
+    controller.fetchUserFullProfile();
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: AppBar(
@@ -65,151 +37,171 @@ class ProfilePage extends StatelessWidget {
       ),
       bottomSheet: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Profile info
-              CircleAvatar(
-                radius: 45,
-                backgroundImage: NetworkImage(
-                    'https://www.w3schools.com/w3images/avatar2.png'),
-              ),
-              SizedBox(width: 16),
-              Column(
+        child: Obx(() {
+          if (controller.profile.value == null) {
+            return CircularProgressIndicator();
+          }
+          return SizedBox(
+            height: double.infinity,
+            child: SingleChildScrollView(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  // Profile info
+                  CircleAvatar(
+                    radius: 45,
+                    backgroundImage: NetworkImage(
+                        (controller.profile.value!.image.isNotEmpty)
+                            ? getFullImagePath(controller.profile.value!.image)
+                            : 'https://www.w3schools.com/w3images/avatar2.png'),
+                  ),
+                  SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      commonText("Sarah Johnson", size: 18, isBold: true),
-                      SizedBox(width: 6),
-                      Icon(Icons.verified, color: Colors.blueAccent, size: 18)
+                      Row(
+                        children: [
+                          commonText(controller.profile.value!.fullName,
+                              size: 18, isBold: true),
+                          SizedBox(width: 6),
+                          Icon(Icons.verified,
+                              color: Colors.blueAccent, size: 18)
+                        ],
+                      ),
+                      SizedBox(height: 4),
+                      commonSmallButton(
+                        text: "Explorer Palette",
+                        width: 120,
+                        borderWidth: 0,
+                        color: AppColors.primary,
+                        textColor: AppColors.white,
+                      ),
+                      SizedBox(height: 8),
+                      commonSmallButton(
+                        text: "Profile Settings",
+                        ontap: () {
+                          Get.put(UserController(
+                              ProfileRepository(ProfileService(ApiService()))));
+
+                          navigateToPage(ProfileSettingsPage());
+                        },
+                        width: 110,
+                      ),
                     ],
                   ),
-                  SizedBox(height: 4),
-                  commonSmallButton(
-                    text: "Explorer Palette",
-                    width: 120,
-                    borderWidth: 0,
-                    color: AppColors.primary,
-                    textColor: AppColors.white,
+                  SizedBox(height: 20),
+
+                  // Followers/Following
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                          onTap: () {
+                            // Navigate to Followers Page
+                            navigateToPage(FollowersPage(
+                              id: controller.profile.value!.id,
+                            ));
+                          },
+                          child: profileStat(
+                              controller.profile.value!.followers.toString(),
+                              "Followers")),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Container(
+                          width: 1,
+                          height: 40,
+                          color: AppColors.black.withOpacity(0.5)),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      InkWell(
+                          onTap: () {
+                            navigateToPage(FollowingPage(
+                              id: controller.profile.value!.id,
+                            ));
+                          },
+                          child: profileStat(
+                              controller.profile.value!.following.toString(),
+                              "Following")),
+                    ],
                   ),
-                  SizedBox(height: 8),
-                  commonSmallButton(
-                    text: "Profile Settings",
+                  SizedBox(height: 24),
+
+                  // Badges Section
+                  sectionHeader(
+                    "Badges",
                     ontap: () {
-                      Get.put(UserController(
-                          UserRepository(UserService(ApiService()))));
-
-                      navigateToPage(ProfileSettingsPage());
+                      navigateToPage(BadgesPage(
+                        id: controller.profile.value!.id,
+                      ));
                     },
-                    width: 110,
+                  ),
+                  SizedBox(height: 12),
+                  SizedBox(
+                    height: 100,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: controller.profile.value!.badgeImage.length,
+                      separatorBuilder: (_, __) => SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        return badgesCard(
+                          imageUrl: getFullImagePath(
+                              controller.profile.value!.badgeImage[index]),
+                          name: "",
+                        );
+                      },
+                    ),
+                  ),
+                  if (controller.profile.value!.topChallenges.isNotEmpty)
+                    SizedBox(height: 24),
+
+                  // Current Challenges
+                  if (controller.profile.value!.topChallenges.isNotEmpty)
+                    sectionHeader("Current Challenges", ontap: () {
+                      // Navigate to Challenges Page
+                      navigateToPage(ChallengesPage());
+                    }),
+
+                  if (controller.profile.value!.topChallenges.isNotEmpty)
+                    SizedBox(height: 12),
+                  Column(
+                    children: controller.profile.value!.topChallenges
+                        .map((challenge) => Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: challengeCard(challenge),
+                            ))
+                        .toList(),
+                  ),
+                  SizedBox(height: 24),
+
+                  // Menu Items
+                  menuItem(
+                    "My Palette",
+                    ontap: () {
+                      // Navigate to My Palette Page
+                      navigateToPage(MyPalettePage());
+                    },
+                  ),
+                  menuItem(
+                    "Top Rated Items",
+                    ontap: () {
+                      // Navigate to Top Rated Items Page
+                      navigateToPage(TopRatedItemsPage());
+                    },
+                  ),
+                  menuItem(
+                    "Favorites",
+                    ontap: () {
+                      // Navigate to Favorites Page
+                      navigateToPage(FavoritesPage());
+                    },
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-
-              // Followers/Following
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                      onTap: () {
-                        // Navigate to Followers Page
-                        navigateToPage(FollowersPage(
-                          id: "",
-                        ));
-                      },
-                      child: profileStat("450", "Followers")),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Container(
-                      width: 1,
-                      height: 40,
-                      color: AppColors.black.withOpacity(0.5)),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  InkWell(
-                      onTap: () {
-                        navigateToPage(FollowingPage(
-                          id: "",
-                        ));
-                      },
-                      child: profileStat("287", "Following")),
-                ],
-              ),
-              SizedBox(height: 24),
-
-              // Badges Section
-              sectionHeader(
-                "Badges",
-                ontap: () {
-                  navigateToPage(BadgesPage(
-                    id: "",
-                  ));
-                },
-              ),
-              SizedBox(height: 12),
-              SizedBox(
-                height: 100,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: badges.length,
-                  separatorBuilder: (_, __) => SizedBox(width: 12),
-                  itemBuilder: (context, index) {
-                    return badgesCard(
-                      imageUrl: badges[index]['image'],
-                      name: badges[index]['name'],
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 24),
-
-              // Current Challenges
-              sectionHeader("Current Challenges", ontap: () {
-                // Navigate to Challenges Page
-                navigateToPage(ChallengesPage());
-              }),
-
-              SizedBox(height: 12),
-              Column(
-                children: challenges
-                    .map((challenge) => Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: challengeCard(challenge),
-                        ))
-                    .toList(),
-              ),
-              SizedBox(height: 24),
-
-              // Menu Items
-              menuItem(
-                "My Palette",
-                ontap: () {
-                  // Navigate to My Palette Page
-                  navigateToPage(MyPalettePage());
-                },
-              ),
-              menuItem(
-                "Top Rated Items",
-                ontap: () {
-                  // Navigate to Top Rated Items Page
-                  navigateToPage(TopRatedItemsPage());
-                },
-              ),
-              menuItem(
-                "Favorites",
-                ontap: () {
-                  // Navigate to Favorites Page
-                  navigateToPage(FavoritesPage());
-                },
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

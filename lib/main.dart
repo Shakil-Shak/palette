@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:palette/views/Authuntication/sign_in_page.dart';
-import 'package:palette/views/Feed/person_details_page.dart';
-import 'package:palette/views/Profile/badges_page.dart';
 import 'package:palette/views/res/colors.dart';
 
 void main() {
@@ -18,21 +16,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Palette',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: AppColors.primary,
-          centerTitle: true,
+        title: 'Palette',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            backgroundColor: AppColors.primary,
+            centerTitle: true,
+          ),
+          scaffoldBackgroundColor: AppColors.backgroundWhite,
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+          useMaterial3: true,
         ),
-        scaffoldBackgroundColor: AppColors.backgroundWhite,
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
-        useMaterial3: true,
-      ),
-      home: PersonDetailsPage(
-        id: "6832b7d465e0c7fe853cc316",
-      ),
-    );
+        home: SignInPage());
   }
 }
 

@@ -6,10 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:palette/models/common_models.dart';
 import 'package:palette/models/user%20models/change_password_model.dart';
 import 'package:palette/models/user%20models/update_user_model.dart';
-import '../repositories/user_repository.dart';
+import 'package:palette/models/user%20models/user_profile.dart';
+import '../../repositories/profile_repository.dart';
 
 class UserController extends GetxController {
-  UserRepository userRepository;
+  ProfileRepository userRepository;
 
   UserController(this.userRepository);
 
@@ -23,6 +24,8 @@ class UserController extends GetxController {
   var userProfile = Rxn<UserAttributes>();
   var userUpdateResponse = Rxn<UserUpdateResponse>();
 
+  Rx<MyProfileAttributes?> profile = Rx<MyProfileAttributes?>(null);
+
   Future<void> fetchUserProfile() async {
     try {
       isLoading.value = true;
@@ -33,6 +36,18 @@ class UserController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       errorMessage.value = e.toString();
+    }
+  }
+
+  Future<void> fetchUserFullProfile() async {
+    try {
+      isLoading.value = true;
+      final result = await userRepository.fetchMyProfile();
+      profile.value = result.data.attributes.first;
+    } catch (e) {
+      Get.snackbar("Error", "Failed to load profile data");
+    } finally {
+      isLoading.value = false;
     }
   }
 

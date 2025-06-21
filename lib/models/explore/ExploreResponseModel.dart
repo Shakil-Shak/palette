@@ -97,7 +97,7 @@ class TopMenu {
               : 0.0,
       category: json['category'] ?? '',
       categoryId: json['categoryId'] ?? '',
-      restaurentAddress: json['restaurentAddress'] ?? '',
+      restaurentAddress: json['restaurentName'] ?? '',
       restaurentId: json['restaurentId'] ?? '',
     );
   }

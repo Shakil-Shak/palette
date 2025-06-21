@@ -31,22 +31,24 @@ class Foodie {
   String? fullName;
   String? image;
   int? logsCount;
+  bool isFollow;
 
   Foodie({
     this.id,
     this.fullName,
     this.image,
     this.logsCount,
+    required this.isFollow,
   });
 
   factory Foodie.fromJson(Map<String, dynamic> json) {
     return Foodie(
-      id: json['_id'],
-      fullName: json['fullName'],
-      image: json['image'],
-      logsCount: json['logsCount'] != null
-          ? int.tryParse(json['logsCount'].toString())
-          : null,
-    );
+        id: json['_id'],
+        fullName: json['fullName'],
+        image: json['image'],
+        logsCount: json['logsCount'] != null
+            ? int.tryParse(json['logsCount'].toString())
+            : null,
+        isFollow: json['isFollowing'] ?? false);
   }
 }

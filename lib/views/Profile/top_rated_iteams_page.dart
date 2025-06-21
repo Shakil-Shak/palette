@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:palette/views/res/image_path.dart';
+import 'package:get/get.dart';
+import 'package:palette/controller/profile%20controller/top_reated_controller.dart';
+
+import 'package:palette/models/user%20models/top_reated_iteams_model.dart';
 import 'package:palette/views/res/colors.dart';
 import 'package:palette/views/res/commonWidgets.dart';
+import 'package:palette/views/res/image_path.dart';
 
 class TopRatedItemsPage extends StatelessWidget {
-  final List<TopRatedItem> items = List.generate(
-    10,
-    (index) => TopRatedItem(
-      image:
-          'https://dynamic-media.tacdn.com/media/photo-o/2e/d4/44/98/caption.jpg?w=700&h=500&s=1',
-      name: 'Signature Burger',
-      restaurant: 'Tony’s Burger',
-      rating: 5.0,
-      isPinned: index == 0,
-    ),
-  );
+  final TopRatedItemsController _controller =
+      Get.put(TopRatedItemsController());
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +23,31 @@ class TopRatedItemsPage extends StatelessWidget {
             size: 21, isBold: true, color: AppColors.white),
         centerTitle: true,
       ),
-      body: Container(
-        padding: EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: AppColors.backgroundWhite,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-        ),
-        child: ListView.separated(
-          itemCount: items.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
-          itemBuilder: (context, index) => itemCard(items[index]),
-        ),
-      ),
+      body: Obx(() {
+        if (_controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (_controller.items.isEmpty) {
+          return const Center(child: Text("No top rated items found"));
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            color: AppColors.backgroundWhite,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+          ),
+          child: ListView.separated(
+            itemCount: _controller.items.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (context, index) => itemCard(_controller.items[index]),
+          ),
+        );
+      }),
     );
   }
 
@@ -58,20 +65,26 @@ class TopRatedItemsPage extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
-              child: Image.network(item.image,
-                  width: 50, height: 50, fit: BoxFit.cover),
+              child: Image.network(
+                item.menuImage ?? '',
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) =>
+                    const Icon(Icons.broken_image, size: 50),
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  commonText(item.name,
+                  commonText(item.menuName,
                       size: 16,
                       fontWeight: FontWeight.w900,
                       color: AppColors.black),
                   const SizedBox(height: 4),
-                  commonText(item.restaurant,
+                  commonText(item.restaurentName,
                       size: 14,
                       color: AppColors.black,
                       fontWeight: FontWeight.w900),
@@ -89,7 +102,7 @@ class TopRatedItemsPage extends StatelessWidget {
                 const SizedBox(width: 12),
                 Image.asset(
                   AppAssetsPath.pin,
-                  color: item.isPinned ? Colors.red.shade700 : AppColors.gray,
+                  color: item.pinned ? Colors.red.shade700 : AppColors.gray,
                   width: 18,
                 ),
               ],
@@ -99,20 +112,4 @@ class TopRatedItemsPage extends StatelessWidget {
       ),
     );
   }
-}
-
-class TopRatedItem {
-  final String image;
-  final String name;
-  final String restaurant;
-  final double rating;
-  final bool isPinned;
-
-  TopRatedItem({
-    required this.image,
-    required this.name,
-    required this.restaurant,
-    required this.rating,
-    this.isPinned = false,
-  });
 }
