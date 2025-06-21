@@ -82,7 +82,8 @@ class ExploreScreen extends StatelessWidget {
         return Center(child: CircularProgressIndicator());
       }
       if (controller.errorMessage.value != null) {
-        return Center(child: Text("Error: ${controller.errorMessage.value}"));
+        return Center(
+            child: commonText("Error: ${controller.errorMessage.value}"));
       }
 
       return ListView(

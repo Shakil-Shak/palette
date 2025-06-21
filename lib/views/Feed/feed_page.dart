@@ -29,15 +29,17 @@ class FeedPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              commonText("Foodies to Follow", size: 16, isBold: true),
-              SizedBox(
-                height: 16,
-              ),
+              if (_controller.foodieList.isNotEmpty) ...[
+                commonText("Foodies to Follow", size: 16, isBold: true),
+                SizedBox(
+                  height: 16,
+                ),
+              ],
               Obx(() {
                 return _controller.isLoading.value
                     ? Center(child: CircularProgressIndicator())
                     : SizedBox(
-                        height: 150,
+                        height: (_controller.foodieList.isNotEmpty) ? 150 : 0,
                         child: ListView.separated(
                           separatorBuilder: (_, __) => SizedBox(width: 16),
                           scrollDirection: Axis.horizontal,
